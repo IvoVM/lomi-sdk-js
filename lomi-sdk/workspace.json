@@ -1,0 +1,6 @@
+{
+  "version": 2,
+  "projects": {
+    "lomi-sdk": "packages/lomi-sdk"
+  }
+}
