@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { environment } from '../../environment/environment';
+import { cartPromotions } from '../../types/promotions/promotions';
 
 class Comparator{
     static use(prop:string) : Function {
@@ -7,10 +8,7 @@ class Comparator{
         if(context[prop]){
             return context[prop]
         } else {
-            console.error("No operator matching", prop)
-            return () => {
-                return false;
-            }
+            throw new Error("Comparation functon doesn't match any of the defined in the Comparator class.");
         }
     }
 
@@ -44,8 +42,8 @@ export declare type Promotion = {
 }
 
 export declare type Rule = {
-    amount_min : Number,
-    amount_max : Number,
+    amount_min : number,
+    amount_max : number,
     operator_min : string,
     operator_max : string
 }
@@ -55,21 +53,22 @@ export declare type Cart = {
     display_total: string;
 }
 
-export class Promotions{    
+export class Promotions{
+    static deliveryPromotions:PromotionsResponse;
     
     static async  fetchAdvertisedPromotions(): Promise<Object> {
         const lomiPromotions = await axios.get(environment.lomiApiV1+"/promotions");
         return lomiPromotions.data
-      }      
+      }
     
     static async fetchPromotionsByCategoryName( promotionCategoryName:string ): Promise<Object> {
         const lomiPromotions = await axios.get(environment.lomiApiV1+"/promotions/availables?category="+promotionCategoryName)
         return lomiPromotions.data
       }
 
-    static async fetchDeliveryPromotions() : Promise<Object>{
+    static async fetchDeliveryPromotions() : Promise<PromotionsResponse>{
         let deliveryPromotions:any = await this.fetchPromotionsByCategoryName('Delivery Fee')
-        return await this.fetchPromotionsByCategoryName('Delivery Fee')
+        return deliveryPromotions
     }
 
     static validateRuleOverCart(cart:Cart,rule:Rule) : boolean{
@@ -79,16 +78,38 @@ export class Promotions{
         }
         return true
     }
+    
+    static async sortPromotionsByMaxAmountOfFirstRule(){
+        Promotions.deliveryPromotions.promotions.sort((promotion1:Promotion, promotion2:Promotion)=>{
+            const firstRule1:Rule = promotion1.rules[0]
+            const firstRule2:Rule = promotion2.rules[0]
+            return firstRule1.amount_min - firstRule2.amount_min
+        })
+    }
 
-    static async getPromotionsOfCart(cart:Cart) : Promise<Array<Object>>{
-        let deliveryPromotions : any = await this.fetchDeliveryPromotions();
-        const filteredPromos = deliveryPromotions.promotions.filter((promotion:Promotion)=>{
+    static async getPromotionsOfCart(cart:Cart, withBuffer = true) : Promise<Array<Object>>{
+        if(!withBuffer || !Promotions.deliveryPromotions){
+            Promotions.deliveryPromotions = await this.fetchDeliveryPromotions();
+            Promotions.sortPromotionsByMaxAmountOfFirstRule();
+        }
+        const filteredPromos = []
+        let nextPromotion = null;
+        for( var promotion in Promotions.deliveryPromotions.promotions){
             let isValid = true;
-            promotion.rules.forEach((rule)=>{
+            Promotions.deliveryPromotions.promotions[promotion].rules.forEach((rule)=>{
                 isValid = Promotions.validateRuleOverCart(cart,rule);
             })
-            return isValid
-        })
+            if(isValid){
+                filteredPromos.push(Promotions.deliveryPromotions.promotions[promotion])
+                if(parseInt(promotion) < Promotions.deliveryPromotions.promotions.length - 1){
+                    nextPromotion = Promotions.deliveryPromotions.promotions[ parseInt(promotion) + 1 ];
+                }
+            }
+        }
+        const cartPromotions:cartPromotions = {
+            currentDeliveryPromotion : filteredPromos.length ? filteredPromos[0] : null,
+            nextPromotion: filteredPromos.length ? nextPromotion : Promotions.deliveryPromotions.promotions.length ? Promotions.deliveryPromotions.promotions[0] : null
+        }
         return filteredPromos
     }
 

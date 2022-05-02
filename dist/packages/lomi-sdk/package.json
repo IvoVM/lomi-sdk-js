@@ -1,6 +1,6 @@
 {
-  "name": "@lomi-sdk/lomi-sdk",
-  "version": "0.0.1",
+  "name": "@lomii/lomi-sdk",
+  "version": "0.0.3",
   "type": "commonjs",
   "main": "./src/index.js",
   "typings": "./src/index.d.ts",

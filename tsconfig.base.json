@@ -15,7 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@lomi-sdk/lomi-sdk": ["packages/lomi-sdk/src/index.ts"]
+      "@lomi-sdk/lomi-sdk": ["packages/lomi-sdk/src/index.ts"],
+      "@lomii/lomi-material": ["packages/lomi-material/src/index.ts"],
+      "@lomii/material": ["packages/lomi-material/src/index.js"]
     }
   },
   "exclude": ["node_modules", "tmp"]

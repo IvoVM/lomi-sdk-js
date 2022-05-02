@@ -1,11 +1,25 @@
-# lomi-sdk
+# Lomi-sdk
 
-This library was generated with [Nx](https://nx.dev).
+This is our Lomi main library, it has abstractions of some of our commonly used flows
 
-## Building
+## Promotions endpoint
+Access to Promotions V1 Endpoint flexible promotions
 
-Run `nx build lomi-sdk` to build the library.
+### Delivery promotions
 
-## Running unit tests
+Get all promotions avaible relationed to delivery and shipments
 
-Run `nx test lomi-sdk` to execute the unit tests via [Jest](https://jestjs.io).
+```Typescript
+import { Promotions } from '@lomii/lomi-sdk'
+
+Promotions.fetchDeliveryPromotions().then((promotions)=>{
+    /**
+     * {
+     *  currentDeliveryPromotion: Promotion | Null if not reachead one
+     *  nextPromotion: Promotion | Null if current is last goal
+     * }
+     * **/
+    doSomethingWithPromotions(promotions)
+}) 
+```
+

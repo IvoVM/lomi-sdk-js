@@ -11,10 +11,7 @@ class Comparator {
             return context[prop];
         }
         else {
-            console.error("No operator matching", prop);
-            return () => {
-                return false;
-            };
+            throw new Error("Comparation functon doesn't match any of the defined in the Comparator class.");
         }
     }
     static gt(leftValue, rightValue) {
@@ -46,7 +43,7 @@ class Promotions {
     static fetchDeliveryPromotions() {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             let deliveryPromotions = yield this.fetchPromotionsByCategoryName('Delivery Fee');
-            return yield this.fetchPromotionsByCategoryName('Delivery Fee');
+            return deliveryPromotions;
         });
     }
     static validateRuleOverCart(cart, rule) {
@@ -56,16 +53,39 @@ class Promotions {
         }
         return true;
     }
-    static getPromotionsOfCart(cart) {
+    static sortPromotionsByMaxAmountOfFirstRule() {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            let deliveryPromotions = yield this.fetchDeliveryPromotions();
-            const filteredPromos = deliveryPromotions.promotions.filter((promotion) => {
+            Promotions.deliveryPromotions.promotions.sort((promotion1, promotion2) => {
+                const firstRule1 = promotion1.rules[0];
+                const firstRule2 = promotion2.rules[0];
+                return firstRule1.amount_min - firstRule2.amount_min;
+            });
+        });
+    }
+    static getPromotionsOfCart(cart, withBuffer = true) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            if (!withBuffer || !Promotions.deliveryPromotions) {
+                Promotions.deliveryPromotions = yield this.fetchDeliveryPromotions();
+                Promotions.sortPromotionsByMaxAmountOfFirstRule();
+            }
+            const filteredPromos = [];
+            let nextPromotion = null;
+            for (var promotion in Promotions.deliveryPromotions.promotions) {
                 let isValid = true;
-                promotion.rules.forEach((rule) => {
+                Promotions.deliveryPromotions.promotions[promotion].rules.forEach((rule) => {
                     isValid = Promotions.validateRuleOverCart(cart, rule);
                 });
-                return isValid;
-            });
+                if (isValid) {
+                    filteredPromos.push(Promotions.deliveryPromotions.promotions[promotion]);
+                    if (parseInt(promotion) < Promotions.deliveryPromotions.promotions.length - 1) {
+                        nextPromotion = Promotions.deliveryPromotions.promotions[parseInt(promotion) + 1];
+                    }
+                }
+            }
+            const cartPromotions = {
+                currentDeliveryPromotion: filteredPromos.length ? filteredPromos[0] : null,
+                nextPromotion: filteredPromos.length ? nextPromotion : Promotions.deliveryPromotions.promotions.length ? Promotions.deliveryPromotions.promotions[0] : null
+            };
             return filteredPromos;
         });
     }
