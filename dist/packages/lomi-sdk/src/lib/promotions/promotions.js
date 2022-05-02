@@ -82,11 +82,15 @@ class Promotions {
                     }
                 }
             }
+            nextPromotion = filteredPromos.length ? nextPromotion : Promotions.deliveryPromotions.promotions.length ? Promotions.deliveryPromotions.promotions[0] : null;
+            if (nextPromotion) {
+                nextPromotion.amountToReach = nextPromotion.rules[0].amount_min - parseInt(cart.total);
+            }
             const cartPromotions = {
+                nextPromotion,
                 currentDeliveryPromotion: filteredPromos.length ? filteredPromos[0] : null,
-                nextPromotion: filteredPromos.length ? nextPromotion : Promotions.deliveryPromotions.promotions.length ? Promotions.deliveryPromotions.promotions[0] : null
             };
-            return filteredPromos;
+            return cartPromotions;
         });
     }
 }

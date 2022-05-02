@@ -21,5 +21,12 @@ Promotions.fetchDeliveryPromotions().then((promotions)=>{
      * **/
     doSomethingWithPromotions(promotions)
 }) 
+
+function doSomethingWithPromotions(promotions){
+    console.log(`Actualmente tu carrito tiene la siguiente promocion activa : ${promotions.currentDeliveryPromotion.name}`);
+
+    console.log(`Te faltan ${promotions.nextPromotion.amountToReach} pesos para alcanzar la siguiente meta`)
+
+}
 ```
 

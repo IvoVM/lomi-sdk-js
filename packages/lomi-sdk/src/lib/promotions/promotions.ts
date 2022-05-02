@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { environment } from '../../environment/environment';
-import { cartPromotions } from '../../types/promotions/promotions';
+import { cartPromotions, Promotion, Rule } from '../../types/promotions/promotions';
 
 class Comparator{
     static use(prop:string) : Function {
@@ -34,19 +34,7 @@ export declare type PromotionsResponse = {
     promotions: Array<Promotion>
 }
 
-export declare type Promotion = {
-    catergory_name: string,
-    name: string,
-    actions : Array<any>
-    rules: Array<any>
-}
 
-export declare type Rule = {
-    amount_min : number,
-    amount_max : number,
-    operator_min : string,
-    operator_max : string
-}
 
 export declare type Cart = {
     total: string;
@@ -87,7 +75,7 @@ export class Promotions{
         })
     }
 
-    static async getPromotionsOfCart(cart:Cart, withBuffer = true) : Promise<Array<Object>>{
+    static async getPromotionsOfCart(cart:Cart, withBuffer = true) : Promise<Object>{
         if(!withBuffer || !Promotions.deliveryPromotions){
             Promotions.deliveryPromotions = await this.fetchDeliveryPromotions();
             Promotions.sortPromotionsByMaxAmountOfFirstRule();
@@ -106,11 +94,16 @@ export class Promotions{
                 }
             }
         }
-        const cartPromotions:cartPromotions = {
-            currentDeliveryPromotion : filteredPromos.length ? filteredPromos[0] : null,
-            nextPromotion: filteredPromos.length ? nextPromotion : Promotions.deliveryPromotions.promotions.length ? Promotions.deliveryPromotions.promotions[0] : null
+        nextPromotion = filteredPromos.length ? nextPromotion : Promotions.deliveryPromotions.promotions.length ? Promotions.deliveryPromotions.promotions[0] : null
+        if(nextPromotion){
+            nextPromotion.amountToReach = nextPromotion.rules[0].amount_min - parseInt(cart.total)
         }
-        return filteredPromos
+        const cartPromotions:cartPromotions = {
+            nextPromotion,
+            currentDeliveryPromotion : filteredPromos.length ? filteredPromos[0] : null,
+        }
+        console.log(cartPromotions, filteredPromos, Promotions.deliveryPromotions)
+        return cartPromotions
     }
 
 }

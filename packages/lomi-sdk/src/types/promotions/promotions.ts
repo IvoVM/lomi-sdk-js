@@ -1,5 +1,5 @@
 
-export declare type promotion = {
+export declare type Promotion = {
     actions?: Array<string>
     category_name?: string
     code?: number
@@ -8,19 +8,22 @@ export declare type promotion = {
     img?: string
     name: String
     path?: String
-    rules?: Array<rule>
+    rules: Array<Rule>
     starts_at?: Date
+
+    amountToReach?: number;
 }
 
-export declare type rule = {
-    amount_min : Number,
-    amount_max : Number,
+
+export declare type Rule = {
+    amount_min : number,
+    amount_max : number,
     operator_min : string,
     operator_max : string
 }
 
 export declare type cartPromotions = {
-    currentDeliveryPromotion : promotion | null
-    currentPromotions? : Array<promotion>
-    nextPromotion : promotion | null
+    currentDeliveryPromotion : Promotion | null
+    currentPromotions? : Array<Promotion>
+    nextPromotion : Promotion | null
 }
