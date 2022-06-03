@@ -1,11 +1,16 @@
 import { Promotions } from './promotions';
+import { changeClient } from '../lomi-sdk'
+
 
 describe('promotions',()=>{
     it('Should fetch delivery promotions', async ()=>{
+        changeClient('http://localhost:3000/')
         expect(await Promotions.fetchDeliveryPromotions())
         expect((await Promotions.getPromotionsOfCart(MOCK_CART.attributes)))
     })
 })
+
+
 
 const MOCK_CART = {
     "id": "1669058",

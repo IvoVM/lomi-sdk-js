@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { environment } from '../../environment/environment';
 import { cartPromotions, Promotion, Rule } from '../../types/promotions/promotions';
+import { clientUrl } from '../lomi-sdk';
 
 class Comparator{
     static use(prop:string) : Function {
@@ -45,17 +45,20 @@ export class Promotions{
     static deliveryPromotions:PromotionsResponse;
     
     static async  fetchAdvertisedPromotions(): Promise<Object> {
-        const lomiPromotions = await axios.get(environment.lomiApiV1+"/promotions");
+        const lomiPromotions = await axios.get(clientUrl+"api/v1/promotions");
         return lomiPromotions.data
       }
     
     static async fetchPromotionsByCategoryName( promotionCategoryName:string ): Promise<Object> {
-        const lomiPromotions = await axios.get(environment.lomiApiV1+"/promotions/availables?category="+promotionCategoryName)
+        const lomiPromotions = await axios.get(clientUrl+"api/v1/promotions/availables?category="+promotionCategoryName)
         return lomiPromotions.data
       }
 
     static async fetchDeliveryPromotions() : Promise<PromotionsResponse>{
         let deliveryPromotions:any = await this.fetchPromotionsByCategoryName('Delivery Fee')
+        deliveryPromotions.promotions = deliveryPromotions.promotions.filter((deliveryPromotion:Promotion)=>{
+            return (deliveryPromotion.rules.length && deliveryPromotion.rules[0].amount_max) && !(deliveryPromotion.expires_at && new Date(deliveryPromotion.expires_at).getTime() < new Date().getTime())
+        })
         return deliveryPromotions
     }
 

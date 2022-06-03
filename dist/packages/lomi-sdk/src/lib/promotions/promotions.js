@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Promotions = void 0;
-const tslib_1 = require("tslib");
-const axios_1 = require("axios");
-const environment_1 = require("../../environment/environment");
+import { __awaiter } from "tslib";
+import axios from 'axios';
+import { clientUrl } from '../lomi-sdk';
 class Comparator {
     static use(prop) {
         const context = this;
@@ -27,22 +24,25 @@ class Comparator {
         return leftValue <= rightValue;
     }
 }
-class Promotions {
+export class Promotions {
     static fetchAdvertisedPromotions() {
-        return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            const lomiPromotions = yield axios_1.default.get(environment_1.environment.lomiApiV1 + "/promotions");
+        return __awaiter(this, void 0, void 0, function* () {
+            const lomiPromotions = yield axios.get(clientUrl + "api/v1/promotions");
             return lomiPromotions.data;
         });
     }
     static fetchPromotionsByCategoryName(promotionCategoryName) {
-        return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            const lomiPromotions = yield axios_1.default.get(environment_1.environment.lomiApiV1 + "/promotions/availables?category=" + promotionCategoryName);
+        return __awaiter(this, void 0, void 0, function* () {
+            const lomiPromotions = yield axios.get(clientUrl + "api/v1/promotions/availables?category=" + promotionCategoryName);
             return lomiPromotions.data;
         });
     }
     static fetchDeliveryPromotions() {
-        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+        return __awaiter(this, void 0, void 0, function* () {
             let deliveryPromotions = yield this.fetchPromotionsByCategoryName('Delivery Fee');
+            deliveryPromotions.promotions = deliveryPromotions.promotions.filter((deliveryPromotion) => {
+                return (deliveryPromotion.rules.length && deliveryPromotion.rules[0].amount_max) && !(deliveryPromotion.expires_at && new Date(deliveryPromotion.expires_at).getTime() < new Date().getTime());
+            });
             return deliveryPromotions;
         });
     }
@@ -54,7 +54,7 @@ class Promotions {
         return true;
     }
     static sortPromotionsByMaxAmountOfFirstRule() {
-        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+        return __awaiter(this, void 0, void 0, function* () {
             Promotions.deliveryPromotions.promotions.sort((promotion1, promotion2) => {
                 const firstRule1 = promotion1.rules[0];
                 const firstRule2 = promotion2.rules[0];
@@ -63,7 +63,7 @@ class Promotions {
         });
     }
     static getPromotionsOfCart(cart, withBuffer = true) {
-        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+        return __awaiter(this, void 0, void 0, function* () {
             if (!withBuffer || !Promotions.deliveryPromotions) {
                 Promotions.deliveryPromotions = yield this.fetchDeliveryPromotions();
                 Promotions.sortPromotionsByMaxAmountOfFirstRule();
@@ -90,9 +90,9 @@ class Promotions {
                 nextPromotion,
                 currentDeliveryPromotion: filteredPromos.length ? filteredPromos[0] : null,
             };
+            console.log(cartPromotions, filteredPromos, Promotions.deliveryPromotions);
             return cartPromotions;
         });
     }
 }
-exports.Promotions = Promotions;
 //# sourceMappingURL=promotions.js.map

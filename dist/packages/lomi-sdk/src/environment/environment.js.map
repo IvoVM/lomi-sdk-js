@@ -1,1 +1,1 @@
-{"version":3,"file":"environment.js","sourceRoot":"","sources":["../../../../../packages/lomi-sdk/src/environment/environment.ts"],"names":[],"mappings":";;;AAAa,QAAA,WAAW,GAAG;IACvB,QAAQ,EAAG,iBAAiB;IAC5B,SAAS,EAAE,wBAAwB;IACnC,SAAS,EAAE,wBAAwB;CACtC,CAAA"}
+{"version":3,"file":"environment.js","sourceRoot":"","sources":["../../../../../packages/lomi-sdk/src/environment/environment.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,MAAM,WAAW,GAAG;IACvB,QAAQ,EAAG,iBAAiB;IAC5B,SAAS,EAAE,wBAAwB;IACnC,SAAS,EAAE,wBAAwB;CACtC,CAAA"}

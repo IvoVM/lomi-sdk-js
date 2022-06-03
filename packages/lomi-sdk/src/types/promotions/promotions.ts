@@ -4,7 +4,7 @@ export declare type Promotion = {
     category_name?: string
     code?: number
     description?: string
-    expires_at?: Date
+    expires_at?: string
     img?: string
     name: String
     path?: String
