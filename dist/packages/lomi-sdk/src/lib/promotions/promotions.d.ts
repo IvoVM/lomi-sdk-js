@@ -6,6 +6,7 @@ export declare type PromotionsResponse = {
 export declare type Cart = {
     total: string;
     display_total: string;
+    ship_total: string;
 };
 export declare class Promotions {
     static deliveryPromotions: PromotionsResponse;

@@ -12,7 +12,7 @@ Get all promotions avaible relationed to delivery and shipments
 ```Typescript
 import { Promotions } from '@lomii/lomi-sdk'
 
-Promotions.fetchDeliveryPromotions().then((promotions)=>{
+Promotions.getPromotionsOfCart(cart.data.attributes).then((promotions)=>{
     /**
      * {
      *  currentDeliveryPromotion: Promotion | Null if not reachead one

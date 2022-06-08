@@ -4,7 +4,7 @@ import { changeClient } from '../lomi-sdk'
 
 describe('promotions',()=>{
     it('Should fetch delivery promotions', async ()=>{
-        changeClient('http://localhost:3000/')
+        //changeClient('http://localhost:3000/')
         expect(await Promotions.fetchDeliveryPromotions())
         expect((await Promotions.getPromotionsOfCart(MOCK_CART.attributes)))
     })
@@ -18,8 +18,8 @@ const MOCK_CART = {
     "attributes": {
         "number": "R957388491",
         "item_total": "116253.0",
-        "total": "25692.0",
-        "ship_total": "0.0",
+        "total": "27692.0",
+        "ship_total": "1500.0",
         "adjustment_total": "-161.0",
         "created_at": "2022-04-19T17:54:16.540-04:00",
         "updated_at": "2022-04-19T21:14:57.062-04:00",

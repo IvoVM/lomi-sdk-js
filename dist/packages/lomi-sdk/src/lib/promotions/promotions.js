@@ -48,7 +48,7 @@ export class Promotions {
     }
     static validateRuleOverCart(cart, rule) {
         if (rule.operator_min && rule.operator_max) {
-            const cartTotal = parseInt(cart.total);
+            const cartTotal = +cart.total - +cart.ship_total;
             return Comparator.use(rule.operator_max)(cartTotal, rule.amount_max) && Comparator.use(rule.operator_min)(cartTotal, rule.amount_min);
         }
         return true;
@@ -84,13 +84,12 @@ export class Promotions {
             }
             nextPromotion = filteredPromos.length ? nextPromotion : Promotions.deliveryPromotions.promotions.length ? Promotions.deliveryPromotions.promotions[0] : null;
             if (nextPromotion) {
-                nextPromotion.amountToReach = nextPromotion.rules[0].amount_min - parseInt(cart.total);
+                nextPromotion.amountToReach = nextPromotion.rules[0].amount_min - +cart.total + +cart.ship_total;
             }
             const cartPromotions = {
                 nextPromotion,
                 currentDeliveryPromotion: filteredPromos.length ? filteredPromos[0] : null,
             };
-            console.log(cartPromotions, filteredPromos, Promotions.deliveryPromotions);
             return cartPromotions;
         });
     }

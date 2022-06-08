@@ -14,6 +14,5 @@ export class LomiPromotionsComponent implements OnInit {
 
   async ngOnInit(){
     this.promotions = await Promotions.fetchDeliveryPromotions()
-    console.log(this.promotions)
   }
 }
