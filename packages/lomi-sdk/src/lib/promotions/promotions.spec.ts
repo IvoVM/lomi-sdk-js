@@ -18,8 +18,8 @@ const MOCK_CART = {
     "attributes": {
         "number": "R957388491",
         "item_total": "116253.0",
-        "total": "27692.0",
-        "ship_total": "1500.0",
+        "total": "27492.0",
+        "ship_total": "1300.0",
         "adjustment_total": "-161.0",
         "created_at": "2022-04-19T17:54:16.540-04:00",
         "updated_at": "2022-04-19T21:14:57.062-04:00",

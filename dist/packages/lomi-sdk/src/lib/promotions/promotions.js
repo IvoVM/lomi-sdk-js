@@ -84,7 +84,7 @@ export class Promotions {
             }
             nextPromotion = filteredPromos.length ? nextPromotion : Promotions.deliveryPromotions.promotions.length ? Promotions.deliveryPromotions.promotions[0] : null;
             if (nextPromotion) {
-                nextPromotion.amountToReach = nextPromotion.rules[0].amount_min - +cart.total + +cart.ship_total;
+                nextPromotion.amountToReach = nextPromotion.rules[0].amount_min - (+cart.total - +cart.ship_total);
             }
             const cartPromotions = {
                 nextPromotion,

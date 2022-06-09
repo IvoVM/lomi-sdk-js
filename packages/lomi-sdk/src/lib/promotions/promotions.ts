@@ -65,7 +65,7 @@ export class Promotions{
 
     static validateRuleOverCart(cart:Cart,rule:Rule) : boolean{
         if(rule.operator_min && rule.operator_max){
-            const cartTotal:Number = +cart.total - +cart.ship_total
+            const cartTotal:Number = +cart.total
             return Comparator.use(rule.operator_max)(cartTotal, rule.amount_max) && Comparator.use(rule.operator_min)(cartTotal, rule.amount_min)
         }
         return true
@@ -100,7 +100,7 @@ export class Promotions{
         }
         nextPromotion = filteredPromos.length ? nextPromotion : Promotions.deliveryPromotions.promotions.length ? Promotions.deliveryPromotions.promotions[0] : null
         if(nextPromotion){
-            nextPromotion.amountToReach = nextPromotion.rules[0].amount_min - +cart.total + +cart.ship_total
+            nextPromotion.amountToReach = nextPromotion.rules[0].amount_min - +cart.total
         }
         const cartPromotions:cartPromotions = {
             nextPromotion,
