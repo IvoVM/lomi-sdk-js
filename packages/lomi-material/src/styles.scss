@@ -1,0 +1,56 @@
+@import './theme.scss';
+
+.p{
+  padding: 16px;
+}
+
+.flex-row{
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-column{
+  display: flex;
+  flex-direction: column;
+}
+
+.primary-color{
+  color: var(--primary-color)
+}
+
+mat-card{
+  &.hoverable{
+    opacity: 0.5;
+    transition: 0.3s ease;
+    &:hover{
+      cursor: pointer;
+      opacity: 1;
+    }
+  }
+  &.small{
+    width: 14em;
+    margin: 16px;
+  }
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+mat-toolbar{
+  position: relative;
+  z-index: 100;
+}
+
+body{
+  margin: 0 !important;
+  max-height: 100vh;
+  overflow: hidden;
+}
+
+.edit{
+  margin-left:1em;
+  color: var(--primary-color);
+  fill: var(--primary-color);
+  &:hover{
+    cursor: pointer;
+  }
+}

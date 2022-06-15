@@ -1,0 +1,12 @@
+<div class="flex-row">
+    <mat-card *ngFor="let recipe of recipes" [routerLink]="['/recipes/'+recipe.title]" class="small hoverable">
+        <mat-card-title class="primary-color">{{recipe.title}}</mat-card-title>
+        <img style="filter: grayscale(0.6);" mat-card-image src="{{recipe.img? recipe.img : 'assets/images/recipe.png'}}" alt="Photo of a Shiba Inu">
+        <p>{{recipe.description}}</p>
+    </mat-card>
+    <mat-card class="small hoverable" [routerLink]="['/recipes/new']">
+        <mat-card-title class="primary-color">Nueva receta 🥘</mat-card-title>
+        <img style="filter: grayscale(0.6);" mat-card-image src="assets/images/recipe.png" alt="Photo of a Shiba Inu">
+        <p>Crea una nueva lomi receta aqui!</p>
+    </mat-card>
+</div>

@@ -1,0 +1,34 @@
+{
+  "root": "packages/lomi-material-e2e",
+  "sourceRoot": "packages/lomi-material-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "packages/lomi-material-e2e/cypress.json",
+        "devServerTarget": "lomi-material:serve:development"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "lomi-material:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "packages/lomi-material-e2e/**/*.{js,ts}"
+        ]
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": [
+    "lomi-material"
+  ]
+}

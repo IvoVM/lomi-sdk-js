@@ -1,0 +1,19 @@
+.content{
+    width: 60vw;
+}
+
+.image{
+    width: 40vw;
+    height: calc(100vh);
+    img{
+        z-index: -1;
+        height: 100%;
+        width: auto;
+        filter: contrast(0.4);
+        position: absolute;
+        top: 0;
+    }
+    mat-card{
+        margin: 12px;
+    }
+}

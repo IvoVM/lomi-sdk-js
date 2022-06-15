@@ -1,0 +1,68 @@
+<div class="flex-row">
+    <div class="content" style="padding-right:2em">
+
+
+        <div *ngIf="recipe.title" class="flex-column">
+            <div class="flex-row">
+                <h1>{{recipe.title}}</h1>
+                <mat-icon class="edit" (click)="recipe.title = ''">edit</mat-icon>
+            </div>
+        </div>
+        <div *ngIf="!recipe.title" class="flex-column">
+            <div class="flex-row">
+                <mat-form-field class="example-form-field" appearance="fill">
+                    <mat-label>Titulo</mat-label>
+                    <input (keydown.enter)="setTitle($event)" matInput type="text" >
+                    <button *ngIf="recipe.title" matSuffix mat-icon-button aria-label="Clear" (click)="keyword=''">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div *ngIf="recipe.description" class="flex-column">
+            <div class="flex-row">
+                <h1>{{recipe.description}}</h1>
+                <mat-icon class="edit" (click)="recipe.description = ''">edit</mat-icon>
+            </div>
+        </div>
+        <div *ngIf="!recipe.description" class="flex-column">
+            <div class="flex-row">
+                <mat-form-field class="example-form-field" appearance="fill">
+                    <mat-label>Descripcion</mat-label>
+                    <input (keydown.enter)="setDescription($event)" matInput type="text" >
+                    <button *ngIf="recipe.title" matSuffix mat-icon-button aria-label="Clear" (click)="keyword=''">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div class="flex-column">
+            <mat-form-field class="example-form-field" appearance="fill">
+                <mat-label>Buscador de ingredientes lomi</mat-label>
+                <input (keypress)="searchProducts()" matInput type="text" [(ngModel)]="keyword">
+                <button *ngIf="keyword" matSuffix mat-icon-button aria-label="Clear" (click)="keyword=''">
+                  <mat-icon>close</mat-icon>
+                </button>
+            </mat-form-field>
+            <div *ngFor="let product of products.data"> 
+                <mat-card style="width: 60%" class="hoverable">
+                    <mat-card-title (click)="addIngredient(product)">
+                        {{product.attributes.name}}      
+                    </mat-card-title>
+                </mat-card>
+            </div>
+        </div>
+    </div>
+    <div class="image">
+        <div *ngFor="let product of recipe.ingredients">
+            <mat-card>
+                <mat-card-title>
+                    {{product.attributes.name}}      
+                </mat-card-title>
+            </mat-card>
+        </div>
+        <img src="{{recipe.img}}">
+    </div>
+</div>

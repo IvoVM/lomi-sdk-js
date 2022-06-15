@@ -1,11 +1,5 @@
-# lomi-material
+# Lomi Material
 
-This library was generated with [Nx](https://nx.dev).
+Lomi material is intended to be a workspace that would help to do a fast deliver of MVP content
 
-## Running unit tests
-
-Run `nx test lomi-material` to execute the unit tests via [Jest](https://jestjs.io).
-
-## Running lint
-
-Run `nx lint lomi-material` to execute the lint via [ESLint](https://eslint.org/).
+## V0.0.1 ( MVP Encuestas )

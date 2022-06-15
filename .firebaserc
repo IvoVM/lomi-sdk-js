@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "lomi-35ab6": {
+      "hosting": {
+        "lomi-material": [
+          "lomi-material"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "lomi-35ab6"
+  }
+}

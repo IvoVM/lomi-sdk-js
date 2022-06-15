@@ -6,7 +6,9 @@
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:browser",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/packages/lomi-docs",
         "index": "packages/lomi-docs/src/index.html",
@@ -18,7 +20,9 @@
           "packages/lomi-docs/src/favicon.ico",
           "packages/lomi-docs/src/assets"
         ],
-        "styles": ["packages/lomi-docs/src/styles.scss"],
+        "styles": [
+          "packages/lomi-docs/src/styles.scss"
+        ],
         "scripts": []
       },
       "configurations": {
@@ -83,7 +87,9 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/lomi-docs"],
+      "outputs": [
+        "coverage/packages/lomi-docs"
+      ],
       "options": {
         "jestConfig": "packages/lomi-docs/jest.config.ts",
         "passWithNoTests": true
