@@ -7,6 +7,12 @@ import { Recipe } from 'packages/lomi-material/types/recipes';
 import { Observable } from 'rxjs';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import 'firebase/firestore';
+import { initializeApp } from "firebase/app";
+import { getStorage } from "firebase/storage";
+import { environment } from 'packages/lomi-material/src/environments/environment';
+import { AngularFireStorage } from '@angular/fire/compat/storage';
+const firebaseApp = initializeApp(environment.firebase);
+const storage = getStorage(firebaseApp);
 
 @Component({
   selector: 'lomii-recipe',
@@ -19,12 +25,18 @@ export class RecipeComponent implements OnInit, OnDestroy {
   public keyword: any = "";
   public products:any = {};
   public ingredients:any = []
+  public editingDescription:boolean = false;
+
+  //Just while developing
+  public images:any = []
+  //
 
   public recipe:Recipe = {
     title : "",
     description : "",
     img: "",
-    ingredients: []
+    ingredients: [],
+    images: []
   };
 
   setTitle(event:any){
@@ -42,7 +54,8 @@ export class RecipeComponent implements OnInit, OnDestroy {
   constructor(
     private firestore: Firestore,
     private route: ActivatedRoute,
-    private productsService: ProductsService
+    private productsService: ProductsService,
+    private angularFireStorage: AngularFireStorage
   ) {}
 
   ngOnInit(): void {
@@ -54,6 +67,22 @@ export class RecipeComponent implements OnInit, OnDestroy {
       this.listenToRecipe()
       this.updateDocument();
     })
+  }
+
+  onImageDropped(event:any){
+    for (const file of event){
+      this.images.push(file)
+      const filePath = "recetas/"+this.recipe.title + "-" + this.images.length 
+      const fileRef = this.angularFireStorage.ref(filePath)
+      const  task = fileRef.put(file)
+      task.then((taskSnapshot)=>{
+        console.log(taskSnapshot.metadata)
+        console.log(fileRef.getDownloadURL().subscribe((url)=>{
+          this.recipe.images ? this.recipe.images.push(url) : this.recipe.images = [url]
+          this.updateDocument()
+        }))
+      })
+    }
   }
 
   updateDocument(){

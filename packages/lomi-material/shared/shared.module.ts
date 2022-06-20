@@ -10,9 +10,15 @@ import { provideFirebaseApp, getApp, initializeApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { environment } from '../src/environments/environment';
 import {MatDialogModule} from '@angular/material/dialog';
+import {MatButtonModule} from '@angular/material/button';
+import { QuillModule } from 'ngx-quill'
+import { DragNDropDirective } from '../directivess/drag-n-drop.directive';
+import { AngularFireStorageModule } from '@angular/fire/compat/storage';
+import { AngularFireModule } from '@angular/fire/compat';
 
 @NgModule({
   declarations: [
+    DragNDropDirective
   ],
   imports: [
     CommonModule,
@@ -22,19 +28,26 @@ import {MatDialogModule} from '@angular/material/dialog';
     MatInputModule,
     MatIconModule,
     FormsModule,
+    MatButtonModule,
     MatDialogModule,
+    QuillModule.forRoot(),
+    AngularFireModule.initializeApp(environment.firebase),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideFirestore(() => getFirestore()),
+    AngularFireStorageModule
   ],
   exports: [
     MatCardModule,
     MatGridListModule,
     RoutingModule,
     MatInputModule,
+    MatButtonModule,
     MatIconModule,
     FormsModule,
-    MatDialogModule
-
+    MatDialogModule,
+    QuillModule,
+    DragNDropDirective,
+    AngularFireStorageModule
   ]
 })
 export class SharedModule { }

@@ -1,13 +1,33 @@
 <div class="flex-row">
     <div class="content" style="padding-right:2em">
 
+        <ng-container *ngIf="recipe.title"> <!-- Titulo -->
+            <div style="width:100%;display: flex;justify-content: space-between;">
+                <div class="flex-column">
+                    <div class="flex-row">
+                        <h1 style="margin:0"><b>{{recipe.title}}</b></h1>
+                    </div>
+                </div>
+                <button mat-button (click)="recipe.title = ''" color="primary" aria-label="Example icon button with a delete icon">
+                    Editar titulo <mat-icon >edit</mat-icon>
+                  </button>
+            </div>
+            <div class="divider"></div>
+        </ng-container>
 
-        <div *ngIf="recipe.title" class="flex-column">
-            <div class="flex-row">
-                <h1>{{recipe.title}}</h1>
-                <mat-icon class="edit" (click)="recipe.title = ''">edit</mat-icon>
+        <h2><b>IMAGENES</b></h2>
+        <div class="firestore-images">
+            <ng-container *ngIf="recipe.images">
+                <img class="mini-image" *ngFor="let image of recipe.images" [src]="image">
+            </ng-container>
+
+            <div (fileDropped)="onImageDropped($event)" drag-n-drop class="drag-n-drop">
+                <h1 style="margin: 0;"><b>Subir imágen</b></h1><mat-icon style="margin-left:1em" >image</mat-icon>
             </div>
         </div>
+        <div class="divider"></div>
+
+        
         <div *ngIf="!recipe.title" class="flex-column">
             <div class="flex-row">
                 <mat-form-field class="example-form-field" appearance="fill">
@@ -19,48 +39,51 @@
                 </mat-form-field>
             </div>
         </div>
-
-        <div *ngIf="recipe.description" class="flex-column">
+        <div style="width:100%;display: flex;justify-content: space-between;">
+            <h2 style="margin:0 0 16px 0"><b>LOMI RECETA</b></h2>
+            <button mat-button (click)="updateDocument();editingDescription = !editingDescription" color="primary" aria-label="Example icon button with a delete icon">
+                {{ !editingDescription ? 'Editar receta' : 'Finalizar edición' }} <mat-icon >edit</mat-icon>
+              </button>
+        </div>
+        <div *ngIf="!editingDescription" class="flex-column">
             <div class="flex-row">
-                <h1>{{recipe.description}}</h1>
-                <mat-icon class="edit" (click)="recipe.description = ''">edit</mat-icon>
+                <span [innerHtml]="recipe.description"></span>
             </div>
         </div>
-        <div *ngIf="!recipe.description" class="flex-column">
-            <div class="flex-row">
+        <div *ngIf="editingDescription" class="flex-column">
+            <div style="height:300px;padding-bottom: 112px;">
+                <quill-editor [(ngModel)]="recipe.description" ></quill-editor>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <div class="{{keyword? 'translated' : ''}} ingredients-container">
+            <h2>BUSCADOR DE INGREDIENTES</h2>
+            <div class="flex-column">
                 <mat-form-field class="example-form-field" appearance="fill">
-                    <mat-label>Descripcion</mat-label>
-                    <input (keydown.enter)="setDescription($event)" matInput type="text" >
-                    <button *ngIf="recipe.title" matSuffix mat-icon-button aria-label="Clear" (click)="keyword=''">
-                        <mat-icon>close</mat-icon>
+                    <mat-label>Buscador de ingredientes lomi</mat-label>
+                    <input (keypress)="searchProducts()" matInput type="text" [(ngModel)]="keyword">
+                    <button *ngIf="keyword" matSuffix mat-icon-button aria-label="Clear" (click)="keyword=''">
+                      <mat-icon>close</mat-icon>
                     </button>
                 </mat-form-field>
-            </div>
-        </div>
-
-        <div class="flex-column">
-            <mat-form-field class="example-form-field" appearance="fill">
-                <mat-label>Buscador de ingredientes lomi</mat-label>
-                <input (keypress)="searchProducts()" matInput type="text" [(ngModel)]="keyword">
-                <button *ngIf="keyword" matSuffix mat-icon-button aria-label="Clear" (click)="keyword=''">
-                  <mat-icon>close</mat-icon>
-                </button>
-            </mat-form-field>
-            <div *ngFor="let product of products.data"> 
-                <mat-card style="width: 60%" class="hoverable">
-                    <mat-card-title (click)="addIngredient(product)">
-                        {{product.attributes.name}}      
-                    </mat-card-title>
-                </mat-card>
+                <div *ngFor="let product of products.data"> 
+                    <mat-card class="hoverable" (click)="addIngredient(product)">
+                        <p>{{product.attributes.name}}      </p>
+                    </mat-card>
+                </div>
             </div>
         </div>
     </div>
     <div class="image">
+        <div class="accent-bg p-l" >
+
+            <h2>INGREDIENTES</h2>
+        </div>
         <div *ngFor="let product of recipe.ingredients">
             <mat-card>
-                <mat-card-title>
+                <p>
                     {{product.attributes.name}}      
-                </mat-card-title>
+                </p>
             </mat-card>
         </div>
         <img src="{{recipe.img}}">

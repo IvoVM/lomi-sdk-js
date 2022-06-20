@@ -21,9 +21,14 @@
           "packages/lomi-material/src/assets"
         ],
         "styles": [
-          "packages/lomi-material/src/styles.scss"
+          "packages/lomi-material/src/styles.scss",
+          "./node_modules/quill/dist/quill.bubble.css",
+          "./node_modules/quill/dist/quill.snow.css",
+          "./node_modules/quill/dist/quill.core.css"
         ],
-        "scripts": []
+        "scripts": [
+          "./node_modules/quill/dist/quill.js"
+        ]
       },
       "configurations": {
         "production": {

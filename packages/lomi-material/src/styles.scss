@@ -2,6 +2,12 @@
 
 .p{
   padding: 16px;
+  &-t{
+    padding-top: 16px;
+  }
+  &-l{
+    padding-left: 16px;
+  }
 }
 
 .flex-row{
@@ -16,6 +22,11 @@
 
 .primary-color{
   color: var(--primary-color)
+}
+
+.accent-bg{
+  background: var(--accent-color);
+  color: white;
 }
 
 mat-card{
@@ -53,4 +64,49 @@ body{
   &:hover{
     cursor: pointer;
   }
+}
+
+mat-form-field{
+  width: 100%;
+}
+
+.divider{
+  width: 100%;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--primary-color);
+  margin-bottom: 12px;
+}
+
+.translated{
+  border-radius: 15px 15px 0 0;
+  transform: translateY(-200px);
+  padding: 12px;
+  box-shadow: -4px -4px 4px 0px rgb(0 0 0 / 10%) !important;
+}
+
+.drag-n-drop{
+  width: 100%;
+  height: 8em;
+  border-radius: 15px;
+  background-color: var(--accent-color);
+  border: 1px solid var(--accent-color);
+  color: white !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0.7;
+  transition: 0.4s ease;
+  box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.1);
+  &:hover{
+    opacity: 1;
+    box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.2);
+  }
+}
+
+.mini-image{
+  max-height: 64px;
+  width: auto;
+  margin: 8px;
+  border-radius: 16px;
+  box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.1)
 }
