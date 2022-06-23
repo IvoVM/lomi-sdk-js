@@ -4,4 +4,6 @@ export type Recipe = {
     title: string
     img: string
     images: Array<any>
+    persons?: number
+    time?: number
 }

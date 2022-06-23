@@ -1,5 +1,16 @@
 <div class="flex-row">
     <div class="content" style="padding-right:2em">
+        <div *ngIf="!recipe.title" class="flex-column">
+            <div class="flex-row">
+                <mat-form-field class="example-form-field" appearance="fill">
+                    <mat-label>Titulo</mat-label>
+                    <input (keydown.enter)="setTitle($event)" matInput type="text" >
+                    <button *ngIf="recipe.title" matSuffix mat-icon-button aria-label="Clear" (click)="keyword=''">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </mat-form-field>
+            </div>
+        </div>
 
         <ng-container *ngIf="recipe.title"> <!-- Titulo -->
             <div style="width:100%;display: flex;justify-content: space-between;">
@@ -15,48 +26,42 @@
             <div class="divider"></div>
         </ng-container>
 
+        <div>
+            <mat-form-field style="width:10em" class="Personas" appearance="fill">
+                <mat-label>Personas</mat-label>
+                <input [(ngModel)]="recipe.persons" (keydown.enter)="updateDocument()" matInput type="text" >
+                <button  *ngIf="recipe.title" matSuffix mat-icon-button aria-label="Clear" (click)="keyword=''">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </mat-form-field>
+
+            <mat-form-field style="width:10em;margin-left:12px" class="Personas" appearance="fill">
+                <mat-label>Tiempo de preparación</mat-label>
+                <input  [(ngModel)]="recipe.time" (keydown.enter)="updateDocument()" matInput type="number" >
+                <button *ngIf="recipe.title" matSuffix mat-icon-button aria-label="Clear" (click)="keyword=''">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </mat-form-field>
+        </div>
+
+
         <h2><b>IMAGENES</b></h2>
         <div class="firestore-images">
             <ng-container *ngIf="recipe.images">
-                <img class="mini-image" *ngFor="let image of recipe.images" [src]="image">
+                <div  *ngFor="let image of recipe.images">
+                    <img class="mini-image"  [src]="image">
+                </div>
             </ng-container>
 
             <div (fileDropped)="onImageDropped($event)" drag-n-drop class="drag-n-drop">
-                <h1 style="margin: 0;"><b>Subir imágen</b></h1><mat-icon style="margin-left:1em" >image</mat-icon>
+                <h3 style="margin: 0;">Subir imágen</h3><mat-icon >image</mat-icon>
             </div>
         </div>
         <div class="divider"></div>
 
         
-        <div *ngIf="!recipe.title" class="flex-column">
-            <div class="flex-row">
-                <mat-form-field class="example-form-field" appearance="fill">
-                    <mat-label>Titulo</mat-label>
-                    <input (keydown.enter)="setTitle($event)" matInput type="text" >
-                    <button *ngIf="recipe.title" matSuffix mat-icon-button aria-label="Clear" (click)="keyword=''">
-                        <mat-icon>close</mat-icon>
-                    </button>
-                </mat-form-field>
-            </div>
-        </div>
-        <div style="width:100%;display: flex;justify-content: space-between;">
-            <h2 style="margin:0 0 16px 0"><b>LOMI RECETA</b></h2>
-            <button mat-button (click)="updateDocument();editingDescription = !editingDescription" color="primary" aria-label="Example icon button with a delete icon">
-                {{ !editingDescription ? 'Editar receta' : 'Finalizar edición' }} <mat-icon >edit</mat-icon>
-              </button>
-        </div>
-        <div *ngIf="!editingDescription" class="flex-column">
-            <div class="flex-row">
-                <span [innerHtml]="recipe.description"></span>
-            </div>
-        </div>
-        <div *ngIf="editingDescription" class="flex-column">
-            <div style="height:300px;padding-bottom: 112px;">
-                <quill-editor [(ngModel)]="recipe.description" ></quill-editor>
-            </div>
-        </div>
-        <div class="divider"></div>
-        <div class="{{keyword? 'translated' : ''}} ingredients-container">
+
+        <div class="ingredients-container" style="padding-bottom: 6em;">
             <h2>BUSCADOR DE INGREDIENTES</h2>
             <div class="flex-column">
                 <mat-form-field class="example-form-field" appearance="fill">
@@ -73,8 +78,27 @@
                 </div>
             </div>
         </div>
+      
+        <div style="width:100%;display: flex;justify-content: space-between;">
+            <h2 style="margin:0 0 16px 0"><b>LOMI RECETA</b></h2>
+            <button mat-button (click)="updateDocument();editingDescription = !editingDescription" color="primary" aria-label="Example icon button with a delete icon">
+                {{ !editingDescription ? 'Editar receta' : 'Finalizar edición' }} <mat-icon >edit</mat-icon>
+              </button>
+        </div>
+        <div *ngIf="!editingDescription" class="flex-column">
+            <div class="flex-row">
+                <p [innerHtml]="recipe.description"></p>
+            </div>
+        </div>
+        <div *ngIf="editingDescription" class="flex-column">
+            <div style="height:300px;padding-bottom: 112px;">
+                <quill-editor [(ngModel)]="recipe.description" ></quill-editor>
+            </div>
+        </div>
+        <div class="divider"></div>
+        
     </div>
-    <div class="image">
+    <div class="image" style="position: fixed;right: 0; width: 450px;margin-top: -3em;">
         <div class="accent-bg p-l" >
 
             <h2>INGREDIENTES</h2>
@@ -86,6 +110,6 @@
                 </p>
             </mat-card>
         </div>
-        <img src="{{recipe.img}}">
+        <img *ngIf="recipe.images" src="{{recipe.images[0]}}">
     </div>
 </div>

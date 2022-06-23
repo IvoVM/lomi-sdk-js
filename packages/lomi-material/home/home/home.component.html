@@ -1,12 +1,15 @@
-<div class="flex-row">
+<button style="width:calc(100% - 24px);margin: 0 12px;" [routerLink]="['/recipes/new']" mat-raised-button mat-button color="primary">
+    Nueva receta
+</button>
+<div class="flex-row" style="flex-wrap: wrap;">
     <mat-card *ngFor="let recipe of recipes" [routerLink]="['/recipes/'+recipe.title]" class="small hoverable">
-        <mat-card-title class="primary-color">{{recipe.title}}</mat-card-title>
-        <img style="filter: grayscale(0.6);" mat-card-image src="{{recipe.img? recipe.img : 'assets/images/recipe.png'}}" alt="Photo of a Shiba Inu">
-        <p>{{recipe.description}}</p>
-    </mat-card>
-    <mat-card class="small hoverable" [routerLink]="['/recipes/new']">
-        <mat-card-title class="primary-color">Nueva receta 🥘</mat-card-title>
-        <img style="filter: grayscale(0.6);" mat-card-image src="assets/images/recipe.png" alt="Photo of a Shiba Inu">
-        <p>Crea una nueva lomi receta aqui!</p>
+        <mat-card-title class="primary-color" style="font-size:0.9em;width:96px;height:1.75em;white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">{{recipe.title}}</mat-card-title>
+        <img style="filter: grayscale(0.6);" mat-card-image src="{{recipe.images? recipe.images[0] : 'assets/images/recipe.png'}}" alt="Photo of a Shiba Inu">
+        <div class="info">
+            <mat-icon>person</mat-icon><p>{{recipe.persons ? recipe.persons : '?'}}</p>
+        </div>
+        <div class="info">
+            <mat-icon>schedule</mat-icon><p>{{recipe.time ? recipe.time : '?'}}</p>
+        </div>
     </mat-card>
 </div>
