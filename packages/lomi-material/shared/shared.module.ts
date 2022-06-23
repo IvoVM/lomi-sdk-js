@@ -15,10 +15,14 @@ import { QuillModule } from 'ngx-quill'
 import { DragNDropDirective } from '../directivess/drag-n-drop.directive';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
+import { MenuComponent } from './components/menu/menu.component'
+import {MatSidenavModule} from '@angular/material/sidenav';
 
 @NgModule({
   declarations: [
-    DragNDropDirective
+    DragNDropDirective,
+    MenuComponent
   ],
   imports: [
     CommonModule,
@@ -27,6 +31,7 @@ import { AngularFireModule } from '@angular/fire/compat';
     RoutingModule,
     MatInputModule,
     MatIconModule,
+    MatSidenavModule,
     FormsModule,
     MatButtonModule,
     MatDialogModule,
@@ -34,7 +39,9 @@ import { AngularFireModule } from '@angular/fire/compat';
     AngularFireModule.initializeApp(environment.firebase),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideFirestore(() => getFirestore()),
-    AngularFireStorageModule
+    AngularFireStorageModule,
+    AngularFireDatabaseModule,
+    
   ],
   exports: [
     MatCardModule,
@@ -43,11 +50,13 @@ import { AngularFireModule } from '@angular/fire/compat';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
+    MatSidenavModule,
     FormsModule,
     MatDialogModule,
     QuillModule,
     DragNDropDirective,
-    AngularFireStorageModule
+    AngularFireStorageModule,
+    MenuComponent
   ]
 })
 export class SharedModule { }

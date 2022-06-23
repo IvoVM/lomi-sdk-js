@@ -4,7 +4,9 @@ import { RecipeComponent } from 'packages/lomi-material/home/components/recipe/r
 import { HomeComponent } from 'packages/lomi-material/home/home/home.component';
 
 const routes: Routes = [
-  {path : '', component : HomeComponent },
+  {path : '', redirectTo: '/dashboard', pathMatch: "full" },
+  {path: 'dashboard', component: HomeComponent},
+  {path: 'recipes', component: HomeComponent},
   {path: 'recipes/new', component: RecipeComponent},
   {path: 'recipes/:recipeTitle', component: RecipeComponent}
 ];

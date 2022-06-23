@@ -15,7 +15,8 @@ export class HomeComponent implements OnInit {
   
   constructor(
     private firestore:FirestoreService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.firestore.recipes$.subscribe((recipes:any)=>{

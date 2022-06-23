@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "postinstall": "ngcc --properties es2015 browser module main"
+    "postinstall": "ngcc --properties es2015 browser module main",
+    "build": "nx build lomi-material"
   },
   "dependencies": {
     "@angular/animations": "~13.3.0",
@@ -23,6 +24,7 @@
     "axios": "^0.26.1",
     "firebase": "^9.8.2",
     "ngx-quill": "^16.2.1",
+    "pg": "^8.7.3",
     "rxjs": "~7.4.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.4"
