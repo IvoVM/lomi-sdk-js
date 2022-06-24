@@ -131,3 +131,26 @@ mat-form-field{
   display: flex;
   justify-content: space-between;
 }
+
+.ingredient{
+  width: 40em;
+  display: flex;
+  justify-content: space-between;
+  mat-form-field{
+    width: 4em;
+  }
+  h6{
+    width: 3em;
+    text-align: center;
+  }
+  p{
+    width: 32em;
+  }
+  mat-icon{
+    &:hover{
+      cursor: pointer;
+      fill: red;
+      color: red;
+    }
+  }
+}

@@ -11,6 +11,7 @@ import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
 import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 import { SharedModule } from 'packages/lomi-material/shared/shared.module';
+import { OrdersModule } from 'packages/lomi-material/orders/orders.module';
 
 @NgModule({
   declarations: [AppComponent, NxWelcomeComponent],
@@ -20,7 +21,7 @@ import { SharedModule } from 'packages/lomi-material/shared/shared.module';
     RouterModule.forRoot([], { initialNavigation: 'enabledBlocking' }),
     BrowserAnimationsModule,
     HomeModule,
-
+    OrdersModule,
     SharedModule
   ],
   providers: [],

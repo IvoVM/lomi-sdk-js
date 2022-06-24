@@ -14,16 +14,22 @@
   "storage": {
     "rules": "storage.rules"
   },
+  "database": {
+    "rules": "database.rules.json"
+  },
   "functions": {
     "predeploy": "npm --prefix \"$RESOURCE_DIR\" run build",
     "source": "functions"
   },
   "emulators": {
     "functions": {
-      "port": 5001
+      "port": 3000
     },
     "firestore": {
       "port": 8080
+    },
+    "database": {
+      "port": 3001
     },
     "hosting": {
       "port": 5000
@@ -33,6 +39,9 @@
     },
     "ui": {
       "enabled": true
+    },
+    "pubsub": {
+      "port": 8085
     }
   }
 }

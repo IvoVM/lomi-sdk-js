@@ -99,7 +99,16 @@ export class RecipeComponent implements OnInit, OnDestroy {
     })
   }
 
+  deleteIngredient(ingredient:any){
+    const ingredientIndex = this.recipe.ingredients.findIndex((ingredientToFind)=>{
+      return ingredientToFind.id == ingredient.id
+    })
+    this.recipe.ingredients.splice(ingredientIndex,1)
+    this.updateDocument()
+  }
+
   addIngredient(ingredient:any){
+    ingredient.quantity = 1
     this.recipe.ingredients.push(ingredient)
     const index = this.products.data.findIndex((product:any)=>{
       return product.id == ingredient.id

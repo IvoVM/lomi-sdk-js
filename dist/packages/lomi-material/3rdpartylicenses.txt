@@ -196,6 +196,8 @@ firebase/remote-config
 
 firebase/storage
 
+functions
+
 idb
 ISC
 ISC License (ISC)

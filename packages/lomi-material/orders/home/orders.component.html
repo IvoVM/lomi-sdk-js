@@ -1,0 +1,24 @@
+<mat-drawer-container class="example-container" autosize>
+
+    <mat-drawer #drawer opened class="actions-sidenav" mode="side" style="width:300px" position="end">
+
+    </mat-drawer>
+
+    <div class="example-sidenav-content p">
+        <h1>Ordenes</h1>
+        <ng-container *ngFor="let order of ordersProvider.orders">
+            <div class="order" [routerLink]="['/orders/'+order.order.number]">
+                <p>{{order.order.number}}</p>
+                <p>{{order.order.journey_state}}</p>
+                <img *ngIf="false && order.order.journey_state && order.order.journey_state != 'withdrawaled'" src="assets/images/cabify.png">
+                <img *ngIf="false && order.order.journey_state && order.order.journey_state == 'withdrawaled'" src="assets/images/lomi.svg">
+        
+                <p>{{order.ship_address.address1}}</p>
+            </div>
+            <div class="divider"></div>
+        </ng-container>
+        <div class="divider"></div>
+
+    </div>
+
+</mat-drawer-container>
