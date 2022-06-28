@@ -1,29 +1,27 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {MatCardModule} from '@angular/material/card';
-import {MatGridListModule} from '@angular/material/grid-list';
+import { MatCardModule } from '@angular/material/card';
+import { MatGridListModule } from '@angular/material/grid-list';
 import { RoutingModule } from '../src/app/app-routing.module';
-import {MatInputModule} from '@angular/material/input';
-import {MatIconModule} from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { provideFirebaseApp, getApp, initializeApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { environment } from '../src/environments/environment';
-import {MatDialogModule} from '@angular/material/dialog';
-import {MatButtonModule} from '@angular/material/button';
-import { QuillModule } from 'ngx-quill'
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { QuillModule } from 'ngx-quill';
 import { DragNDropDirective } from '../directivess/drag-n-drop.directive';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
-import { MenuComponent } from './components/menu/menu.component'
-import {MatSidenavModule} from '@angular/material/sidenav';
+import { MenuComponent } from './components/menu/menu.component';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { AuthComponent } from './auth/auth.component';
 
 @NgModule({
-  declarations: [
-    DragNDropDirective,
-    MenuComponent
-  ],
+  declarations: [DragNDropDirective, MenuComponent, AuthComponent],
   imports: [
     CommonModule,
     MatCardModule,
@@ -41,9 +39,8 @@ import {MatSidenavModule} from '@angular/material/sidenav';
     provideFirestore(() => getFirestore()),
     AngularFireStorageModule,
     AngularFireDatabaseModule,
-    
   ],
-  exports: [
+  exports: [
     MatCardModule,
     MatGridListModule,
     RoutingModule,
@@ -56,7 +53,7 @@ import {MatSidenavModule} from '@angular/material/sidenav';
     QuillModule,
     DragNDropDirective,
     AngularFireStorageModule,
-    MenuComponent
-  ]
+    MenuComponent,
+  ],
 })
-export class SharedModule { }
+export class SharedModule {}
