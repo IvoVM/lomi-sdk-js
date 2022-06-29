@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { AuthService } from 'packages/lomi-material/providers/lomi/auth.service';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -7,12 +8,15 @@ import { Observable } from 'rxjs';
 })
 export class AuthGuard implements CanActivate {
 
-  signedIn = false;
+  constructor(private router: Router, public auth:AuthService) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    return this.signedIn
+      if(!this.auth.signedIn){
+        this.router.navigateByUrl("auth")
+      }
+      return this.auth.signedIn
   }
   
 }

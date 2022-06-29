@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { collectionData, Firestore } from '@angular/fire/firestore';
-import { collection } from 'firebase/firestore';
-import { OrdersService } from 'packages/lomi-material/providers/lomi/orders.service';
-import { FirestoreService } from 'packages/lomi-material/src/providers/firestore.service';
-import { Recipe } from 'packages/lomi-material/types/recipes';
-import { throwIfEmpty } from 'rxjs';
+import { OrdersService } from '../../providers/lomi/orders.service';
+import { FirestoreService } from '../..//src/providers/firestore.service';
+import { Recipe } from '../..//types/recipes';
 
 @Component({
   selector: 'lomii-orders',

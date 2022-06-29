@@ -1,1 +1,29 @@
-<p>auth works!</p>
+<div class="auth-container">
+    <div class="layout">
+        <img src="assets/images/lomi.svg">
+        <h1 style="padding-top:1em;margin-bottom: 1em;">¿ Quien eres ?</h1>
+        <ng-container *ngIf="false">
+            <mat-form-field class="example-form-field" appearance="fill">
+                <mat-label>Usuario o Correo</mat-label>
+                <input matInput type="text" >
+                <button matSuffix mat-icon-button aria-label="Clear" >
+                <mat-icon>close</mat-icon>
+                </button>
+            </mat-form-field>
+
+            <mat-form-field class="example-form-field" appearance="fill">
+                <mat-label>Contraseña</mat-label>
+                <input matInput type="password" >
+                <button matSuffix mat-icon-button aria-label="Clear" >
+                <mat-icon>close</mat-icon>
+                </button>
+            </mat-form-field>
+
+            <div style="display: flex;justify-content: space-between;width: 100%;">
+                <button mat-button>Crear cuenta</button>
+                <button mat-button>Siguiente</button>
+            </div>
+        </ng-container>
+        <button mat-button (click)="auth.loginWithGoogle()"><img src="assets/images/google-g.png">Iniciar sesión con Google</button>
+    </div>
+</div>

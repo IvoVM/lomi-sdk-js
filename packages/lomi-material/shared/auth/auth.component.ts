@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from '../../providers/lomi/auth.service';
 
 @Component({
   selector: 'lomii-auth',
@@ -6,7 +7,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./auth.component.scss'],
 })
 export class AuthComponent implements OnInit {
-  constructor() {}
+  constructor(
+    public auth:AuthService
+  ) {}
 
   ngOnInit(): void {}
 }

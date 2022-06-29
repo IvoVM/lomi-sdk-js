@@ -16,9 +16,11 @@ import { DragNDropDirective } from '../directivess/drag-n-drop.directive';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { MenuComponent } from './components/menu/menu.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { AuthComponent } from './auth/auth.component';
+import {MatMenuModule} from '@angular/material/menu';
 
 @NgModule({
   declarations: [DragNDropDirective, MenuComponent, AuthComponent],
@@ -39,6 +41,8 @@ import { AuthComponent } from './auth/auth.component';
     provideFirestore(() => getFirestore()),
     AngularFireStorageModule,
     AngularFireDatabaseModule,
+    AngularFireAuthModule,
+    MatMenuModule
   ],
   exports: [
     MatCardModule,
@@ -54,6 +58,7 @@ import { AuthComponent } from './auth/auth.component';
     DragNDropDirective,
     AngularFireStorageModule,
     MenuComponent,
+    MatMenuModule
   ],
 })
 export class SharedModule {}
