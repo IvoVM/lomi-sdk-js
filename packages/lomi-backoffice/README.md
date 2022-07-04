@@ -1,5 +1,9 @@
-# Lomi Material
+# Lomi Backoffice
 
-Lomi material is intended to be a workspace that would help to do a fast deliver of MVP content
+Angular app created from lomi-material, it's purpouse is to assist backoffice in daily task of order-shipment mainly
 
-## V0.0.1 ( MVP Recetas )
+## For running angular serve
+
+To run:
+
+nx serve lomi-backoffice

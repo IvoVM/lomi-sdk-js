@@ -2,6 +2,34 @@
 
 # LomiSdk
 
+Lomi Sdk is a Nx Based Mono-repo, it's a basecamp for agile development based on sharing some common components or typescript snippets
+
+For now, the two mainly branches in development are :
+
+## Lomi Sdk
+
+It's a library with the porpuse of sharing code w/ businnes logic among app and web ( Front-end )
+
+./packages/lomi-sdk
+
+
+## Lomi Backoffice
+
+A new backoffice centered in firestore capabilities for fast development, it's an Angular web app base in Angular Material, And Ionic For Mobile development in further aproaches
+
+./packages/lomi-backoffice
+
+## Lomi Material
+
+It's an experimental Angular application, currently help us as a template for further developments
+
+./packages/lomi-material
+
+
+# Nx Development Purpouse information
+
+content development of lomi utilities, it is connected to firestore
+
 This project was generated using [Nx](https://nx.dev).
 
 <p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="450"></p>
