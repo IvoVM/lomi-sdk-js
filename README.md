@@ -6,25 +6,46 @@ Lomi Sdk is a Nx Based Mono-repo, it's a basecamp for agile development based on
 
 For now, the two mainly branches in development are :
 
+## Firebase Functions
+
+It's a node package, it's holds gcp functions running in our Firestore project
+
+### Functions :
+* Each 1 minute retrieve 100 last orders of Spree Lomi API
+
+#### TO-DO
+* API REST POST Endpoint wich receives an order structured JSON
+
+~~~
+./functions
+~~~
+
 ## Lomi Sdk
 
 It's a library with the porpuse of sharing code w/ businnes logic among app and web ( Front-end )
 
-./packages/lomi-sdk
+### Features Developed
+* Lomi Delivery Fee from spree cart object
 
+~~~
+./packages/lomi-sdk
+~~~
 
 ## Lomi Backoffice
 
 A new backoffice centered in firestore capabilities for fast development, it's an Angular web app base in Angular Material, And Ionic For Mobile development in further aproaches
 
+~~~
 ./packages/lomi-backoffice
+~~~
 
 ## Lomi Material
 
 It's an experimental Angular application, currently help us as a template for further developments
 
+~~~
 ./packages/lomi-material
-
+~~~
 
 # Nx Development Purpouse information
 
