@@ -1,0 +1,11 @@
+.order{
+    display: flex;
+    justify-content: space-between;
+    p{
+        width: 30em;
+    }
+    img{
+        max-height: 2em;
+        width: auto;
+    }
+}

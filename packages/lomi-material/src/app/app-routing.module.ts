@@ -13,13 +13,13 @@ const routes: Routes = [
     path: '',
     canActivate: [AuthGuard],
     children: [
-      {path : '', redirectTo: '/dashboard', pathMatch: "full" },
       {path: 'dashboard', component: HomeComponent},
       {path: 'orders', component: OrdersComponent},
       {path: 'orders/:number', component: OrderComponent},
       {path: 'recipes', component: HomeComponent},
       {path: 'recipes/new', component: RecipeComponent},
-      {path: 'recipes/:recipeTitle', component: RecipeComponent}
+      {path: 'recipes/:recipeTitle', component: RecipeComponent},
+      {path : '', redirectTo: '/dashboard', pathMatch: "full" },
     ]
   }
 ];
