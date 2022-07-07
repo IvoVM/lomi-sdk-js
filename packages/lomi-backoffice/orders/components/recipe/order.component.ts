@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { OrdersService } from 'packages/lomi-material/providers/lomi/orders.service';
+import { OrdersService } from '../../../providers/lomi/orders.service';
 
 
 @Component({
@@ -9,6 +9,10 @@ import { OrdersService } from 'packages/lomi-material/providers/lomi/orders.serv
   styleUrls: ['./order.component.scss'],
 })
 export class OrderComponent implements OnInit {
+
+  title = 'My first AGM project';
+  lat = 51.678418;
+  lng = 7.809007;
 
   public order:any;
 

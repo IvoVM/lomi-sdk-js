@@ -58,7 +58,7 @@ import { ActivatedRoute, UrlSegment } from '@angular/router';
 
     getOrderByNumber(orderNumber:string){
       return this.orders.find((order)=>{
-          return order.order.number == orderNumber
+          return order?.number == orderNumber
       })   
      }
   }

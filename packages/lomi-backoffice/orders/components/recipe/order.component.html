@@ -1,10 +1,21 @@
 <mat-drawer-container class="example-container" autosize>
    
     <mat-drawer #drawer opened class="example-sidenav" mode="side" position="end" style="width:300px">
+        <div class="p">
+            <h1>{{order.number}}</h1>
+            <p *ngIf="!order.bill_address.company">{{order.hermexOrder ? order.hermexOrder.status.description : order.journey_state }}</p>
+            <p *ngIf="order.bill_address.company && order.journey_state == 'withdrawaled'">Pedido Retirado</p>
+            <p *ngIf="order.bill_address.company && order.journey_state != 'withdrawaled'">Pedido por recoger</p>
+            <p>Repartidor: {{order.hermexOrder ? order.hermexOrder.rider.name : ''}}</p>
+            <p>{{order.shipment_state}}</p>
+            <p>{{order.store_id}}</p>
+            <p>{{order.completed_at | date:'dd - MMM'}}</p>
+            <p>{{order.completed_at | date:'HH:mm:ss'}}</p>
+        </div>
     </mat-drawer>
   
     <div class="example-sidenav-content p" style="height: 100vh;">
-        <h1>{{order?.order.number}}</h1>
+        <agm-map style="width: 100vw;height:70vh"></agm-map>
     </div>
 
   </mat-drawer-container>

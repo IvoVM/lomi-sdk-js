@@ -23,6 +23,7 @@ import { AuthComponent } from './auth/auth.component';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { NgChatModule } from 'ng-chat';
+import { AgmCoreModule } from '@agm/core';
 
 @NgModule({
   declarations: [DragNDropDirective, MenuComponent, AuthComponent],
@@ -46,7 +47,10 @@ import { NgChatModule } from 'ng-chat';
     AngularFireAuthModule,
     MatMenuModule,
     MatSlideToggleModule,
-    NgChatModule
+    NgChatModule,
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyDY6JRoW_FGIBo4tld_Y7jEL-83NWiX-lw'
+    }),
   ],
   exports: [
     MatCardModule,
@@ -65,7 +69,8 @@ import { NgChatModule } from 'ng-chat';
     MatMenuModule,
     AuthComponent,
     MatSlideToggleModule,
-    NgChatModule
+    NgChatModule,
+    AgmCoreModule
 
   ],
 })

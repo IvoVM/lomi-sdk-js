@@ -38,7 +38,7 @@ import { ActivatedRoute, UrlSegment } from '@angular/router';
         }).valueChanges()
 
         realTimeOrders.subscribe((orders:any)=>{
-          this.orders = orders.reverse()
+          orders.reverse()
           this.orders.forEach((order)=>{
             order.badges = []
             if(order.bill_address.company == "LOMI"){
@@ -52,13 +52,13 @@ import { ActivatedRoute, UrlSegment } from '@angular/router';
               order.badges.push({ abreviation: "CAB", color:"purple"})
             } 
           })
-          console.log(this.orders)
         })
     }
 
     getOrderByNumber(orderNumber:string){
+      console.log(this.orders)
       return this.orders.find((order)=>{
-          return order.order.number == orderNumber
+          return order.number == orderNumber
       })   
      }
   }

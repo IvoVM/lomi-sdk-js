@@ -23,6 +23,8 @@ import { AuthComponent } from './auth/auth.component';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { NgChatModule } from 'ng-chat';
+import { AgmCoreModule } from '@agm/core';
+import { OrdersService } from '../providers/lomi/orders.service';
 
 @NgModule({
   declarations: [DragNDropDirective, MenuComponent, AuthComponent],
@@ -65,8 +67,10 @@ import { NgChatModule } from 'ng-chat';
     MatMenuModule,
     AuthComponent,
     MatSlideToggleModule,
-    NgChatModule
-
+    NgChatModule,
   ],
+  providers: [
+    OrdersService
+  ]
 })
 export class SharedModule {}

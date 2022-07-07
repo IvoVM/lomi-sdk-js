@@ -7,6 +7,7 @@
     "build": "nx build lomi-material"
   },
   "dependencies": {
+    "@agm/core": "^3.0.0-beta.0",
     "@angular/animations": "~13.3.0",
     "@angular/cdk": "^13.3.9",
     "@angular/common": "~13.3.0",
@@ -56,7 +57,7 @@
     "eslint-plugin-cypress": "^2.10.3",
     "jest": "27.2.3",
     "jest-preset-angular": "11.1.1",
-    "nx": "13.10.3",
+    "nx": "^13.10.3",
     "prettier": "^2.5.1",
     "ts-jest": "27.0.5",
     "ts-node": "9.1.1",
