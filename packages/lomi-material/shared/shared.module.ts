@@ -25,7 +25,6 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { NgChatModule } from 'ng-chat';
 import { AgmCoreModule } from '@agm/core';
 import { OrdersService } from '../providers/lomi/orders.service';
-
 @NgModule({
   declarations: [DragNDropDirective, MenuComponent, AuthComponent],
   imports: [

@@ -1,0 +1,16 @@
+<div style="height: 12px;width: 100vw;"></div>
+<button style="width:calc(100% - 24px);margin: 0 12px;" [routerLink]="['/lomi-box/new']" mat-raised-button mat-button color="primary">
+    Nueva Lomi Box
+</button>
+<div class="flex-row" style="flex-wrap: wrap;">
+    <mat-card *ngFor="let lomiBox of lomiBoxes" [routerLink]="['/lomi-box/'+lomiBox.title]" class="small hoverable">
+        <mat-card-title class="primary-color" style="font-size:0.9em;width:96px;height:1.75em;white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">{{lomiBox.title}}</mat-card-title>
+        <img style="filter: grayscale(0.6);" mat-card-image src="{{lomiBox.images? lomiBox.images[0] : 'assets/images/recipe.png'}}">
+        <div class="info">
+            <mat-icon>person</mat-icon><p>{{lomiBox.persons ? lomiBox.persons : '?'}}</p>
+        </div>
+        <div class="info">
+            <mat-icon>schedule</mat-icon><p>{{lomiBox.time ? lomiBox.time : '?'}}</p>
+        </div>
+    </mat-card>
+</div>

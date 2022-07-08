@@ -21,31 +21,31 @@
         </div>
     </mat-drawer>
   
-    <div class="content p" style="height: 100vh;">
+    <div class="example-sidenav-content p" style="height: 100vh;">
         <div class="content" style="padding-right:2em">
 
             <!-- Titulo -->
 
-            <ng-container *ngIf="recipe.title"> 
+            <ng-container *ngIf="lomiBox.title"> 
                 <div style="width:100%;display: flex;justify-content: space-between;">
                     <div class="flex-column">
                         <div class="flex-row">
-                            <h1 style="margin:0"><b>{{recipe.title}}</b></h1>
+                            <h1 style="margin:0"><b>{{lomiBox.title}}</b></h1>
                         </div>
                     </div>
-                    <button mat-button (click)="recipe.title = ''" color="primary" aria-label="Example icon button with a delete icon">
+                    <button mat-button (click)="lomiBox.title = ''" color="primary" aria-label="Example icon button with a delete icon">
                         Editar titulo <mat-icon >edit</mat-icon>
                       </button>
                 </div>
                 <div class="divider"></div>
             </ng-container>
 
-            <div *ngIf="!recipe.title" class="flex-column">
+            <div *ngIf="!lomiBox.title" class="flex-column">
                 <div class="flex-row">
                     <mat-form-field class="example-form-field" appearance="fill">
                         <mat-label>Titulo</mat-label>
                         <input (keydown.enter)="setTitle($event)" matInput type="text" >
-                        <button *ngIf="recipe.title" matSuffix mat-icon-button aria-label="Clear" (click)="keyword=''">
+                        <button *ngIf="lomiBox.title" matSuffix mat-icon-button aria-label="Clear" (click)="keyword=''">
                             <mat-icon>close</mat-icon>
                         </button>
                     </mat-form-field>
@@ -56,7 +56,7 @@
     
             <h1>Ingredientes</h1>
                 <div class="ingredients-list">
-                    <div *ngFor="let ingredient of recipe.ingredients">
+                    <div *ngFor="let ingredient of lomiBox.ingredients">
                         <div class="ingredient">
                             <mat-form-field>
                                 <mat-label>Cantidad</mat-label>
@@ -72,8 +72,8 @@
 
             <h2><b>IMAGENES</b></h2>
             <div class="firestore-images">
-                <ng-container *ngIf="recipe.images">
-                    <img class="mini-image" *ngFor="let image of recipe.images" [src]="image">
+                <ng-container *ngIf="lomiBox.images">
+                    <img class="mini-image" *ngFor="let image of lomiBox.images" [src]="image">
                 </ng-container>
     
                 <div (fileDropped)="onImageDropped($event)" drag-n-drop class="drag-n-drop">
@@ -93,12 +93,12 @@
             </div>
             <div *ngIf="!editingDescription" class="flex-column">
                 <div class="flex-row">
-                    <span [innerHtml]="recipe.description"></span>
+                    <span [innerHtml]="lomiBox.description"></span>
                 </div>
             </div>
             <div *ngIf="editingDescription" class="flex-column">
                 <div style="height:300px;padding-bottom: 112px;">
-                    <quill-editor [(ngModel)]="recipe.description" ></quill-editor>
+                    <quill-editor [(ngModel)]="lomiBox.description" ></quill-editor>
                 </div>
             </div>
             <div class="divider"></div>

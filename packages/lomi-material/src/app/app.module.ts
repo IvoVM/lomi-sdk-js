@@ -12,6 +12,7 @@ import { environment } from '../environments/environment';
 import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 import { SharedModule } from 'packages/lomi-material/shared/shared.module';
 import { OrdersModule } from 'packages/lomi-material/orders/orders.module';
+import { LomiBoxModule } from 'packages/lomi-material/lomi-box/lomi-box.module';
 
 @NgModule({
   declarations: [AppComponent, NxWelcomeComponent],
@@ -22,6 +23,7 @@ import { OrdersModule } from 'packages/lomi-material/orders/orders.module';
     BrowserAnimationsModule,
     HomeModule,
     OrdersModule,
+    LomiBoxModule,
     SharedModule
   ],
   providers: [],

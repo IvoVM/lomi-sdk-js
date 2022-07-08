@@ -9,19 +9,20 @@ import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat
 import 'firebase/firestore';
 import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
-import { environment } from 'packages/lomi-material/src/environments/environment';
+import { environment } from '../../../src/environments/environment';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
+import { LomiBox  } from '../../../types/lomiBox';
 const firebaseApp = initializeApp(environment.firebase);
 const storage = getStorage(firebaseApp);
 
 @Component({
-  selector: 'lomii-recipe',
-  templateUrl: './recipe.component.html',
-  styleUrls: ['./recipe.component.scss'],
+  selector: 'lomii-box',
+  templateUrl: './lomi-box.component.html',
+  styleUrls: ['./lomi-box.component.scss'],
 })
-export class RecipeComponent implements OnInit, OnDestroy {
+export class LomiBoxComponent implements OnInit, OnDestroy {
 
-  private recipe$:any;
+  private box$:any;
   public keyword: any = "";
   public products:any = {};
   public ingredients:any = []
@@ -31,7 +32,7 @@ export class RecipeComponent implements OnInit, OnDestroy {
   public images:any = []
   //
 
-  public recipe:Recipe = {
+  public lomiBox:LomiBox = {
     title : "",
     description : "",
     img: "",
@@ -41,13 +42,13 @@ export class RecipeComponent implements OnInit, OnDestroy {
 
   setTitle(event:any){
     console.log(event.target.value)
-    this.recipe.title = event.target.value
+    this.lomiBox.title = event.target.value
     this.updateDocument()
   }
 
   setDescription(event:any){
     console.log(event.target.value)
-    this.recipe.description = event.target.value
+    this.lomiBox.description = event.target.value
     this.updateDocument()
   }
 
@@ -60,25 +61,25 @@ export class RecipeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.route.params.subscribe((params:any)=>{
-      const recipesRef = collection(this.firestore, 'recetas-lomi');
+      const lomiBoxRef = collection(this.firestore, 'lomi-box');
 
       this.unsubscribe()
-      this.recipe$ = collectionData(query(recipesRef,where("title", "==", params.recipeTitle))) as Observable<Recipe[]>
+      this.box$ = collectionData(query(lomiBoxRef,where("title", "==", params.lomiBoxTitle))) as Observable<LomiBox[]>
       this.listenToRecipe()
       this.updateDocument();
     })
   }
 
   onImageDropped(event:any){
-    for (const file of event.target.files ? event.target.files : event){
+    for (const file of event){
       this.images.push(file)
-      const filePath = "recetas/"+this.recipe.title + "-" + this.images.length 
+      const filePath = "lomi-box/"+this.lomiBox.title + "-" + this.images.length 
       const fileRef = this.angularFireStorage.ref(filePath)
       const  task = fileRef.put(file)
       task.then((taskSnapshot)=>{
         console.log(taskSnapshot.metadata)
         console.log(fileRef.getDownloadURL().subscribe((url)=>{
-          this.recipe.images ? this.recipe.images.push(url) : this.recipe.images = [url]
+          this.lomiBox.images ? this.lomiBox.images.push(url) : this.lomiBox.images = [url]
           this.updateDocument()
         }))
       })
@@ -86,8 +87,8 @@ export class RecipeComponent implements OnInit, OnDestroy {
   }
 
   updateDocument(){
-    const document = doc(this.firestore,'recetas-lomi/'+this.recipe.title)
-    setDoc(document, this.recipe)
+    const document = doc(this.firestore,'lomi-box/'+this.lomiBox.title)
+    setDoc(document, this.lomiBox)
   }
 
   searchProducts(){
@@ -100,16 +101,16 @@ export class RecipeComponent implements OnInit, OnDestroy {
   }
 
   deleteIngredient(ingredient:any){
-    const ingredientIndex = this.recipe.ingredients.findIndex((ingredientToFind)=>{
+    const ingredientIndex = this.lomiBox.ingredients.findIndex((ingredientToFind)=>{
       return ingredientToFind.id == ingredient.id
     })
-    this.recipe.ingredients.splice(ingredientIndex,1)
+    this.lomiBox.ingredients.splice(ingredientIndex,1)
     this.updateDocument()
   }
 
   addIngredient(ingredient:any){
     ingredient.quantity = 1
-    this.recipe.ingredients.push(ingredient)
+    this.lomiBox.ingredients.push(ingredient)
     const index = this.products.data.findIndex((product:any)=>{
       return product.id == ingredient.id
     })
@@ -119,17 +120,17 @@ export class RecipeComponent implements OnInit, OnDestroy {
   }
   
   listenToRecipe(){
-    this.recipe$.subscribe((recipes:Recipe[])=>{
-      if(recipes.length){
-        this.recipe = recipes[0]
-        console.log(this.recipe)
+    this.box$.subscribe((boxes:LomiBox[])=>{
+      if(boxes.length){
+        this.lomiBox = boxes[0]
+        console.log(this.lomiBox)
       }
     })
   }
 
   unsubscribe(){
-    if(this.recipe$?.unsubscribe){
-      this.recipe$.unsubscribe()
+    if(this.box$?.unsubscribe){
+      this.box$.unsubscribe()
     }
   }
 
