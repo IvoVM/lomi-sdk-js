@@ -34,10 +34,10 @@ export class LomiBoxComponent implements OnInit, OnDestroy {
 
   public lomiBox:LomiBox = {
     title : "",
-    description : "",
-    img: "",
-    ingredients: [],
-    images: []
+    category : "",
+    images: [],
+    products: [],
+    option_text: ""
   };
 
   setTitle(event:any){
@@ -46,9 +46,15 @@ export class LomiBoxComponent implements OnInit, OnDestroy {
     this.updateDocument()
   }
 
-  setDescription(event:any){
+  setOptionText(event:any){
     console.log(event.target.value)
-    this.lomiBox.description = event.target.value
+    this.lomiBox.option_text = event.target.value
+    this.updateDocument()
+  }
+
+  setCategory(event:any){
+    console.log(event.target.value)
+    this.lomiBox.category = event.target.value
     this.updateDocument()
   }
 
@@ -62,9 +68,9 @@ export class LomiBoxComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.route.params.subscribe((params:any)=>{
       const lomiBoxRef = collection(this.firestore, 'lomi-box');
-
+      console.log(params)
       this.unsubscribe()
-      this.box$ = collectionData(query(lomiBoxRef,where("title", "==", params.lomiBoxTitle))) as Observable<LomiBox[]>
+      this.box$ = collectionData(query(lomiBoxRef,where("title", "==", params.boxId))) as Observable<LomiBox[]>
       this.listenToRecipe()
       this.updateDocument();
     })
@@ -101,16 +107,16 @@ export class LomiBoxComponent implements OnInit, OnDestroy {
   }
 
   deleteIngredient(ingredient:any){
-    const ingredientIndex = this.lomiBox.ingredients.findIndex((ingredientToFind)=>{
+    const ingredientIndex = this.lomiBox.products.findIndex((ingredientToFind)=>{
       return ingredientToFind.id == ingredient.id
     })
-    this.lomiBox.ingredients.splice(ingredientIndex,1)
+    this.lomiBox.products.splice(ingredientIndex,1)
     this.updateDocument()
   }
 
   addIngredient(ingredient:any){
     ingredient.quantity = 1
-    this.lomiBox.ingredients.push(ingredient)
+    this.lomiBox.products.push(ingredient)
     const index = this.products.data.findIndex((product:any)=>{
       return product.id == ingredient.id
     })
