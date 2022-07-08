@@ -1,9 +1,7 @@
 export type LomiBox = {
-    ingredients  : Array<any>
-    description : string
+    products  : Array<any>
+    option_text : string
     title: string
-    img: string
+    category: string
     images: Array<any>
-    persons?: number
-    time?: number
 }
