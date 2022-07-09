@@ -39,6 +39,7 @@ export class LomiBoxComponent implements OnInit, OnDestroy {
     products: [],
     option_text: ""
   };
+  selectCategory = ''
 
   setTitle(event:any){
     console.log(event.target.value)
@@ -52,9 +53,9 @@ export class LomiBoxComponent implements OnInit, OnDestroy {
     this.updateDocument()
   }
 
-  setCategory(event:any){
-    console.log(event.target.value)
-    this.lomiBox.category = event.target.value
+  setCategory(){
+    console.log(this.selectCategory)
+    this.lomiBox.category = this.selectCategory
     this.updateDocument()
   }
 
@@ -76,6 +77,9 @@ export class LomiBoxComponent implements OnInit, OnDestroy {
     })
   }
 
+  onBookChange() {
+    console.log(this.selectCategory)
+  }
   onImageDropped(event:any){
     for (const file of event){
       this.images.push(file)
