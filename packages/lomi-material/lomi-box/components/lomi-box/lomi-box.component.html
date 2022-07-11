@@ -117,7 +117,8 @@
 
             <!-- Fin del Option Text -->
 
-            <!-- Option Text -->
+            <!-- Category -->
+
 
             <ng-container *ngIf="lomiBox.category">
                 <div style="width:100%;display: flex;justify-content: space-between;">
@@ -133,23 +134,17 @@
                 </div>
                 <div class="divider"></div>
             </ng-container>
-
             <div *ngIf="!lomiBox.category" class="flex-column">
-                <div class="flex-row">
-                    <mat-form-field class="example-form-field" appearance="fill">
-                        <mat-label>Categoria</mat-label>
-                        <input (keydown.enter)="setCategory($event)" matInput type="text">
-                        <button *ngIf="lomiBox.category" matSuffix mat-icon-button aria-label="Clear"
-                            (click)="keyword=''">
-                            <mat-icon>close</mat-icon>
-                        </button>
-                    </mat-form-field>
-                </div>
+                <mat-form-field appearance="fill">
+                    <mat-label>Categoria</mat-label>
+                    <mat-select [(ngModel)]="selectCategory" (selectionChange)="setCategory()">
+                        <mat-option value="frutasVerduras">Frutas y Verduras</mat-option>
+                        <mat-option value="bebidas">Bebidas</mat-option>
+                        <mat-option value="junta">Juntas</mat-option>
+                    </mat-select>
+                </mat-form-field>
             </div>
-
-            <!-- Fin del Option Text -->
-
-
+            <!-- Fin del Category -->
         </div>
     </div>
 </mat-drawer-container>

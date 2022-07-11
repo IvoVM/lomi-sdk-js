@@ -5,6 +5,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { RoutingModule } from '../src/app/app-routing.module';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
+import {MatSelectModule} from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { provideFirebaseApp, getApp, initializeApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
@@ -35,6 +36,7 @@ import { OrdersService } from '../providers/lomi/orders.service';
     MatInputModule,
     MatIconModule,
     MatSidenavModule,
+    MatSelectModule,
     FormsModule,
     MatButtonModule,
     MatDialogModule,
@@ -55,6 +57,7 @@ import { OrdersService } from '../providers/lomi/orders.service';
     RoutingModule,
     MatInputModule,
     MatButtonModule,
+    MatSelectModule,
     MatIconModule,
     MatSidenavModule,
     FormsModule,
