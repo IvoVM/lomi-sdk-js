@@ -70,10 +70,10 @@
 
         <div style="display: flex;">
             <button *ngIf="!isNew" (click)="deleteItem()" style="width: 100%; margin: 0 12px; background-color: #eb445a;" mat-raised-button mat-button >
-                Eliminar Receta
+                Eliminar Box
             </button>
-            <button *ngIf="!isNew" [disabled]="!this.lomiBoxForm.valid || this.ingredients.length <= 0" (click)="updateBox()" style="width: 100%; margin: 0 12px;" mat-raised-button mat-button color="primary">Editar Receta</button>
-            <button *ngIf="isNew" [disabled]="!this.lomiBoxForm.valid || this.ingredients.length <= 0" (click)="createBox()" style="width: 100%; margin: 0 12px;" mat-raised-button mat-button color="primary">Crear Receta</button>
+            <button *ngIf="!isNew" [disabled]="!this.lomiBoxForm.valid || this.ingredients.length < 1" (click)="updateBox()" style="width: 100%; margin: 0 12px;" mat-raised-button mat-button color="primary">Guardar Box</button>
+            <button *ngIf="isNew" [disabled]="!this.lomiBoxForm.valid || this.ingredients.length < 1" (click)="createBox()" style="width: 100%; margin: 0 12px;" mat-raised-button mat-button color="primary">Crear Box</button>
         </div>
     </div>
 

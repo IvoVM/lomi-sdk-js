@@ -47,7 +47,7 @@ export class LomiBoxComponent implements OnInit, OnDestroy {
       title: ['', [Validators.required]],
       category: ['', [Validators.required]],
       images: ['1', []],
-      products: ['', [Validators.required]],
+      products: ['', ],
       option_text: ['', [Validators.required]]
     })
   }
