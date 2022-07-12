@@ -1,17 +1,16 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { collectionData, collectionSnapshots, Firestore, where } from '@angular/fire/firestore';
+import { collectionData, deleteDoc, Firestore, where } from '@angular/fire/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
-import { doc, collection, CollectionReference, DocumentData, DocumentSnapshot, query, setDoc, updateDoc } from 'firebase/firestore';
+import { doc, collection, query, setDoc, updateDoc, getDoc } from 'firebase/firestore';
 import { ProductsService } from 'packages/lomi-material/providers/lomi/products.service';
-import { Recipe } from 'packages/lomi-material/types/recipes';
 import { Observable } from 'rxjs';
-import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import 'firebase/firestore';
 import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
 import { environment } from '../../../src/environments/environment';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { LomiBox  } from '../../../types/lomiBox';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 const firebaseApp = initializeApp(environment.firebase);
 const storage = getStorage(firebaseApp);
 
@@ -29,76 +28,39 @@ export class LomiBoxComponent implements OnInit, OnDestroy {
   public editingDescription:boolean = false;
 
   //Just while developing
-  public images:any = []
   //
 
-  public lomiBox:LomiBox = {
-    title : "",
-    category : "",
-    images: [],
-    products: [],
-    option_text: ""
-  };
   selectCategory = ''
+  isNew = false
+  lomiBoxForm: FormGroup;
+  id = ''
 
-  setTitle(event:any){
-    console.log(event.target.value)
-    this.lomiBox.title = event.target.value
-    this.updateDocument()
-  }
-
-  setOptionText(event:any){
-    console.log(event.target.value)
-    this.lomiBox.option_text = event.target.value
-    this.updateDocument()
-  }
-
-  setCategory(){
-    console.log(this.selectCategory)
-    this.lomiBox.category = this.selectCategory
-    this.updateDocument()
-  }
 
   constructor(
     private firestore: Firestore,
     private route: ActivatedRoute,
+    private router: Router,
     private productsService: ProductsService,
-    private angularFireStorage: AngularFireStorage
-  ) {}
-
-  ngOnInit(): void {
-    this.route.params.subscribe((params:any)=>{
-      const lomiBoxRef = collection(this.firestore, 'lomi-box');
-      console.log(params)
-      this.unsubscribe()
-      this.box$ = collectionData(query(lomiBoxRef,where("title", "==", params.boxId))) as Observable<LomiBox[]>
-      this.listenToRecipe()
-      this.updateDocument();
+    private formBuilder: FormBuilder  
+    ) {
+    this.lomiBoxForm = this.formBuilder.group({
+      title: ['', [Validators.required]],
+      category: ['', [Validators.required]],
+      images: ['1', []],
+      products: ['', ],
+      option_text: ['', [Validators.required]]
     })
   }
 
-  onBookChange() {
-    console.log(this.selectCategory)
-  }
-  onImageDropped(event:any){
-    for (const file of event){
-      this.images.push(file)
-      const filePath = "lomi-box/"+this.lomiBox.title + "-" + this.images.length 
-      const fileRef = this.angularFireStorage.ref(filePath)
-      const  task = fileRef.put(file)
-      task.then((taskSnapshot)=>{
-        console.log(taskSnapshot.metadata)
-        console.log(fileRef.getDownloadURL().subscribe((url)=>{
-          this.lomiBox.images ? this.lomiBox.images.push(url) : this.lomiBox.images = [url]
-          this.updateDocument()
-        }))
-      })
-    }
-  }
-
-  updateDocument(){
-    const document = doc(this.firestore,'lomi-box/'+this.lomiBox.title)
-    setDoc(document, this.lomiBox)
+  ngOnInit(): void {
+    this.route.params.subscribe(async (params:any)=>{
+      this.id = params.boxId
+      const lomiBoxRef =  doc(this.firestore, 'lomi-box', this.id);
+      if (params.boxId === 'new') this.isNew = true
+      this.unsubscribe()
+      this.box$ = await getDoc(lomiBoxRef)
+      this.getBox()
+    })
   }
 
   searchProducts(){
@@ -111,31 +73,59 @@ export class LomiBoxComponent implements OnInit, OnDestroy {
   }
 
   deleteIngredient(ingredient:any){
-    const ingredientIndex = this.lomiBox.products.findIndex((ingredientToFind)=>{
+    const ingredientIndex = this.ingredients.findIndex((ingredientToFind: any)=>{
       return ingredientToFind.id == ingredient.id
     })
-    this.lomiBox.products.splice(ingredientIndex,1)
-    this.updateDocument()
+    this.ingredients.splice(ingredientIndex,1)
   }
 
   addIngredient(ingredient:any){
     ingredient.quantity = 1
-    this.lomiBox.products.push(ingredient)
+    this.ingredients.push(ingredient)
     const index = this.products.data.findIndex((product:any)=>{
       return product.id == ingredient.id
     })
     this.products.data.splice(index,1)
-    this.updateDocument();
-    console.log(this.ingredients)
   }
   
-  listenToRecipe(){
-    this.box$.subscribe((boxes:LomiBox[])=>{
-      if(boxes.length){
-        this.lomiBox = boxes[0]
-        console.log(this.lomiBox)
+  getBox(){
+      if(this.box$.id != 'new'){
+        console.log(this.box$)
+        this.id = this.id
+        this.lomiBoxForm.setValue({
+          title: this.box$.data().title,
+          category: this.box$.data().category,
+          images: this.box$.data().images,
+          products: this.box$.data().products,
+          option_text: this.box$.data().option_text
+        })
+        this.ingredients = this.box$.data().products
       }
+  }
+
+  
+  async updateBox() {
+    if (!this.lomiBoxForm.valid && this.ingredients.length <= 0) return
+    this.lomiBoxForm.value.products = this.ingredients
+    this.lomiBoxForm.value.images = []
+    let newData = doc(this.firestore, 'lomi-box', this.id)
+    await updateDoc(newData, {
+      ...this.lomiBoxForm.value
     })
+    this.router.navigate(['lomi-box'])
+  }
+  
+  async createBox() {
+    if (!this.lomiBoxForm.valid && this.ingredients.length <= 0) return
+    this.lomiBoxForm.value.products = this.ingredients
+    this.lomiBoxForm.value.images = []
+    await setDoc(doc(this.firestore, 'lomi-box', this.lomiBoxForm.value.title), this.lomiBoxForm.value); 
+    this.router.navigate(['lomi-box'])
+  }
+  
+  async deleteItem(): Promise<any> {
+    await deleteDoc(doc(this.firestore, 'lomi-box', this.id));
+    this.router.navigate(['lomi-box'])
   }
 
   unsubscribe(){

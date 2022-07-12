@@ -4,7 +4,7 @@
             <div class="ingredients-container">
                 <h2>BUSCADOR DE INGREDIENTES</h2>
                 <div class="flex-column">
-                    <mat-form-field class="example-form-field" appearance="fill">
+                    <mat-form-field class="example-form-field" appearance="outline">
                         <mat-label>Buscador de ingredientes lomi</mat-label>
                         <input (keypress)="searchProducts()" matInput type="text" [(ngModel)]="keyword">
                         <button *ngIf="keyword" matSuffix mat-icon-button aria-label="Clear" (click)="keyword=''">
@@ -23,45 +23,42 @@
 
     <div class="example-sidenav-content p" style="height: 100vh;">
         <div class="content" style="padding-right:2em">
-
-            <!-- Titulo -->
-
-            <ng-container *ngIf="lomiBox.title">
-                <div style="width:100%;display: flex;justify-content: space-between;">
-                    <div class="flex-column">
-                        <div class="flex-row">
-                            <h1 style="margin:0"><b>{{lomiBox.title}}</b></h1>
-                        </div>
-                    </div>
-                    <button mat-button (click)="lomiBox.title = ''" color="primary"
-                        aria-label="Example icon button with a delete icon">
-                        Editar titulo <mat-icon>edit</mat-icon>
-                    </button>
-                </div>
-                <div class="divider"></div>
-            </ng-container>
-
-            <div *ngIf="!lomiBox.title" class="flex-column">
+            
+            <form [formGroup]="lomiBoxForm" (submit)="createBox()" class="flex-column">
                 <div class="flex-row">
-                    <mat-form-field class="example-form-field" appearance="fill">
+                    <mat-form-field class="example-form-field" appearance="outline">
                         <mat-label>Titulo</mat-label>
-                        <input (keydown.enter)="setTitle($event)" matInput type="text">
-                        <button *ngIf="lomiBox.title" matSuffix mat-icon-button aria-label="Clear" (click)="keyword=''">
-                            <mat-icon>close</mat-icon>
-                        </button>
+                        <input formControlName="title" matInput type="text">
                     </mat-form-field>
                 </div>
-            </div>
+                <div class="divider"></div>
+                <div class="flex-row">
+                    <mat-form-field class="example-form-field" appearance="outline">
+                        <mat-label>Unidad</mat-label>
+                        <input formControlName="option_text" matInput type="text">
+                    </mat-form-field>
+                </div>
+                <div class="divider"></div>
+                <div class="flex-row">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Categoria</mat-label>
+                        <mat-select formControlName="category">
+                            <mat-option value="frutasVerduras">Frutas y Verduras</mat-option>
+                            <mat-option value="bebidas">Bebidas</mat-option>
+                            <mat-option value="junta">Juntas</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="divider"></div>
+            </form>
 
-            <!-- Fin del titulo -->
-
-            <h1>Productos</h1>
+            <h1><b>Productos</b></h1>
             <div class="ingredients-list">
-                <div *ngFor="let product of lomiBox.products">
+                <div *ngFor="let product of ingredients">
                     <div class="ingredient">
                         <mat-form-field>
                             <mat-label>Cantidad</mat-label>
-                            <input (change)="updateDocument()" matInput [(ngModel)]="product.quantity" type="number">
+                            <input  matInput  type="number">
                         </mat-form-field>
                         <h6>-</h6>
                         <p>{{product.attributes.name}}</p>
@@ -69,82 +66,17 @@
                     </div>
                 </div>
             </div>
-            <div class="divider"></div>
+        </div>
 
-            <!-- <h2><b>IMAGENES</b></h2>
-            <div class="firestore-images">
-                <ng-container *ngIf="lomiBox.images">
-                    <img class="mini-image" *ngFor="let image of lomiBox.images" [src]="image">
-                </ng-container>
-    
-                <div (fileDropped)="onImageDropped($event)" drag-n-drop class="drag-n-drop">
-                    <img src="assets/images/image-upload.png" (click)="fileUpload.click()">
-                    <input style="position: absolute;opacity: 0;" (change)="onImageDropped($event)" #fileUpload type="file">
-                </div>
-            </div>
-            <div class="divider"></div> -->
-
-
-            <!-- Option Text -->
-
-            <ng-container *ngIf="lomiBox.option_text">
-                <div style="width:100%;display: flex;justify-content: space-between;">
-                    <div class="flex-column">
-                        <div class="flex-row">
-                            <h1 style="margin:0"><b>{{lomiBox.option_text}}</b></h1>
-                        </div>
-                    </div>
-                    <button mat-button (click)="lomiBox.option_text = ''" color="primary"
-                        aria-label="Example icon button with a delete icon">
-                        Editar Option Text <mat-icon>edit</mat-icon>
-                    </button>
-                </div>
-                <div class="divider"></div>
-            </ng-container>
-
-            <div *ngIf="!lomiBox.option_text" class="flex-column">
-                <div class="flex-row">
-                    <mat-form-field class="example-form-field" appearance="fill">
-                        <mat-label>Option text</mat-label>
-                        <input (keydown.enter)="setOptionText($event)" matInput type="text">
-                        <button *ngIf="lomiBox.option_text" matSuffix mat-icon-button aria-label="Clear"
-                            (click)="keyword=''">
-                            <mat-icon>close</mat-icon>
-                        </button>
-                    </mat-form-field>
-                </div>
-            </div>
-
-            <!-- Fin del Option Text -->
-
-            <!-- Category -->
-
-
-            <ng-container *ngIf="lomiBox.category">
-                <div style="width:100%;display: flex;justify-content: space-between;">
-                    <div class="flex-column">
-                        <div class="flex-row">
-                            <h1 style="margin:0"><b>{{lomiBox.category}}</b></h1>
-                        </div>
-                    </div>
-                    <button mat-button (click)="lomiBox.category = ''" color="primary"
-                        aria-label="Example icon button with a delete icon">
-                        Editar Categoria <mat-icon>edit</mat-icon>
-                    </button>
-                </div>
-                <div class="divider"></div>
-            </ng-container>
-            <div *ngIf="!lomiBox.category" class="flex-column">
-                <mat-form-field appearance="fill">
-                    <mat-label>Categoria</mat-label>
-                    <mat-select [(ngModel)]="selectCategory" (selectionChange)="setCategory()">
-                        <mat-option value="frutasVerduras">Frutas y Verduras</mat-option>
-                        <mat-option value="bebidas">Bebidas</mat-option>
-                        <mat-option value="junta">Juntas</mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-            <!-- Fin del Category -->
+        <div style="display: flex;">
+            <button *ngIf="!isNew" (click)="deleteItem()" style="width: 100%; margin: 0 12px; background-color: #eb445a;" mat-raised-button mat-button >
+                Eliminar Box
+            </button>
+            <button *ngIf="!isNew" [disabled]="!this.lomiBoxForm.valid || this.ingredients.length < 1" (click)="updateBox()" style="width: 100%; margin: 0 12px;" mat-raised-button mat-button color="primary">Guardar Box</button>
+            <button *ngIf="isNew" [disabled]="!this.lomiBoxForm.valid || this.ingredients.length < 1" (click)="createBox()" style="width: 100%; margin: 0 12px;" mat-raised-button mat-button color="primary">Crear Box</button>
         </div>
     </div>
+
+
 </mat-drawer-container>
+
