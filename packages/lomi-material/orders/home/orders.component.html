@@ -25,16 +25,18 @@
                         {{ badge.abreviation }}
                     </div>
                 </div>
-                <p *ngIf="!order.bill_address.company">{{order.hermexOrder ? order.hermexOrder.status.description : order.journey_state }}</p>
-                <p *ngIf="order.bill_address.company && order.journey_state == 'withdrawaled'">Pedido Retirado</p>
-                <p *ngIf="order.bill_address.company && order.journey_state != 'withdrawaled'">Pedido por recoger</p>
+                <!--
+                    <p *ngIf="!order.bill_address.company">{{order.hermexOrder ? order.hermexOrder.status.description : order.journey_state }}</p>
+                    <p *ngIf="order.bill_address.company && order.journey_state == 'withdrawaled'">Pedido Retirado</p>
+                    <p *ngIf="order.bill_address.company && order.journey_state != 'withdrawaled'">Pedido por recoger</p>
+                    <img *ngIf="false && order.order.journey_state && order.order.journey_state != 'withdrawaled'" src="assets/images/cabify.png">
+                    <img *ngIf="false && order.order.journey_state && order.order.journey_state == 'withdrawaled'" src="assets/images/lomi.svg">
+            
+                -->
                 <p>{{order.shipment_state}}</p>
                 <p>{{order.store_id}}</p>
                 <p>{{order.completed_at | date:'dd - MMM'}}</p>
                 <p>{{order.completed_at | date:'HH:mm:ss'}}</p>
-                <img *ngIf="false && order.order.journey_state && order.order.journey_state != 'withdrawaled'" src="assets/images/cabify.png">
-                <img *ngIf="false && order.order.journey_state && order.order.journey_state == 'withdrawaled'" src="assets/images/lomi.svg">
-        
                 <p>{{order.ship_address.address1}}</p>
             </div>
             <div class="divider"></div>

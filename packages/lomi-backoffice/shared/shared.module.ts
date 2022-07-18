@@ -20,13 +20,22 @@ import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { MenuComponent } from './components/menu/menu.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { AuthComponent } from './auth/auth.component';
-import {MatMenuModule} from '@angular/material/menu';
-import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NgChatModule } from 'ng-chat';
 import { AgmCoreModule } from '@agm/core';
+import { MatTableModule } from '@angular/material/table';
+import { MatSelectModule } from '@angular/material/select';
+import { ReactiveFormsModule } from '@angular/forms';
+import { LineItemComponent } from './line-item/line-item.component';
 
 @NgModule({
-  declarations: [DragNDropDirective, MenuComponent, AuthComponent],
+  declarations: [
+    DragNDropDirective,
+    MenuComponent,
+    AuthComponent,
+    LineItemComponent,
+  ],
   imports: [
     CommonModule,
     MatCardModule,
@@ -48,8 +57,11 @@ import { AgmCoreModule } from '@agm/core';
     MatMenuModule,
     MatSlideToggleModule,
     NgChatModule,
+    MatTableModule,
+    MatSelectModule,
+    ReactiveFormsModule,
     AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyDY6JRoW_FGIBo4tld_Y7jEL-83NWiX-lw'
+      apiKey: 'AIzaSyDY6JRoW_FGIBo4tld_Y7jEL-83NWiX-lw',
     }),
   ],
   exports: [
@@ -70,8 +82,11 @@ import { AgmCoreModule } from '@agm/core';
     AuthComponent,
     MatSlideToggleModule,
     NgChatModule,
-    AgmCoreModule
-
+    AgmCoreModule,
+    MatTableModule,
+    MatSelectModule,
+    ReactiveFormsModule,
+    LineItemComponent
   ],
 })
 export class SharedModule {}

@@ -1,15 +1,26 @@
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
+import { collectionData, Firestore } from '@angular/fire/firestore';
 import { ActivatedRoute, UrlSegment } from '@angular/router';
+import { collection } from 'firebase/firestore';
+import { Observable } from 'rxjs';
+import { query, orderBy, limit } from "firebase/firestore";  
 
 @Injectable({
     providedIn: 'root'
   })
   export class OrdersService {
+    
+    public filters = {
+      stockLocationId : 1
+    }
 
     public orders: any[] = []
     public pendingOrders: any[] = []    
     public completedOrders: any[] = []
+
+    private ordersRef:any
+    private orders$:any
 
     activatedFilters:any = []
 
@@ -32,16 +43,26 @@ import { ActivatedRoute, UrlSegment } from '@angular/router';
     constructor(
         db: AngularFireDatabase,
         activatedRoute: ActivatedRoute,
+        private firestore: Firestore
         ) {
-        const realTimeOrders = db.list('orders',(ref)=>{
-          return ref.orderByChild("completed_at").limitToLast(30)
-        }).valueChanges()
+        this.getOrdersData()
+    }
+    
+    getOrdersData(){
+      if(this.orders$?.unsubscribe){
+        this.orders$.unsubscribe()
+      }
 
-        realTimeOrders.subscribe((orders:any)=>{
-          this.orders = orders.reverse()
+      this.ordersRef = collection(this.firestore, 'SPREE_ORDERS_'+this.filters.stockLocationId);
+        const q = query(this.ordersRef, orderBy("completed_at", 'asc'), limit(100));
+        this.orders$ = collectionData(q) as Observable<any[]>
+        this.orders$.subscribe((orders:any)=>{
+          orders.reverse()
+          console.log(orders)
+          this.orders = orders
           this.orders.forEach((order)=>{
             order.badges = []
-            if(order.bill_address.company == "LOMI"){
+            if(order.name.includes("Retiro en")){
               order.badges.push({ abreviation: "RT", color:"green"})
             } 
             else if(order.hermexOrder){
@@ -52,13 +73,13 @@ import { ActivatedRoute, UrlSegment } from '@angular/router';
               order.badges.push({ abreviation: "CAB", color:"purple"})
             } 
           })
-          console.log(this.orders)
         })
     }
 
     getOrderByNumber(orderNumber:string){
+      console.log(this.orders)
       return this.orders.find((order)=>{
-          return order?.number == orderNumber
+          return order.number == orderNumber
       })   
      }
   }

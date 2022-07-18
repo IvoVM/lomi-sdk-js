@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { OrdersService } from '../../providers/lomi/orders.service';
 import { FirestoreService } from '../..//src/providers/firestore.service';
-import { Recipe } from '../..//types/recipes';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'lomii-orders',
@@ -9,17 +9,34 @@ import { Recipe } from '../..//types/recipes';
   styleUrls: ['./orders.component.scss'],
 })
 export class OrdersComponent implements OnInit {
-
-  public recipes:Array<Recipe> = [];
+  public columnsToDisplay = ['number','name', 'completed_at', 'state', 'payment_state','actions'];
+  public commonColumns = ['name', 'completed_at', 'state', 'payment_state'];
+  public filtersForm: FormGroup;
 
   constructor(
-    public ordersProvider:OrdersService
+    public ordersProvider:OrdersService,
+    private formBuilder: FormBuilder
   ) {
+    this.filtersForm = this.formBuilder.group({
+      stockLocationId: [null],
+      deliveryState: ['Estado envio']
+    })
+  }
 
+  showReceipt(){
+    return
+  }
+
+  showItems(){
+    window.open('https://lomi.cl/admin/orders/R043007150/invoice')
+  }
+
+  changeStockLocation(){
+    this.ordersProvider.filters.stockLocationId = this.filtersForm.get('stockLocationId')?.value
+    this.ordersProvider.getOrdersData()
   }
 
   ngOnInit(): void {
-
     return
   }
 }
