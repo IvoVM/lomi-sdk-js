@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "dist/packages/lomi-material",
+    "public": "dist/packages/lomi-backoffice",
     "ignore": [
       "firebase.json",
       "**/.*",
@@ -39,7 +39,7 @@
     },
     "hosting": {
       "port": 5000,
-      "public":"dist/packages/lomi-material"
+      "public": "dist/packages/lomi-material"
     },
     "storage": {
       "port": 9199

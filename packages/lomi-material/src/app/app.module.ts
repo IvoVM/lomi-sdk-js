@@ -13,6 +13,7 @@ import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 import { SharedModule } from 'packages/lomi-material/shared/shared.module';
 import { OrdersModule } from 'packages/lomi-material/orders/orders.module';
 import { LomiBoxModule } from 'packages/lomi-material/lomi-box/lomi-box.module';
+import {MatChipsModule} from '@angular/material/chips';
 
 @NgModule({
   declarations: [AppComponent, NxWelcomeComponent],

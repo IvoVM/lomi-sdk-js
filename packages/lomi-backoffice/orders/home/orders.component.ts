@@ -9,8 +9,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
   styleUrls: ['./orders.component.scss'],
 })
 export class OrdersComponent implements OnInit {
-  public columnsToDisplay = ['number','name', 'completed_at', 'state', 'payment_state','actions'];
-  public commonColumns = ['name', 'completed_at', 'state', 'payment_state'];
+  public columnsToDisplay = ['number','name', 'completed_at', 'state','actions'];
+  public commonColumns = ['name'];
   public filtersForm: FormGroup;
 
   constructor(
@@ -21,6 +21,13 @@ export class OrdersComponent implements OnInit {
       stockLocationId: [null],
       deliveryState: ['Estado envio']
     })
+  }
+
+  stateName(state:any){
+    switch(state){
+      case "complete": return "Confirmado"
+    }
+    return state
   }
 
   showReceipt(){

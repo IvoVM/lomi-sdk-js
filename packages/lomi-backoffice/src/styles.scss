@@ -158,3 +158,18 @@ mat-form-field{
 .spacer{
   flex: 1 1 auto;
 }
+.bars{
+  display: flex;
+  flex-direction: column;
+  .bar{
+      background-color: green;
+      border-radius: 1px solid black;
+  }
+}
+
+.hoverable{
+  &:hover{
+    cursor: pointer;
+    font-weight: bold;
+  }
+}
