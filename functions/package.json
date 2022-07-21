@@ -14,11 +14,12 @@
   },
   "main": "index.js",
   "dependencies": {
+    "@googlemaps/polyline-codec": "^1.0.28",
+    "axios": "^0.26.1",
     "firebase-admin": "^10.0.2",
     "firebase-functions": "^3.18.0",
-    "pg": "^8.7.3",
-    "axios": "^0.26.1"
-    
+    "node-geocoder": "^4.2.0",
+    "pg": "^8.7.3"
   },
   "devDependencies": {
     "firebase-functions-test": "^0.2.0"
