@@ -12,6 +12,7 @@ export class OrdersComponent implements OnInit {
   public columnsToDisplay = ['number','name', 'completed_at', 'state','actions'];
   public commonColumns = ['name'];
   public filtersForm: FormGroup;
+  public tabIndex = 0;
 
   constructor(
     public ordersProvider:OrdersService,
@@ -34,9 +35,6 @@ export class OrdersComponent implements OnInit {
     return
   }
 
-  showItems(){
-    window.open('https://lomi.cl/admin/orders/R043007150/invoice')
-  }
 
   changeStockLocation(){
     this.ordersProvider.filters.stockLocationId = this.filtersForm.get('stockLocationId')?.value

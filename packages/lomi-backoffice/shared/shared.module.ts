@@ -28,6 +28,8 @@ import { MatTableModule } from '@angular/material/table';
 import { MatSelectModule } from '@angular/material/select';
 import { ReactiveFormsModule } from '@angular/forms';
 import { LineItemComponent } from './line-item/line-item.component';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -59,6 +61,8 @@ import { LineItemComponent } from './line-item/line-item.component';
     NgChatModule,
     MatTableModule,
     MatSelectModule,
+    MatTabsModule,
+    MatProgressSpinnerModule,
     ReactiveFormsModule,
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyDY6JRoW_FGIBo4tld_Y7jEL-83NWiX-lw',
@@ -86,7 +90,9 @@ import { LineItemComponent } from './line-item/line-item.component';
     MatTableModule,
     MatSelectModule,
     ReactiveFormsModule,
-    LineItemComponent
+    LineItemComponent,
+    MatTabsModule,
+    MatProgressSpinnerModule
   ],
 })
 export class SharedModule {}

@@ -14,6 +14,8 @@ import { Observable } from 'rxjs';
     public pendingOrders: any[] = []    
     public completedOrders: any[] = []
 
+    public loadingOrders = true;
+
     private ordersRef
     private orders$
 
