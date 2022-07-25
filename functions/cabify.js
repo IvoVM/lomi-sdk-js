@@ -15,7 +15,8 @@ let accessToken = ""
 async function setCabifyEstimates(order){
     try{
         await authCabify()
-        order.cabifyEstimates = await estimateCabify(order)
+        order.cabifyEstimated = await estimateCabify(order)
+        return order.cabifyEstimated
     } catch(e){
         return null
     }

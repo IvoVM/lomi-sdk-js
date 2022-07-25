@@ -8,7 +8,7 @@ import { OrdersService } from 'packages/lomi-backoffice/providers/lomi/orders.se
   styleUrls: ['./table.component.scss'],
 })
 export class TableComponent implements OnInit {
-  public columnsToDisplay = ['number','name', 'completed_at', 'state','actions'];
+  public columnsToDisplay = ['number','name', 'completed_at', 'state','actions', 'cabify_estimated'];
   public commonColumns = ['name'];
 
   @Input() state:any = null;
@@ -28,10 +28,11 @@ export class TableComponent implements OnInit {
     this.ordersProvider.currentStep++
   }
 
-  pickOrder(orderId:string){
-    this.ordersProvider.updateOrder(orderId, {
+  pickOrder(order:any){
+    this.ordersProvider.updateOrder(order.number, {
       state: "Listo para el despacho"
     })
+    this.ordersProvider.setCabifyEstimated(order)
     this.ordersProvider.currentStep++  
   }
 

@@ -10,16 +10,21 @@
             <button mat-mini-fab *ngIf="ordersProvider.stateName(order.state) == ordersProvider.states[0]" color="primary" aria-label="Example icon button with a menu icon">
                 <mat-icon>skip_next</mat-icon>
             </button> 
-            <button (click)="pickOrder(order.number)" mat-mini-fab *ngIf="ordersProvider.stateName(order.state) == ordersProvider.states[1]" color="primary" aria-label="Example icon button with a menu icon">
+            <button (click)="pickOrder(order)" mat-mini-fab *ngIf="ordersProvider.stateName(order.state) == ordersProvider.states[1]" color="primary" aria-label="Example icon button with a menu icon">
                 <mat-icon>checklist</mat-icon>
             </button> 
-            <button (click)="pickOrder(order.number)" mat-mini-fab *ngIf="ordersProvider.stateName(order.state) == ordersProvider.states[2]" color="primary" aria-label="Example icon button with a menu icon">
+            <button (click)="pickOrder(order)" mat-mini-fab *ngIf="ordersProvider.stateName(order.state) == ordersProvider.states[2]" color="primary" aria-label="Example icon button with a menu icon">
                 <mat-icon>local_shipping</mat-icon>
             </button> 
             <button (click)="showItems(order.number)" style="margin-left:16px" mat-mini-fab color="primary" aria-label="Example icon button with a menu icon">
                 <mat-icon>receipt_long</mat-icon>
             </button> 
         </td>
+    </ng-container>
+
+    <ng-container [matColumnDef]="'cabify_estimated'">
+        <th mat-header-cell *matHeaderCellDef> Estimaciones </th>
+        <td mat-cell *matCellDef="let order" > <span *ngIf="order.cabifyEstimated">{{order.cabifyEstimated[0].distance}} ({{order.cabifyEstimated[0].duration*1000 | date:'m'}} Mins. )</span> </td>
     </ng-container>
 
     <ng-container [matColumnDef]="'completed_at'">

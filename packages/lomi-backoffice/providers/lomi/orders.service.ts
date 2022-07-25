@@ -5,6 +5,7 @@ import { ActivatedRoute, UrlSegment } from '@angular/router';
 import { collection, doc, updateDoc } from 'firebase/firestore';
 import { Observable } from 'rxjs';
 import { query, orderBy, limit } from 'firebase/firestore';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -53,7 +54,8 @@ export class OrdersService {
   constructor(
     db: AngularFireDatabase,
     activatedRoute: ActivatedRoute,
-    private firestore: Firestore
+    private firestore: Firestore,
+    private httpClient: HttpClient
   ) {
     this.getOrdersData();
   }
@@ -98,6 +100,13 @@ export class OrdersService {
         }
       });
     });
+  }
+
+  setCabifyEstimated(order:any){
+    const req = this.httpClient.post("https://us-central1-lomi-35ab6.cloudfunctions.net/evaluateCabify",order)
+    req.subscribe((res)=>{
+      console.log(res)
+    })
   }
 
   getOrderByNumber(orderNumber: string) {
