@@ -6,6 +6,8 @@ import { collection, doc, updateDoc } from 'firebase/firestore';
 import { Observable } from 'rxjs';
 import { query, orderBy, limit } from 'firebase/firestore';
 import { HttpClient } from '@angular/common/http';
+import { storesMock } from './mocks/stores.mock';
+import { statesMock } from './mocks/states.mock';
 
 @Injectable({
   providedIn: 'root',
@@ -21,14 +23,14 @@ export class OrdersService {
   public orders$: any;
   public loadingOrders = true;
   public currentStep = 0;
-  public states = [
-    'Confirmado',
-    'Preparando pedido',
-    'Listo para el despacho',
-    'En despacho',
-    'Entregado',
-    'Devuelto',
-  ];
+
+  //For dynamic change, should be connected to firestore
+  public states = statesMock;
+  public stores = storesMock
+
+  get storeName(){
+    return this.stores[this.filters.stockLocationId].name
+  }
 
   activatedFilters: any = [];
 

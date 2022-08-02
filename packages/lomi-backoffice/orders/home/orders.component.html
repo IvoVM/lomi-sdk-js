@@ -48,48 +48,41 @@
        </div>
     </mat-drawer>
 
-    <div class="example-sidenav-content p" *ngIf="ordersProvider.orders">
-        <h1>Ordenes</h1>
-        <div>
-            
-        </div>
-        <mat-tab-group id="orders-tabs" [(selectedIndex)]="ordersProvider.currentStep" mat-align-tabs="start">
-            <mat-tab *ngFor="let state of ordersProvider.states" label="{{state}}">
-                <ng-container  *ngIf="!ordersProvider.loadingOrders">
-                    <lomii-table [state]="state"></lomii-table>
-                </ng-container>
-                <div *ngIf="ordersProvider.loadingOrders" style="width: 100%;height: 20em;display: flex;align-items: center;justify-content: center;flex-direction: column;">
-                    <h1>Cargando ordenes...</h1>
-                    <mat-spinner></mat-spinner>
-                </div>
-            </mat-tab>
-          </mat-tab-group>
-          <!--
-        <ng-container *ngFor="let order of ordersProvider.orders">
-            <div class="order" [routerLink]="['/orders/'+order.number]">
-                <p>{{order.number}}</p>
-                <div class="badges" style="display: flex;flex-direction: column;">
-                    <div class="badge" style="color:white;padding: 4px;" [ngStyle]='{"background-color":badge.color}' *ngFor="let badge of order.badges">
-                        {{ badge.abreviation }}
-                    </div>
-                </div>
-                    <p *ngIf="!order.bill_address.company">{{order.hermexOrder ? order.hermexOrder.status.description : order.journey_state }}</p>
-                    <p *ngIf="order.bill_address.company && order.journey_state == 'withdrawaled'">Pedido Retirado</p>
-                    <p *ngIf="order.bill_address.company && order.journey_state != 'withdrawaled'">Pedido por recoger</p>
-                    <img *ngIf="false && order.order.journey_state && order.order.journey_state != 'withdrawaled'" src="assets/images/cabify.png">
-                    <img *ngIf="false && order.order.journey_state && order.order.journey_state == 'withdrawaled'" src="assets/images/lomi.svg">
-            
-                    <p>{{order.shipment_state}}</p>
-                    <p>{{order.store_id}}</p>
-                    <p>{{order.completed_at | date:'dd - MMM'}}</p>
-                    <p>{{order.completed_at | date:'HH:mm:ss'}}</p>
-                    <p>{{order.ship_address_address1}}</p>
-                </div>
-                <div class="divider"></div>
-            </ng-container>
-        -->
-        <div class="divider"></div>
 
+    <div class="example-sidenav-content p" *ngIf="ordersProvider.orders">
+        <div style="display:flex;flex-direction: row;align-items: flex-end;justify-content: space-between;margin: 1em 0;">
+            <h1>Pedidos</h1>
+            <div class="filters" style="width: 100%;margin: 0 1em;">
+                <div style="width: 80%;display: flex;">
+                    <div style="margin-top:0.5em">
+                        <button style="margin-right: 1em;" mat-raised-button color="accent">Filtros</button>
+                    </div>
+                    <mat-form-field>
+                        <mat-label>Buscar por: </mat-label>
+                        <input matInput>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="actions" style="display: flex;flex-direction: row;margin-bottom: 1em;">
+                <button style="margin-right: 1em;" mat-stroked-button color="accent">Activar alerta</button>
+                <button mat-raised-button color="accent">Nuevo pedido</button>
+            </div>
+        </div>
+
+        <div class="half-card shadow" style="padding: 0.5em 1em;">
+         
+            <mat-tab-group id="orders-tabs" [(selectedIndex)]="ordersProvider.currentStep" mat-align-tabs="start">
+                <mat-tab *ngFor="let state of ordersProvider.states" label="{{state}}">
+                    <ng-container  *ngIf="!ordersProvider.loadingOrders">
+                        <lomii-table [state]="state"></lomii-table>
+                    </ng-container>
+                    <div *ngIf="ordersProvider.loadingOrders" style="width: 100%;height: 20em;display: flex;align-items: center;justify-content: center;flex-direction: column;">
+                        <h1>Cargando ordenes...</h1>
+                        <mat-spinner></mat-spinner>
+                    </div>
+                </mat-tab>
+              </mat-tab-group>
+        </div>
     </div>
 
 </mat-drawer-container>

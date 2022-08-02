@@ -24,7 +24,7 @@
 
     <ng-container [matColumnDef]="'cabify_estimated'">
         <th mat-header-cell *matHeaderCellDef> Estimaciones </th>
-        <td mat-cell *matCellDef="let order" > <span *ngIf="order.cabifyEstimated">{{order.cabifyEstimated[0].distance}} ({{order.cabifyEstimated[0].duration*1000 | date:'m'}} Mins. )</span> </td>
+        <td mat-cell *matCellDef="let order" > <span *ngIf="order.cabifyEstimated">{{(order.cabifyEstimated[0].distance / 1000).toFixed(1) }} Km ({{order.cabifyEstimated[0].duration*1000 | date:'m'}} Mins. )</span> </td>
     </ng-container>
 
     <ng-container [matColumnDef]="'completed_at'">

@@ -21,7 +21,7 @@ export class TableComponent implements OnInit {
   }
 
   showItems(orderId:string){
-    window.open('https://lomi.cl/admin/orders/'+orderId+'/invoice')
+    window.open('https://lomi.cl/admin/orders/'+orderId+'/invoice', "_blank")
     this.ordersProvider.updateOrder(orderId, {
       state: "Preparando pedido"
     })

@@ -1,23 +1,27 @@
 <div>
-    <mat-toolbar color="tertiary">
-        <img [routerLink]="['/']" style="max-height: 60px" src="assets/images/lomi.svg">       
+    <mat-toolbar style="background: white;" class="shadow">
+        <div style="width:12em;display: flex;justify-content: left;align-items: flex-end;">
+            <img [routerLink]="['/']" style="max-height: 40px" src="assets/images/lomi.svg">       
+            <h6 style="margin-left:0.5em;font-size: 1rem">Backoffice.</h6>
+        </div>
         <span class="spacer"></span>
-        <button [matMenuTriggerFor]="menu" mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
-            <mat-icon>menu</mat-icon>
-          </button>
-          <mat-menu #menu="matMenu">
-            <button (click)="auth.logout()" mat-menu-item><mat-icon>logout</mat-icon>Cerrar Sesión</button>
-            <button  mat-menu-item><mat-icon>settings</mat-icon>Configuración</button>
-          </mat-menu>            
+        <div style="display: flex;align-items: center;justify-content: center;">
+            <button [matMenuTriggerFor]="menu" mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+                <mat-icon class="material-symbols-outlined">account_circle_outline</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button (click)="auth.logout()" mat-menu-item><mat-icon>logout</mat-icon>Cerrar Sesión</button>
+                <button  mat-menu-item><mat-icon>settings</mat-icon>Configuración</button>
+              </mat-menu>            
+            <h6 style="font-size: 1rem;">Tienda {{orders.stores[orders.filters.stockLocationId].county}}</h6>
+        </div>
     </mat-toolbar>
 
 </div>
 
 <ng-container *ngIf="auth.signedIn">
     <mat-drawer-container class="example-container" autosize>
-        <mat-drawer #drawer opened class="example-sidenav" mode="side">
-            <lomii-menu></lomii-menu>
-        </mat-drawer>
+
       
         <div class="example-sidenav-content">
             <div style="padding-top:0em;height: 100vh;" class="p">
