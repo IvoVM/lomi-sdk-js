@@ -30,6 +30,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { LineItemComponent } from './line-item/line-item.component';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { AngularFireAnalyticsModule, ScreenTrackingService, UserTrackingService } from '@angular/fire/compat/analytics';
+import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
 
 @NgModule({
   declarations: [
@@ -56,6 +58,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     AngularFireStorageModule,
     AngularFireDatabaseModule,
     AngularFireAuthModule,
+    AngularFireAnalyticsModule,
     MatMenuModule,
     MatSlideToggleModule,
     NgChatModule,
@@ -64,6 +67,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     MatTabsModule,
     MatProgressSpinnerModule,
     ReactiveFormsModule,
+    MatBottomSheetModule,
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyDY6JRoW_FGIBo4tld_Y7jEL-83NWiX-lw',
     }),
@@ -92,7 +96,12 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     ReactiveFormsModule,
     LineItemComponent,
     MatTabsModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatBottomSheetModule
   ],
+  providers: [
+    ScreenTrackingService,
+    UserTrackingService
+  ]
 })
 export class SharedModule {}

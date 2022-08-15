@@ -3,15 +3,16 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  firebase: {
-    projectId: 'lomi-35ab6',
-    appId: '1:394847830425:web:ee909ee573e436db0f9308',
-    storageBucket: 'lomi-35ab6.appspot.com',
-    locationId: 'southamerica-east1',
-    apiKey: 'AIzaSyCC1UbhAV4WpCpUZsEiNPd_TVUD40Lh5Bc',
-    authDomain: 'lomi-35ab6.firebaseapp.com',
-    messagingSenderId: '394847830425',
-    measurementId: 'G-E3L40DPW9M',
+  firebase : {
+    apiKey: "AIzaSyD_YVEOH2VN42gPX4344yG8sOI6mJsiaIM",
+    authDomain: "lomi-35ab6.firebaseapp.com",
+    databaseURL: "https://lomi-35ab6-default-rtdb.firebaseio.com",
+    projectId: "lomi-35ab6",
+    storageBucket: "lomi-35ab6.appspot.com",
+    messagingSenderId: "394847830425",
+    appId: "1:394847830425:web:3e0e2053d7ae3bf70f9308",
+    measurementId: "G-QJ5VF5TCWZ"
+    
   },
   production: false,
 };

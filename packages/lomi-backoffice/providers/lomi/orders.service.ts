@@ -111,6 +111,13 @@ export class OrdersService {
     })
   }
 
+  setUberEstimated(order:any){
+    const req = this.httpClient.post("https://us-central1-lomi-35ab6.cloudfunctions.net/evaluateUber",order)
+    req.subscribe((res)=>{
+      console.log(res)
+    })
+  }
+
   getOrderByNumber(orderNumber: string) {
     console.log(this.orders);
     return this.orders.find((order) => {

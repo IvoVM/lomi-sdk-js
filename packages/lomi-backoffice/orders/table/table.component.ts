@@ -33,6 +33,7 @@ export class TableComponent implements OnInit {
       state: "Listo para el despacho"
     })
     this.ordersProvider.setCabifyEstimated(order)
+    this.ordersProvider.setUberEstimated(order)
     this.ordersProvider.currentStep++  
   }
 
