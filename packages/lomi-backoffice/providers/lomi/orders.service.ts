@@ -118,6 +118,24 @@ export class OrdersService {
     })
   }
 
+  createUberTrip(order: any) {
+    const req = this.httpClient.post("https://us-central1-lomi-35ab6.cloudfunctions.net/creatUberTrip",order)
+    req.subscribe((res)=>{
+      console.log(res)
+    })
+  }
+
+  refreshUberTrips(order:any) {
+    console.log(order)
+    const req = this.httpClient.post("https://us-central1-lomi-35ab6.cloudfunctions.net/refresUberTrip",order)
+    req.subscribe((res)=>{
+      order.uberTrips = res
+      console.log(res)
+    }, (err)=>{
+      console.log(err)
+    })
+  }
+
   getOrderByNumber(orderNumber: string) {
     console.log(this.orders);
     return this.orders.find((order) => {

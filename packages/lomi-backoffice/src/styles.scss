@@ -188,3 +188,10 @@ button[mat-button], button[mat-raised-button], button[mat-stroked-button]{
   border-radius: 50px;
 }
 
+.status-chip{
+  background-color: var(--primary-color);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 35px;
+  font-size: 0.8em;
+}

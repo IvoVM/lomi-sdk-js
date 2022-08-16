@@ -32,6 +32,10 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { AngularFireAnalyticsModule, ScreenTrackingService, UserTrackingService } from '@angular/fire/compat/analytics';
 import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
+import { MatRadioModule } from '@angular/material/radio';
+import {MatExpansionModule} from '@angular/material/expansion';
+import { SafePipe } from './pipes/safe-pipe';
+import { UberStatusPipe } from './pipes/status-uber-pipe';
 
 @NgModule({
   declarations: [
@@ -39,6 +43,8 @@ import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
     MenuComponent,
     AuthComponent,
     LineItemComponent,
+    SafePipe,
+    UberStatusPipe
   ],
   imports: [
     CommonModule,
@@ -67,7 +73,9 @@ import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
     MatTabsModule,
     MatProgressSpinnerModule,
     ReactiveFormsModule,
+    MatRadioModule,
     MatBottomSheetModule,
+    MatExpansionModule,
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyDY6JRoW_FGIBo4tld_Y7jEL-83NWiX-lw',
     }),
@@ -97,7 +105,11 @@ import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
     LineItemComponent,
     MatTabsModule,
     MatProgressSpinnerModule,
-    MatBottomSheetModule
+    MatBottomSheetModule,
+    MatRadioModule,
+    MatExpansionModule,
+    SafePipe,
+    UberStatusPipe
   ],
   providers: [
     ScreenTrackingService,

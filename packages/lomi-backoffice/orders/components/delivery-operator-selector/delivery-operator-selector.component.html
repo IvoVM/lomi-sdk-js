@@ -1,0 +1,48 @@
+<h1>Selecciona un operador</h1>
+<mat-radio-group [(ngModel)]="selectedOperator" style="display: flex;flex-direction: column;">
+    <div *ngFor="let operator of operators">
+        <div *ngFor="let trip of operator.trips(order)">
+            <mat-card>
+                <mat-radio-button [disabled]="!trip.duration_display"  [value]="trip.product_type ? operator.name+'-'+trip.product_type : operator.name" style="width: 100%;">
+                    <div style="width: 100%;">
+                        <h3 style="margin: 0;display: flex;align-items: center;"><img style="height: 1.5em;width: auto;margin: 0 1em 0 0;" src="assets/images/{{operator.icon}}"><b>{{operator.name}}</b></h3>
+                        <div style="display:flex;justify-content: space-between;width: 100%;">
+                            <div *ngIf="trip">
+                                <div style="display: flex;flex-direction: column;">
+                                    <span *ngIf="trip.deliveryTime_display">
+                                        <b>Total viaje: </b>{{trip.deliveryTime_display}} Minutos
+                                    </span>
+
+                                    <span *ngIf="trip.product_type">
+                                        <b>Tipo : </b>{{trip.product_type}}
+                                    </span>
+                
+                                    <span *ngIf="trip.duration_display">
+                                        <b>Est viaje : </b>{{trip.duration_display}} Mins
+                                    </span>
+                
+                                    <span *ngIf="trip.eta_display">
+                                        <b>Est arrivo en tienda: </b>{{trip.eta_display}}
+                                    </span>
+            
+                                        
+                                    <span *ngIf="trip.cost_display">
+                                        <b>Est costo del viaje: </b>${{trip.cost_display}}
+                                    </span>
+                                </div>
+                            </div>
+                            <div *ngIf="!trip.duration_display">
+                                <div style="display: flex;flex-direction: column;">
+                                    <span>
+                                        <b>No hay viajes disponible</b>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </mat-radio-button>
+            </mat-card>
+        </div>
+    </div>
+    <button (click)="selectOperator()" mat-raised-button color="accent">Solicitar Envio</button>
+</mat-radio-group>

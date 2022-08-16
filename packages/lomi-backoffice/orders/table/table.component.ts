@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { OrdersService } from 'packages/lomi-backoffice/providers/lomi/orders.service';
+import { DeliveryOperatorSelectorComponent } from '../components/delivery-operator-selector/delivery-operator-selector.component';
 
 @Component({
   selector: 'lomii-table',
@@ -17,6 +19,7 @@ export class TableComponent implements OnInit {
 
   constructor(
     public ordersProvider:OrdersService,
+    private _bottomSheet: MatBottomSheet
   ) {
   }
 
@@ -35,6 +38,12 @@ export class TableComponent implements OnInit {
     this.ordersProvider.setCabifyEstimated(order)
     this.ordersProvider.setUberEstimated(order)
     this.ordersProvider.currentStep++  
+  }
+
+  createTrip(order:any){
+    this._bottomSheet.open(DeliveryOperatorSelectorComponent, {
+      data: order
+    })
   }
 
   stateName(state:any){

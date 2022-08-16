@@ -1,12 +1,3 @@
-const NodeGeocoder = require('node-geocoder');
-
-const options = {
-  provider: 'google',
-  apiKey: 'AIzaSyD_YVEOH2VN42gPX4344yG8sOI6mJsiaIM', // for Mapquest, OpenCage, Google Premier
-  formatter: null // 'gpx', 'string', ...
-};
-
-const geocoder = NodeGeocoder(options);
 
 const axios = require('axios')
 
@@ -33,17 +24,7 @@ async function authCabify(){
 }
 
 async function estimateCabify(order){
-    const endAddressGeocode = await geocoder.geocode(order.ship_address_address1 + ", " + order.ship_address_city, ", " +order.ship_address_country);
-    const startAddressGeocode =  await(geocoder.geocode(order.shipment_stock_location_name))
-    console.log(startAddressGeocode, order.shipment_stock_location_name)
-    const stops = [
-        {...stop},
-        {...stop}
-    ]
-    stops[0].loc = order.shipment_stock_location_name.includes("Sewell") ? [-34.1741044,-70.689768] : [startAddressGeocode[0].latitude, startAddressGeocode[0].longitude]
-    stops[1].loc = [endAddressGeocode[0].latitude, endAddressGeocode[0].longitude]
-    
-    estimateQuery.variables.estimateInput.stops = stops
+    estimateQuery.variables.estimateInput.stops = order.stops
 
     const shipEstimate = await axios.post(
     "https://cabify.com/api/v3/graphql",
@@ -54,22 +35,6 @@ async function estimateCabify(order){
         }  
     })
     return shipEstimate.data.data.estimates
-}
-
-const stop = {
-    "addr": "",
-    "city": "",
-    "contact": {
-        "mobileCc": "",
-        "mobileNum": "",
-        "name": ""
-    },
-    "country": "Chile",
-    "loc": [
-        -33.532699,-70.5859263
-    ],
-    "name": "",
-    "num": ""
 }
 
 const estimateQuery = { 

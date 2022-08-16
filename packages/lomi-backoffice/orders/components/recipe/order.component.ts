@@ -22,7 +22,6 @@ export class OrderComponent implements OnInit {
     public ordersProvider:OrdersService
     
     ){
-      
     }
     
     evalType(value:any, typeName:string){
@@ -31,10 +30,11 @@ export class OrderComponent implements OnInit {
       }
       return typeof value == typeName
     }
-  ngOnInit(): void {
-    this.activatedRoute.params.subscribe((params:any)=>{
-      this.order = this.ordersProvider.getOrderByNumber(params.number)
-      console.log(this.order)
+    ngOnInit(): void {
+      this.activatedRoute.params.subscribe((params:any)=>{
+        this.order = this.ordersProvider.getOrderByNumber(params.number)
+        this.ordersProvider.refreshUberTrips(this.order)
+        console.log(this.order)
     })
   }
 }

@@ -31,6 +31,27 @@
     </mat-drawer>
   
     <div class="example-sidenav-content p" style="padding-bottom: 10em;">
+        <mat-card *ngIf="order.uberTrips">
+            <mat-card-title>
+                Proveedores de Ultima Milla
+            </mat-card-title>
+            <mat-accordion class="example-headers-align" multi>
+                <mat-expansion-panel *ngFor="let trip of order.uberTrips">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      <img style="height: 1.5em;width: auto;margin: 0 1em 0 0;" src="assets/images/uber.png">
+                      Uber <span style="margin-left:1em;" class="primary-color status-chip" color="primary">{{trip.status | uberStatus}}</span>
+                    </mat-panel-title>
+                    <mat-panel-description>
+                        {{trip.id}}
+                    </mat-panel-description>
+                  </mat-expansion-panel-header>
+              
+                  <iframe *ngIf="!trip.complete" [src]="trip.tracking_url | safe" width="100%" height="600" frameborder="0" allowfullscreen></iframe>
+              
+                </mat-expansion-panel>
+              </mat-accordion>
+        </mat-card>
         <h1>Line Items</h1>
         <lomii-line-item *ngFor="let lineItem of order.line_items" [lineItem]="lineItem"></lomii-line-item>
     </div>
