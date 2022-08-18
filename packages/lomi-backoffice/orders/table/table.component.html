@@ -43,7 +43,7 @@
         <th mat-header-cell *matHeaderCellDef> Hora del pedido </th>
         <td mat-cell *matCellDef="let order" > 
             <img *ngIf="order.uberTrips" style="height: 1.5em;width: auto;margin: 0 1em 0 0;" src="assets/images/uber.png">
-            {{stateName(order.state)}} 
+            <span class="status-chip status-chip-{{order.uberTrips[0].status}}" *ngIf="order.uberTrips">{{order.uberTrips[0].status | uberStatus }}</span>
         </td>
     </ng-container>
 

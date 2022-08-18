@@ -189,9 +189,16 @@ button[mat-button], button[mat-raised-button], button[mat-stroked-button]{
 }
 
 .status-chip{
-  background-color: var(--primary-color);
+  background-color: #00CCD9;
   color: white;
   padding: 6px 12px;
   border-radius: 35px;
   font-size: 0.8em;
+  &-completed{
+    background-color: var(--primary-color);
+  }
+  &-canceled, &-returned{
+    background-color: #FF961B !important;
+    color: white;
+  }
 }
