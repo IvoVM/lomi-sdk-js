@@ -11,12 +11,15 @@ import { statesMock } from './mocks/states.mock';
 import { Store } from '@ngrx/store';
 import { BackofficeState } from 'packages/lomi-backoffice/ngrx';
 import * as OrderActions from '../../ngrx/actions/orders.actions'
+import { ChangeStockLocation } from 'packages/lomi-backoffice/ngrx/actions/app.actions';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OrdersService {
-  public filters = {
+  public filters: {
+    stockLocationId: number;
+  } = {
     stockLocationId: 1,
   };
   public orders: any[] = [];
@@ -63,8 +66,18 @@ export class OrdersService {
     private httpClient: HttpClient,
     private ngrxStore: Store<BackofficeState>
   ) {
-    this.getOrdersData();
-    this.ngrxStore.dispatch(new OrderActions.Query())
+    this.updateStockLocation(1)
+  }
+
+  updateStockLocation(stockLocationId: number) {
+    this.filters.stockLocationId = stockLocationId;
+    this.ngrxStore.dispatch(new ChangeStockLocation(stockLocationId))
+    this.ngrxStore.dispatch(new OrderActions.Query({
+      stock_location_id: this.filters.stockLocationId
+    }))
+    this.ngrxStore.select('orders').subscribe((orders)=>{
+      this.loadingOrders = orders.loading
+    })
   }
 
   updateOrder(orderId: string, updateRecord: any) {

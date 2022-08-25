@@ -3,6 +3,7 @@
 import { Dictionary } from '@ngrx/entity';
 import { ActionReducer, ActionReducerMap, createFeatureSelector, createSelector, MetaReducer, select } from '@ngrx/store';
 import { filter, map, pipe } from 'rxjs';
+import { STORE_PICKING_STATE } from '../providers/lomi/mocks/states.mock';
 import { environment } from '../src/environments/environment';
 import { Order } from '../types/orders';
 import * as fromOrders from './reducers/orders.reducer';
@@ -37,10 +38,17 @@ export function debug(reducer: ActionReducer<any>): ActionReducer<any> {
   export const selectState0 = ((statusId:any) => pipe(
     select(selectOrders),
     map((orders) => {
-      return Object.values(orders).filter((order) => {
-        if(!order?.status){
-          return statusId == 0
-        } else {
+      return Object.values(orders).filter((order: Order | undefined) => {
+        if(order?.name?.includes('Retiro')){
+          if(statusId == STORE_PICKING_STATE){
+            return order.name.includes("Retiro")
+          }
+          return false
+        } 
+        else if(!order?.status){
+          return statusId == 1
+        }
+        else {
           return order?.status == statusId
         }
       })

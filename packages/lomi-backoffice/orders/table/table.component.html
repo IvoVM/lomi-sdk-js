@@ -20,7 +20,7 @@
             </button>
 
 
-            <button *ngIf="ordersProvider.stateName(order.state) == ordersProvider.states[0] " (click)="selectPicker(order)" style="margin-left:16px" mat-mini-fab color="accent" aria-label="Example icon button with a menu icon">
+            <button *ngIf="state == 1 " (click)="selectPicker(order)" style="margin-left:16px" mat-mini-fab color="accent" aria-label="Example icon button with a menu icon">
                 <mat-icon>person_add</mat-icon>
             </button> 
         </td>

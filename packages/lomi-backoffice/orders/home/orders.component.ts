@@ -37,8 +37,7 @@ export class OrdersComponent implements OnInit {
 
 
   changeStockLocation(){
-    this.ordersProvider.filters.stockLocationId = this.filtersForm.get('stockLocationId')?.value
-    this.ordersProvider.getOrdersData()
+    this.ordersProvider.updateStockLocation(this.filtersForm.get('stockLocationId')?.value)
   }
 
   ngOnInit(): void {

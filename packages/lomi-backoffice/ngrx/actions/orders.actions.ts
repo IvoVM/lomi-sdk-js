@@ -1,4 +1,5 @@
 import { Action } from '@ngrx/store';
+import { OrderByDirection } from 'firebase/firestore';
 import { Order } from 'packages/lomi-backoffice/types/orders';
 
 export const QUERY = '[Orders] Query';
@@ -13,7 +14,13 @@ export const UPDATE_SUCCESS = '[Orders] Update Success';
 
 export class Query implements Action {
   readonly type = QUERY;
-  constructor() {}
+  constructor(public payload:{
+    stock_location_id: number,
+    page?: number,
+    per_page?: number,
+    orderBy? : string,
+    orderBySort?: OrderByDirection,
+  }) {}
 }
 
 export class QuerySuccess implements Action {

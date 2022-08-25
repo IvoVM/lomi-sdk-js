@@ -4,14 +4,17 @@ import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
 import { Action, createFeatureSelector, createSelector, select } from "@ngrx/store";
 import { EntitySelectorsFactory } from "@ngrx/data";
 import { filter, pipe } from "rxjs";
+import { CHANGE_STOCK_LOCATION } from "../actions/app.actions";
 
 
-export interface State extends EntityState<Order> {}
+export interface State extends EntityState<Order> {
+    loading: boolean
+}
 export const orderAdapter:EntityAdapter<Order> = createEntityAdapter<Order>()
 
 
 const initialState:State = orderAdapter.getInitialState({
-    selectedOrderId: null,
+    loading: false
 })
 
 export function reducer(
@@ -20,7 +23,7 @@ export function reducer(
     ):State {
     switch (action.type) {
         case actions.ADDED: 
-            return orderAdapter.addOne(action.payload, state)
+            return { ...orderAdapter.addOne(action.payload, state), loading:false }
        
         case actions.MODIFIED:
             return orderAdapter.updateOne({
@@ -30,6 +33,9 @@ export function reducer(
         
         case actions.REMOVED:
             return orderAdapter.removeOne(action.payload.id, state)
+        
+        case CHANGE_STOCK_LOCATION:
+            return {...orderAdapter.removeAll(state), loading: true}
         
         default:
             return state
