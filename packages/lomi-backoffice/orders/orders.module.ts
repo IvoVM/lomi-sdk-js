@@ -5,6 +5,7 @@ import { SharedModule } from '../shared/shared.module';
 import { OrderComponent } from './components/recipe/order.component';
 import { TableComponent } from './table/table.component';
 import { DeliveryOperatorSelectorComponent } from './components/delivery-operator-selector/delivery-operator-selector.component';
+import { PickerSelectComponent } from './picker-select/picker-select.component';
 
 @NgModule({
   declarations: [
@@ -12,6 +13,7 @@ import { DeliveryOperatorSelectorComponent } from './components/delivery-operato
     OrderComponent,
     TableComponent,
     DeliveryOperatorSelectorComponent,
+    PickerSelectComponent,
   ],
   imports: [CommonModule, SharedModule],
   exports: [OrdersComponent, OrderComponent],

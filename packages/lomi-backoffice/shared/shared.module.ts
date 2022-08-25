@@ -22,8 +22,6 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { AuthComponent } from './auth/auth.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { NgChatModule } from 'ng-chat';
-import { AgmCoreModule } from '@agm/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatSelectModule } from '@angular/material/select';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -67,7 +65,6 @@ import { UberStatusPipe } from './pipes/status-uber-pipe';
     AngularFireAnalyticsModule,
     MatMenuModule,
     MatSlideToggleModule,
-    NgChatModule,
     MatTableModule,
     MatSelectModule,
     MatTabsModule,
@@ -76,9 +73,6 @@ import { UberStatusPipe } from './pipes/status-uber-pipe';
     MatRadioModule,
     MatBottomSheetModule,
     MatExpansionModule,
-    AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyDY6JRoW_FGIBo4tld_Y7jEL-83NWiX-lw',
-    }),
   ],
   exports: [
     MatCardModule,
@@ -97,8 +91,6 @@ import { UberStatusPipe } from './pipes/status-uber-pipe';
     MatMenuModule,
     AuthComponent,
     MatSlideToggleModule,
-    NgChatModule,
-    AgmCoreModule,
     MatTableModule,
     MatSelectModule,
     ReactiveFormsModule,

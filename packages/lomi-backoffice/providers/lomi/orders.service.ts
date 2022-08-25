@@ -8,6 +8,9 @@ import { query, orderBy, limit } from 'firebase/firestore';
 import { HttpClient } from '@angular/common/http';
 import { storesMock } from './mocks/stores.mock';
 import { statesMock } from './mocks/states.mock';
+import { Store } from '@ngrx/store';
+import { BackofficeState } from 'packages/lomi-backoffice/ngrx';
+import * as OrderActions from '../../ngrx/actions/orders.actions'
 
 @Injectable({
   providedIn: 'root',
@@ -57,9 +60,11 @@ export class OrdersService {
     db: AngularFireDatabase,
     activatedRoute: ActivatedRoute,
     private firestore: Firestore,
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private ngrxStore: Store<BackofficeState>
   ) {
     this.getOrdersData();
+    this.ngrxStore.dispatch(new OrderActions.Query())
   }
 
   updateOrder(orderId: string, updateRecord: any) {

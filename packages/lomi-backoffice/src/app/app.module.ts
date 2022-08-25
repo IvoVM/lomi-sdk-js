@@ -11,14 +11,26 @@ import { environment } from '../environments/environment';
 import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 import { SharedModule } from '../../shared/shared.module';
 import { OrdersModule } from '../../orders/orders.module';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+
+import { HttpClientModule } from '@angular/common/http';
+import { reducers } from 'packages/lomi-backoffice/ngrx';
+import { EffectsModule } from '@ngrx/effects';
+import { metaReducers } from 'packages/lomi-backoffice/ngrx';
+import { OrderEffects } from '../../ngrx/effects/orders.effects';
 
 @NgModule({
   declarations: [AppComponent, NxWelcomeComponent],
   imports: [
     BrowserModule,
     MatToolbarModule,
+    HttpClientModule,
     RouterModule.forRoot([], { initialNavigation: 'enabledBlocking' }),
     BrowserAnimationsModule,
+    StoreModule.forRoot(reducers, {metaReducers}),
+    EffectsModule.forRoot([OrderEffects ]),
+    !environment.production ? StoreDevtoolsModule.instrument() : [],
     OrdersModule,
     SharedModule
   ],

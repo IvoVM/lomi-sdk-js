@@ -7,7 +7,7 @@ import { LomiPromotionsComponent } from './promotions/lomi-promotions.component
 import { environment } from '../environments/environment';
 import { provideFirebaseApp, getApp, initializeApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
-
+import { HomeModule } from '../../home/home.module';
 @NgModule({
   declarations: [
     AppComponent, 
@@ -16,7 +16,11 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
   ],
   imports: [
     BrowserModule,
-
+    HomeModule,
+    provideFirebaseApp(() => initializeApp(
+      environment.firebaseConfig
+    )),
+    provideFirestore(() => getFirestore()),
   ],
   providers: [],
   bootstrap: [AppComponent],

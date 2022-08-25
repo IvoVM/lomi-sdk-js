@@ -1,4 +1,5 @@
-<table mat-table [dataSource]="state ? componentOrders : ordersProvider.orders" style="width: 100%;">
+
+<table mat-table [dataSource]="componentOrders" style="width: 100%;">
     <ng-container [matColumnDef]="'number'">
         <th mat-header-cell *matHeaderCellDef> Nº Orden </th>
         <td mat-cell *matCellDef="let order" [routerLink]="['/orders/'+order.number]" class="hoverable"> {{order.number}} </td>
@@ -7,7 +8,7 @@
     <ng-container [matColumnDef]="'actions'">
         <th mat-header-cell *matHeaderCellDef> Nº Orden </th>
         <td mat-cell *matCellDef="let order"  > 
-            <button mat-mini-fab *ngIf="ordersProvider.stateName(order.state) == ordersProvider.states[0]" color="primary" aria-label="Example icon button with a menu icon">
+            <button mat-mini-fab *ngIf="false && ordersProvider.stateName(order.state) == ordersProvider.states[0]" color="primary" aria-label="Example icon button with a menu icon">
                 <mat-icon>skip_next</mat-icon>
             </button> 
             <button (click)="pickOrder(order)" mat-mini-fab *ngIf="ordersProvider.stateName(order.state) == ordersProvider.states[1]" color="primary" aria-label="Example icon button with a menu icon">
@@ -19,8 +20,8 @@
             </button>
 
 
-            <button *ngIf="ordersProvider.stateName(order.state) == ordersProvider.states[0] " (click)="showItems(order.number)" style="margin-left:16px" mat-mini-fab color="primary" aria-label="Example icon button with a menu icon">
-                <mat-icon>receipt_long</mat-icon>
+            <button *ngIf="ordersProvider.stateName(order.state) == ordersProvider.states[0] " (click)="selectPicker(order)" style="margin-left:16px" mat-mini-fab color="accent" aria-label="Example icon button with a menu icon">
+                <mat-icon>person_add</mat-icon>
             </button> 
         </td>
     </ng-container>
