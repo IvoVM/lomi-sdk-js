@@ -12,8 +12,16 @@
               <mat-menu #menu="matMenu">
                 <button (click)="auth.logout()" mat-menu-item><mat-icon>logout</mat-icon>Cerrar Sesión</button>
                 <button  mat-menu-item><mat-icon>settings</mat-icon>Configuración</button>
-              </mat-menu>            
-            <h6 style="font-size: 1rem;">Tienda {{orders.stores[orders.filters.stockLocationId].county}}</h6>
+              </mat-menu>    
+              <button mat-button [matMenuTriggerFor]="storeMenu">
+                <span style="font-size: 1rem; display: flex; align-items: center;">
+                    Tienda {{orders.stores[orders.filters.stockLocationId].county}}
+                    <mat-icon>keyboard_arrow_down</mat-icon>
+                </span>
+              </button>
+              <mat-menu #storeMenu>
+                <button mat-menu-item (click)="openPickersDialog()">Pickers</button>
+              </mat-menu>
         </div>
     </mat-toolbar>
 

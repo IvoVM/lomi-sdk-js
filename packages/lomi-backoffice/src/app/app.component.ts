@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { PickersModalComponent } from 'packages/lomi-backoffice/pickers/components/pickers-modal/pickers-modal.component';
 import { AuthService } from '../../providers/lomi/auth.service';
 import { OrdersService } from '../../providers/lomi/orders.service';
 
@@ -14,9 +16,15 @@ export class AppComponent {
   constructor(
     public auth:AuthService,
     public orders:OrdersService,
+    public dialog: MatDialog
     ){
 
   }
 
   title = 'lomi-material';
+
+  openPickersDialog(): void {
+    this.dialog.open(PickersModalComponent, {
+    });
+  }
 }

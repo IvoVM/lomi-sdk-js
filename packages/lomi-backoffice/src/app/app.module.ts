@@ -19,6 +19,7 @@ import { reducers } from 'packages/lomi-backoffice/ngrx';
 import { EffectsModule } from '@ngrx/effects';
 import { metaReducers } from 'packages/lomi-backoffice/ngrx';
 import { OrderEffects } from '../../ngrx/effects/orders.effects';
+import { PickresModule } from 'packages/lomi-backoffice/pickers/pickres.module';
 
 @NgModule({
   declarations: [AppComponent, NxWelcomeComponent],
@@ -32,6 +33,7 @@ import { OrderEffects } from '../../ngrx/effects/orders.effects';
     EffectsModule.forRoot([OrderEffects ]),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     OrdersModule,
+    PickresModule,
     SharedModule
   ],
   providers: [],

@@ -1,0 +1,20 @@
+<h1 mat-dialog-title>Pickers</h1>
+<div mat-dialog-content>
+  <mat-form-field class="add-picker-form" appearance="outline">
+    <mat-label>Nuevo picker</mat-label>
+    <input  matInput placeholder="Nombre completo" [(ngModel)]="pickerName">
+    <button matSuffix mat-flat-button color="accent" (click)="registerPIcker()">
+      <span>Agregar</span>
+    </button>
+  </mat-form-field>
+  
+  <div class="pickers-container">
+    <div class="delete-picker" *ngFor="let picker of pickers">
+      <label class="picker-name">{{picker.name | titlecase}}</label>
+      <button  matSuffix mat-icon-button aria-label="Clear">
+        <mat-icon (click)="deletePicker(picker)" style="color: white;">close</mat-icon>
+      </button>
+    </div>
+  </div>
+
+</div>
