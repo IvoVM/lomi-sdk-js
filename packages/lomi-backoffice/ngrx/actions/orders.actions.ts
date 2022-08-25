@@ -5,9 +5,9 @@ import { Order } from 'packages/lomi-backoffice/types/orders';
 export const QUERY = '[Orders] Query';
 export const QUERY_SUCCESS = '[Orders] Query Success';
 
-export const ADDED = '[Orders] Added';
-export const MODIFIED = '[Orders] Modified';
-export const REMOVED = '[Orders] Removed';
+export const ADDED = '[Orders] Order added';
+export const MODIFIED = '[Orders] Order modified';
+export const REMOVED = '[Orders] Order removed';
 
 export const UPDATE = '[Orders] Update';
 export const UPDATE_SUCCESS = '[Orders] Update Success';
@@ -16,7 +16,7 @@ export class Query implements Action {
   readonly type = QUERY;
   constructor(public payload:{
     stock_location_id: number,
-    page?: number,
+    start_at?: number,
     per_page?: number,
     orderBy? : string,
     orderBySort?: OrderByDirection,
