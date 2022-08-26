@@ -1,6 +1,8 @@
+import { Timestamp } from "firebase/firestore"
+
 export type placedOrder = {
 	channel: string,
-	completed_at?: Date,
+	completed_at?: Timestamp,
 	email: string,
 	id: number,
     number: string,
@@ -27,11 +29,21 @@ export type placedOrder = {
     return_reason: string,
 	return_resolution: string,
 
-    
+    stops: Stop[],
 	statusChanges: statusChange[]
 	lineItems: LineItem[]
 	reintegratedItems: LineItem[]
 } 
+
+export type Stop = {
+	addr: string
+	city: string
+	contact: any
+	country: string
+	loc: any[]
+	name: string
+	num: string
+}
 
 export type ScheduledOrder = placedOrder //S1
 export type PendingOrder = ScheduledOrder //S2

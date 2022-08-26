@@ -73,8 +73,13 @@
          
             <mat-tab-group id="orders-tabs" [(selectedIndex)]="ordersProvider.currentStep" mat-align-tabs="start">
                 <mat-tab *ngFor="let state of ordersProvider.states;let i = index" label="{{state}}">
+                    <ng-template mat-tab-label>
+                        
+                        <span *ngIf="!records[state]">{{state}}</span>
+                        <span matBadge="{{records[state]}}" matBadgeColor="accent" *ngIf="records[state]">{{state}}</span>
+                    </ng-template>
                     <ng-container  *ngIf="!ordersProvider.loadingOrders">
-                        <lomii-table [state]="i"></lomii-table>
+                        <lomii-table (recordsFetched)="records[state] = $event" [state]="i"></lomii-table>
                     </ng-container>
                     <div *ngIf="ordersProvider.loadingOrders" style="width: 100%;height: 20em;display: flex;align-items: center;justify-content: center;flex-direction: column;">
                         <h1>Cargando ordenes...</h1>

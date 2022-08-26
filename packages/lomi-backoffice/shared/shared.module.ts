@@ -34,6 +34,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { SafePipe } from './pipes/safe-pipe';
 import { UberStatusPipe } from './pipes/status-uber-pipe';
+import {MatBadgeModule} from '@angular/material/badge';
 
 @NgModule({
   declarations: [
@@ -73,6 +74,7 @@ import { UberStatusPipe } from './pipes/status-uber-pipe';
     MatRadioModule,
     MatBottomSheetModule,
     MatExpansionModule,
+    MatBadgeModule
   ],
   exports: [
     MatCardModule,
@@ -100,6 +102,7 @@ import { UberStatusPipe } from './pipes/status-uber-pipe';
     MatBottomSheetModule,
     MatRadioModule,
     MatExpansionModule,
+    MatBadgeModule,
     SafePipe,
     UberStatusPipe
   ],

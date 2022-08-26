@@ -13,6 +13,7 @@ export class OrdersComponent implements OnInit {
   public commonColumns = ['name'];
   public filtersForm: FormGroup;
   public tabIndex = 0;
+  public records: any = {};
 
   constructor(
     public ordersProvider:OrdersService,

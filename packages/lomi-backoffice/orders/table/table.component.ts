@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { select, Store } from '@ngrx/store';
@@ -6,10 +6,10 @@ import {  selectState0 } from 'packages/lomi-backoffice/ngrx';
 import { selectAll } from 'packages/lomi-backoffice/ngrx/reducers/orders.reducer';
 import { ON_PICKING_STATE, PENDING_STATE, WAITING_AT_DRIVER_STATE } from 'packages/lomi-backoffice/providers/lomi/mocks/states.mock';
 import { OrdersService } from 'packages/lomi-backoffice/providers/lomi/orders.service';
-import { OnPickingOrder, Order } from 'packages/lomi-backoffice/types/orders';
+import { OnPickingOrder, Order, PendingOrder } from 'packages/lomi-backoffice/types/orders';
 import { DeliveryOperatorSelectorComponent } from '../components/delivery-operator-selector/delivery-operator-selector.component';
 import { PickerSelectComponent } from '../picker-select/picker-select.component';
-
+import * as OrderStates from '../../providers/lomi/mocks/states.mock';
 @Component({
   selector: 'lomii-table',
   templateUrl: './table.component.html',
@@ -17,10 +17,12 @@ import { PickerSelectComponent } from '../picker-select/picker-select.component'
 })
 export class TableComponent implements OnInit {
 
+  public orderStates = OrderStates
   public columnsToDisplay = ['number','name', 'completed_at', 'state','actions', 'cabify_estimated'];
   public commonColumns = ['name'];
 
   @Input() state:any = null;
+  @Output() recordsFetched = new EventEmitter<number>();
 
   componentOrders:any = []
 
@@ -40,7 +42,7 @@ export class TableComponent implements OnInit {
     this.ordersProvider.currentStep++
   }
 
-  pickOrder(order:OnPickingOrder){
+  pickOrder(order:Order){
     this.ordersProvider.updateOrder(order.number, {
       status: WAITING_AT_DRIVER_STATE
     })
@@ -49,7 +51,7 @@ export class TableComponent implements OnInit {
     this.ordersProvider.currentStep++  
   }
 
-  selectPicker(order:any){
+  selectPicker(order:PendingOrder){
     this._bottomSheet.open(PickerSelectComponent,{
       data: order.number
     }).afterDismissed().subscribe((picker)=>{
@@ -68,11 +70,33 @@ export class TableComponent implements OnInit {
     })
   }
 
-  stateName(state:any){
-    switch(state){
-      case "complete": return "Confirmado"
+  get actionIcon(){
+    switch(this.state){
+      case PENDING_STATE: return 'person_add'
+      case ON_PICKING_STATE: return 'arrow_forward_ios'
+      case WAITING_AT_DRIVER_STATE: return 'local_shipping'
     }
-    return state
+    return 'shopping_cart'
+  }
+
+  actionFunction(order:Order){
+    console.log(order)
+    switch(this.state){
+      case PENDING_STATE: return this.selectPicker(order)
+      case ON_PICKING_STATE: return this.pickOrder(order)
+      case WAITING_AT_DRIVER_STATE: return this.createTrip(order)
+    }
+    console.log(this.state,"state",)
+    return this.showItems
+  }
+
+  get actions(){
+    switch(this.state){
+      case PENDING_STATE: return ['selectPicker']
+      case ON_PICKING_STATE: return ['pickOrder']
+      case WAITING_AT_DRIVER_STATE: return ['createTrip']
+    }
+    return []
   }
 
 
@@ -84,6 +108,7 @@ export class TableComponent implements OnInit {
     ).subscribe((orders)=>{
       if(orders){
         this.componentOrders = orders
+        this.recordsFetched.emit(orders.length)
       }
     })
   }

@@ -8,6 +8,7 @@ import { OrdersService } from 'packages/lomi-backoffice/providers/lomi/orders.se
   styleUrls: ['./delivery-operator-selector.component.scss'],
 })
 export class DeliveryOperatorSelectorComponent implements OnInit {
+  public trips:any = []
   public operators = [
     {
       name: "Cabify",
@@ -16,15 +17,16 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
         if(!order.cabifyEstimated){
           return [{}]
         }
-
-        order.cabifyEstimated.map((cabifyEstimated:any)=>{
-          cabifyEstimated.duration_display = Math.round(cabifyEstimated.duration / 60)
-          cabifyEstimated.eta_display = cabifyEstimated.eta?.formatted
-          cabifyEstimated.cost_display = cabifyEstimated.priceBase.amount
-          cabifyEstimated.product_type = cabifyEstimated.product.name.es
-          cabifyEstimated.deliveryTime_display = Math.round((cabifyEstimated.eta.max + cabifyEstimated.duration) / 60)
+        return order.cabifyEstimated.map((cabifyEstimated:any)=>{
+          const duration_display = Math.round(cabifyEstimated.duration / 60)
+          const eta_display = cabifyEstimated.eta?.formatted
+          const cost_display = cabifyEstimated.priceBase.amount
+          const product_type = cabifyEstimated.product.name.es
+          const deliveryTime_display = Math.round((cabifyEstimated.eta.max + cabifyEstimated.duration) / 60)
+          return {
+            duration_display, eta_display, cost_display, product_type, deliveryTime_display
+          }
         })
-        return order.cabifyEstimated
       },
     },
     {
@@ -35,7 +37,7 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
           return [{}]
         }
 
-        const uberEstimated = order.uberEstimated
+        const uberEstimated = {...order.uberEstimated}
         uberEstimated.duration_display = uberEstimated.duration - uberEstimated.pickup_duration,
         uberEstimated.eta_display = uberEstimated.pickup_duration + " minutos",
         uberEstimated.cost_display = uberEstimated.fee
@@ -47,34 +49,37 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
       name: "Hermex",
       icon: "hermex.png",
       trips: (order:any)=>{
-       order.hermexEstimated = !order.hermexEstimated ? {
+       const hermexEstimated = !order.hermexEstimated ? {
           duration_display: order.cabifyEstimated ? order.cabifyEstimated[0].duration_display : order.uberEstimated? order.uberEstimated.duration_display : null,
         } : order.hermexEstimated
-        const hermexEstimated = order.hermexEstimated
         return [hermexEstimated]
       }
     }
   ]
-  public selectedOperator = ""
+  public selectedOperator:any = ""
 
 
   constructor(
     @Inject(MAT_BOTTOM_SHEET_DATA) public order: any,
     private _orders: OrdersService,
     ) {
-
+      this.trips = []
+      this.operators.forEach((operator:any)=>{
+        this.trips = this.trips.concat(...operator.trips(order).map((trip:any)=>({...trip, operator: operator.name, icon: operator.icon})))
+      })
   }
 
   selectOperator(){
     console.log(this.selectedOperator)
-    const order = this.order
+    const order = {...this.order}
+    const selectedTrip = this.trips[this.selectedOperator]
     order.line_items = order.line_items.map((lineItem:any)=>{
       return {
         quantity: lineItem.quantity,
         name: lineItem.name
       }
     })
-    switch(this.selectedOperator){
+    switch(selectedTrip.operator){
       case "Uber": this._orders.createUberTrip(order); break;
     }
   }

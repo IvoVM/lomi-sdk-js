@@ -13,6 +13,7 @@ exports.addCompletedOrder = functions.https.onRequest(
   async (request, response) => {
     const order = request.body;
     collectionKey = 'SPREE_ORDERS_' + order.shipment_stock_location_id;
+    order.completed_at = new Date(order.completed_at);
 
     const credentialsRef = admin
       .firestore()
@@ -69,6 +70,7 @@ exports.evaluateUber = functions.https.onRequest(async (request, response) => {
 });
 
 exports.refresUberTrip = functions.https.onRequest(async (request, response) => {
+  //uberStatus = "pending" | "accepted" | "arriving" | "in_progress" | "completed" | "driver_canceled" | "rider_canceled" | "no_drivers_available" | "unknown"
   cors(request, response, async () => {
     try{
       const order = request.body;
@@ -76,17 +78,17 @@ exports.refresUberTrip = functions.https.onRequest(async (request, response) => 
       order.uberTrips = await Promise.all(order.uberTrips.map(
         async (trip)=>{
           const uberTrip = await uberDispatcher.getTrip(trip.id);
+          const ref = await admin
+          .firestore()
+          .doc(collectionKey + '/' + order.number + "/journeys/" + order.journey_id)
+          .update({
+            status: order.uberTrip.status,
+          });
           return uberTrip
         }
       ))
       const collectionKey = 'SPREE_ORDERS_' + order.shipment_stock_location_id;
-      const ref = await admin
-      .firestore()
-      .doc(collectionKey + '/' + order.number)
-      .update({
-        uberTrips: order.uberTrips,
-        state: FORCE_STATE_ON_DELIVERY
-      });
+
       return response.status(200).send(order.uberTrips);
     } catch (e){
       return response.status(500).send(e);
@@ -120,13 +122,51 @@ exports.creatUberTrip = functions.https.onRequest(async (request, response) => {
       const ref = await admin
         .firestore()
         .doc(collectionKey + '/' + order.number)
-        .update({
-          uberTrips: order.uberTrips ? order.uberTrips.concat(uberTrip) : [uberTrip],
-          state: FORCE_STATE_ON_DELIVERY
-        });
-      return response.status(200).send(uberTrip);
+      ref.update({
+        status: 5,
+      })
+
+      const snapshot = await ref.get()
+      if(snapshot.exists){
+        const order = snapshot.data();
+        const journey = {
+          id: ref.collection("journeys").doc().id,
+          status: uberTrip.status,
+          orderNumber: order.number,
+          stock_location_id: order.shipment_stock_location_id,
+          uberTrip: uberTrip
+        }
+        await ref.collection("journeys").doc(journey.id).set(journey);
+        await admin
+        .firestore().doc("deliveringJourneys/" + journey.id).set(journey);
+        return response.status(200).send(journey);
+      }
+      if(uberTrip){
+        return response.status(500).send(uberTrip);
+      }
+      return response.status(500).send("Ha ocurrido un error desconocido al crear el viaje");
     } catch (e) {
       return response.status(e.status ? e.status : 500).send(e);
     }
   });
+});
+
+exports.scheduledFunction = functions.pubsub.schedule('* * * * *').onRun(async (context) => {
+  const snapshot = await admin.firestore().collection("deliveringJourneys").get()
+  await Promise.all(snapshot.docs.map(async (doc)=>{
+    console.log(doc)
+    await uberDispatcher.auth()
+    const trip = await uberDispatcher.getTrip(doc.data().uberTrip.id)
+    await admin.firestore().doc("deliveringJourneys/" + doc.id).update({
+      status: trip.status,
+      updatedAt: new Date(),
+      uberTrip: trip
+    })
+    await admin.firestore().doc("SPREE_ORDERS_" + doc.data().stock_location_id + "/" + doc.data().orderNumber + "/journeys/" + doc.data().id).update({
+      status: trip.status,
+      updatedAt: new Date(),
+      uberTrip: trip
+    })
+  }))
+  return null;
 });

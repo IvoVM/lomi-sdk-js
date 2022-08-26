@@ -6,11 +6,15 @@ import { EntitySelectorsFactory } from "@ngrx/data";
 import { filter, pipe } from "rxjs";
 import { CHANGE_STOCK_LOCATION } from "../actions/app.actions";
 
-
+export function sortByCompletedAt(a: any, b: any): number {
+    return -b.completed_at.seconds - -a.completed_at.seconds;
+  }
 export interface State extends EntityState<Order> {
     loading: boolean
 }
-export const orderAdapter:EntityAdapter<Order> = createEntityAdapter<Order>()
+export const orderAdapter:EntityAdapter<Order> = createEntityAdapter<Order>({
+    sortComparer: sortByCompletedAt
+})
 
 
 const initialState:State = orderAdapter.getInitialState({
