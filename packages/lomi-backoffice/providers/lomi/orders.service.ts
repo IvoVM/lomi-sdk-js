@@ -80,10 +80,10 @@ export class OrdersService {
     })
   }
 
-  updateOrder(orderId: string, updateRecord: any) {
+  updateOrder(orderId: string, updateRecord: any, stock_location_id = this.filters.stockLocationId) {
     const document = doc(
       this.firestore,
-      'SPREE_ORDERS_' + this.filters.stockLocationId + '/' + orderId
+      'SPREE_ORDERS_' + stock_location_id + '/' + orderId
     );
     updateDoc(document, updateRecord);
   }

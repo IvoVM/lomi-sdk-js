@@ -6,9 +6,9 @@ import { NxWelcomeComponent } from './nx-welcome.component';
 import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
-import { provideFirestore,getFirestore } from '@angular/fire/firestore';
+import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { SharedModule } from '../../shared/shared.module';
 import { OrdersModule } from '../../orders/orders.module';
 import { StoreModule } from '@ngrx/store';
@@ -19,20 +19,22 @@ import { reducers } from 'packages/lomi-backoffice/ngrx';
 import { EffectsModule } from '@ngrx/effects';
 import { metaReducers } from 'packages/lomi-backoffice/ngrx';
 import { OrderEffects } from '../../ngrx/effects/orders.effects';
+import { MainHeaderComponent } from './main-header/main-header.component';
+import { UserEffects } from 'packages/lomi-backoffice/ngrx/effects/user.effects';
 
 @NgModule({
-  declarations: [AppComponent, NxWelcomeComponent],
+  declarations: [AppComponent, NxWelcomeComponent, MainHeaderComponent],
   imports: [
     BrowserModule,
     MatToolbarModule,
     HttpClientModule,
     RouterModule.forRoot([], { initialNavigation: 'enabledBlocking' }),
     BrowserAnimationsModule,
-    StoreModule.forRoot(reducers, {metaReducers}),
-    EffectsModule.forRoot([OrderEffects ]),
+    StoreModule.forRoot(reducers, { metaReducers }),
+    EffectsModule.forRoot([OrderEffects, UserEffects]),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     OrdersModule,
-    SharedModule
+    SharedModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

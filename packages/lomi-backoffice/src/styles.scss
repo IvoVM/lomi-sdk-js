@@ -30,6 +30,15 @@
   
 }
 
+.yellow-bg{
+  background: #FFF1C0;
+  color: white;
+}
+
+.red-bg{
+  background: #FFCCC0;
+}
+
 
 mat-card{
   &.hoverable{
@@ -214,4 +223,14 @@ table{
 
 .mat-form-field-should-float{
   color: black !important;
+}
+
+img[name=sign-in-with-google]{
+  transition: 0.2s ease;
+  &:hover{
+    cursor: pointer;
+  }
+  &:active{
+    filter: contrast(0.8)
+  }
 }

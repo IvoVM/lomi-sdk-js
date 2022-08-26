@@ -6,14 +6,18 @@ import { filter, map, pipe } from 'rxjs';
 import { PENDING_STATE, STORE_PICKING_STATE } from '../providers/lomi/mocks/states.mock';
 import { environment } from '../src/environments/environment';
 import { Order } from '../types/orders';
+import { User } from '../types/user';
 import * as fromOrders from './reducers/orders.reducer';
+import { userReducer } from './reducers/user.reducer';
 
 export interface BackofficeState {
     orders: fromOrders.State
+    user: User,
 }
 
 export const reducers: ActionReducerMap<BackofficeState> = {
-    orders: fromOrders.reducer
+    orders: fromOrders.reducer,
+    user: userReducer
 };
 
 
@@ -26,7 +30,7 @@ export function debug(reducer: ActionReducer<any>): ActionReducer<any> {
     };
   }
   
-  export const metaReducers: MetaReducer<BackofficeState>[] = !environment.production ? [debug] : [debug];
+  export const metaReducers: MetaReducer<BackofficeState>[] = !environment.production ? [] : [];
   
   export const selectOrderState = createFeatureSelector<fromOrders.State>('orders');
 

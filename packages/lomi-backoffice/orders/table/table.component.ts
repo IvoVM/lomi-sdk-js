@@ -17,6 +17,8 @@ import * as OrderStates from '../../providers/lomi/mocks/states.mock';
 })
 export class TableComponent implements OnInit {
 
+  public secondsToWarning = 24 * 60 * 60;
+  public secondsToAlert = 7 * 60 * 60;
   public orderStates = OrderStates
   public columnsToDisplay = ['number','name', 'completed_at', 'state','actions', 'cabify_estimated'];
   public commonColumns = ['name'];
@@ -26,13 +28,18 @@ export class TableComponent implements OnInit {
 
   componentOrders:any = []
 
+  
   constructor(
     public ordersProvider:OrdersService,
     private _bottomSheet: MatBottomSheet,
     private store: Store,
-  ) {
+    ) {
+      
+    }
 
-  }
+    get currentTime(){
+      return new Date().getTime()
+    }
 
   showItems(orderId:string){
     window.open('https://lomi.cl/admin/orders/'+orderId+'/invoice', "_blank")
@@ -108,6 +115,16 @@ export class TableComponent implements OnInit {
     ).subscribe((orders)=>{
       if(orders){
         this.componentOrders = orders
+        this.componentOrders.forEach((order:Order)=>{
+          if(order && !order.completed_at?.seconds){
+            this.ordersProvider.updateOrder(
+            order.number, 
+            {
+              completed_at: new Date(order.completed_at as any)
+            }, 
+            order.shipment_stock_location_id)
+          }
+        })
         this.recordsFetched.emit(orders.length)
       }
     })

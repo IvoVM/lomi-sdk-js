@@ -1,7 +1,10 @@
 <div class="auth-container">
     <div class="layout">
-        <img src="assets/images/lomi.svg">
-        <h1 style="padding-top:1em;margin-bottom: 1em;">¿ Quien eres ?</h1>
+        <img style="width: 15em;padding: 5em 0" src="assets/images/lomi.svg">
+        <div style="text-align:left">
+            <h1>Log in</h1>
+            <p> Inicia sesión para acceder a Backoffice</p>
+        </div>
         <ng-container *ngIf="false">
             <mat-form-field class="example-form-field" appearance="fill">
                 <mat-label>Usuario o Correo</mat-label>
@@ -24,6 +27,6 @@
                 <button mat-button>Siguiente</button>
             </div>
         </ng-container>
-        <button mat-button (click)="auth.loginWithGoogle()"><img src="assets/images/google-g.png">Iniciar sesión con Google</button>
+        <img (click)="authWithGoogle()" src="assets/images/google/btn_google_signin_dark_normal_web.png" style="width: 100%;max-width: 300px;" name="sign-in-with-google">
     </div>
 </div>

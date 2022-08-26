@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../providers/lomi/auth.service';
+import { Store } from '@ngrx/store';
+import { GoogleLogin } from 'packages/lomi-backoffice/ngrx/actions/user.actions';
 
 @Component({
   selector: 'lomii-auth',
@@ -8,8 +9,12 @@ import { AuthService } from '../../providers/lomi/auth.service';
 })
 export class AuthComponent implements OnInit {
   constructor(
-    public auth:AuthService
+    private store: Store,
   ) {}
+
+  authWithGoogle(){
+    this.store.dispatch(new GoogleLogin())
+  }
 
   ngOnInit(): void {}
 }

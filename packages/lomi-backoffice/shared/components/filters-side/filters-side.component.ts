@@ -72,7 +72,6 @@ export class FiltersSideComponent implements OnInit {
       }
     })
     this.filtersForm= this.formBuilder.group(formGroup)
-    debugger
   }
 
   ngOnInit(): void {

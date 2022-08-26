@@ -1,5 +1,4 @@
 .auth-container{
-    background-color: var(--accent-color);
     height: calc(100vh - 4em);
     width: 100vw;
     display: flex;
@@ -8,9 +7,6 @@
 }
 
 .layout{
-    img{
-        max-height: 30px;
-    }
     display: flex;
     flex-direction: column;
     align-items: center;

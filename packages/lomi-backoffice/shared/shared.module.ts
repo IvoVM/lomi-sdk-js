@@ -43,6 +43,7 @@ import { FiltersSideComponent } from './components/filters-side/filters-side.com
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 @NgModule({
   declarations: [
@@ -87,6 +88,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     MatBadgeModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatProgressBarModule
   ],
   exports: [
     MatCardModule,
@@ -120,7 +122,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     FiltersSideComponent,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    MatProgressBarModule
   ],
   providers: [ScreenTrackingService, UserTrackingService],
 })

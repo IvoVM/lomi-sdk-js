@@ -43,7 +43,6 @@ export class OrderEffects {
             return returnedActions
         }),
         map((action:any) => {
-            console.log(action)
             return { type: `[Orders] Order ${action.type}`, payload: action.payload }
         })
     ))
