@@ -44,8 +44,8 @@ Thumbs.db
 *-debug.log
 .runtimeconfig.json
 
-packages/lomi-material
-packages/lomi-docs
-packages/lomi-material-e2e
-packages/lomi-docs-e2e
-packages/lomi-sdk
+packages/lomi-material/*
+packages/lomi-docs/*
+packages/lomi-material-e2e/*
+packages/lomi-docs-e2e/*
+packages/lomi-sdk/*

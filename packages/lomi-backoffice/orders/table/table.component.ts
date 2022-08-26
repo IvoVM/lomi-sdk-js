@@ -10,6 +10,7 @@ import { OnPickingOrder, Order, PendingOrder } from 'packages/lomi-backoffice/ty
 import { DeliveryOperatorSelectorComponent } from '../components/delivery-operator-selector/delivery-operator-selector.component';
 import { PickerSelectComponent } from '../picker-select/picker-select.component';
 import * as OrderStates from '../../providers/lomi/mocks/states.mock';
+import { Timestamp } from 'firebase/firestore';
 @Component({
   selector: 'lomii-table',
   templateUrl: './table.component.html',
@@ -120,7 +121,7 @@ export class TableComponent implements OnInit {
             this.ordersProvider.updateOrder(
             order.number, 
             {
-              completed_at: new Date(order.completed_at as any)
+              completed_at: Timestamp.fromDate(new Date(order.completed_at as any))
             }, 
             order.shipment_stock_location_id)
           }
