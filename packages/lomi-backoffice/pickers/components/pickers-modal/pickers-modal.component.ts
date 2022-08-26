@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { collectionData, Firestore } from '@angular/fire/firestore';
+import { Firestore } from '@angular/fire/firestore';
 import { MatDialogRef } from '@angular/material/dialog';
 import { addDoc, collection, deleteDoc, doc, onSnapshot, query } from 'firebase/firestore';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -12,6 +12,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class PickersModalComponent implements OnInit {
 
   pickerName: string = ''
+  inputError: string = ''
   public pickers$= new BehaviorSubject<any []>([])
   public pickers: any;
   public selectedPicker: any = null;
@@ -28,15 +29,17 @@ export class PickersModalComponent implements OnInit {
     this.getPickers()
   }
 
-  async registerPIcker(): Promise<any> {
-    if (!this.pickerName) return
+  async registerPicker(): Promise<string | void> {
+    if (!this.pickerName) return this.inputError = 'El picker es requerido'
+    let isUnisque = this.pickers.filter((p: any) => p.name.toLowerCase() === this.pickerName.toLowerCase())
+    if (isUnisque.length > 0) return this.inputError = 'El picker ya existe'
     const docRef = await addDoc(collection(this.firestore, 'pickers'), {
       name: this.pickerName
     });
-    if (docRef.id) return this.pickerName = ''
+    if (docRef.id) return this.pickerName = '', this.inputError = ''
   }
 
-  async getPickers() {
+  async getPickers(): Promise<void> {
     const q = query(collection(this.firestore, 'pickers'))
     onSnapshot(q, { includeMetadataChanges: true } , (snapShotResponse) => {
       let responseArray: any = []
@@ -50,7 +53,7 @@ export class PickersModalComponent implements OnInit {
     })
   }
 
-  async deletePicker(picker: any) {
+  async deletePicker(picker: any): Promise<any> {
     await deleteDoc(doc(this.firestore, 'pickers', picker.id));
   }
 }
