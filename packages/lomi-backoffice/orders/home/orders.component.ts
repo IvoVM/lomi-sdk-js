@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { OrdersService } from '../../providers/lomi/orders.service';
-import { FirestoreService } from '../..//src/providers/firestore.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({

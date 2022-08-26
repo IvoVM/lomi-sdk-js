@@ -1,0 +1,9 @@
+mat-card{
+    padding: 8px 16px 0 16px;
+    &.selected{
+        border: 1px solid #00c686;
+    }
+}
+.accent-bg{
+    height: 2.2em;
+}

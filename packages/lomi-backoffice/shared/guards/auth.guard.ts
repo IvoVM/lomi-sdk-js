@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { AuthService } from 'packages/lomi-material/providers/lomi/auth.service';
+import { AuthService } from '../../providers/lomi/auth.service';
 import { Observable } from 'rxjs';
 
 @Injectable({

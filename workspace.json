@@ -1,11 +1,6 @@
 {
   "version": 2,
   "projects": {
-    "lomi-backoffice": "packages/lomi-backoffice",
-    "lomi-docs": "packages/lomi-docs",
-    "lomi-docs-e2e": "packages/lomi-docs-e2e",
-    "lomi-material": "packages/lomi-material",
-    "lomi-material-e2e": "packages/lomi-material-e2e",
-    "lomi-sdk": "packages/lomi-sdk"
+    "lomi-backoffice": "packages/lomi-backoffice"
   }
 }

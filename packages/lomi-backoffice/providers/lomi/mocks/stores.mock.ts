@@ -25,3 +25,5 @@ export const storesMock:any = {
         county: "Viña del Mar",
     }
 }
+
+export const storesMockAsArray = Object.values(storesMock).map((store:any)=>store.name)

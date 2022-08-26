@@ -1,8 +1,31 @@
-<div class="accent-bg p">
-    <div class="filters" *ngFor="let filter of filters">
+<div class="accent-bg p" [formGroup]="filtersForm">
+    <h1 style="margin-bottom:2em">Filtros</h1>
+    <div class="filters" *ngFor="let filter of filters" >
+        <!-- Header -->
+        
+        <!-- Input Type Filter -->
         <mat-form-field *ngIf="filter.type === 'input'">
             <mat-label>{{filter.name}}</mat-label>
-            <input matInput>
+            <input matInput [formControlName]="filter.name">
+         </mat-form-field>
+
+        <!-- Select Type Filter -->
+        <mat-form-field  *ngIf="filter.type === 'select'">
+            <mat-label >{{filter.name}}</mat-label>
+            <mat-select [formControlName]="filter.name">
+                <mat-option matInput *ngFor="let option of filter.options ;let i = index;" value="{{option}}">{{option}}</mat-option>
+            </mat-select>
         </mat-form-field>
+        
+        <!-- Date Type Filter -->
+        <mat-form-field  color="primary"  *ngIf="filter.type === 'date'">
+                <ng-container>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <input [formControlName]="filter.name" matInput color="accent" [matDatepicker]="picker" placeholder="Choose a date" />
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                </ng-container>
+        </mat-form-field>
+
+        
     </div>
 </div>

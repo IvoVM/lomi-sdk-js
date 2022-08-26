@@ -27,7 +27,9 @@
 .accent-bg{
   background: var(--accent-color);
   color: white;
+  
 }
+
 
 mat-card{
   &.hoverable{
@@ -205,4 +207,11 @@ button[mat-button], button[mat-raised-button], button[mat-stroked-button]{
 
 table{
   width: 100%;
+}
+.mat-form-field-infix{
+  display: flex !important;
+}
+
+.mat-form-field-should-float{
+  color: black !important;
 }

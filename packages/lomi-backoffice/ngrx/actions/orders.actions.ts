@@ -20,6 +20,9 @@ export class Query implements Action {
     per_page?: number,
     orderBy? : string,
     orderBySort?: OrderByDirection,
+
+    //Where clausules
+    name?: string
   }) {}
 }
 

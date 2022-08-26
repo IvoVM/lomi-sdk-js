@@ -37,8 +37,7 @@ export function reducer(
         
         case actions.REMOVED:
             return orderAdapter.removeOne(action.payload.id, state)
-        
-        case CHANGE_STOCK_LOCATION:
+        case actions.QUERY:
             return {...orderAdapter.removeAll(state), loading: true}
         
         default:

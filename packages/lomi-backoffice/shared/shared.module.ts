@@ -40,6 +40,9 @@ import { SafePipe } from './pipes/safe-pipe';
 import { UberStatusPipe } from './pipes/status-uber-pipe';
 import { MatBadgeModule } from '@angular/material/badge';
 import { FiltersSideComponent } from './components/filters-side/filters-side.component';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @NgModule({
   declarations: [
@@ -55,6 +58,7 @@ import { FiltersSideComponent } from './components/filters-side/filters-side.com
     CommonModule,
     MatCardModule,
     MatGridListModule,
+    MatFormFieldModule,
     RoutingModule,
     MatInputModule,
     MatIconModule,
@@ -81,6 +85,8 @@ import { FiltersSideComponent } from './components/filters-side/filters-side.com
     MatBottomSheetModule,
     MatExpansionModule,
     MatBadgeModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
   ],
   exports: [
     MatCardModule,
@@ -111,8 +117,10 @@ import { FiltersSideComponent } from './components/filters-side/filters-side.com
     MatBadgeModule,
     SafePipe,
     UberStatusPipe,
-    MatInputModule,
-    FiltersSideComponent
+    FiltersSideComponent,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatFormFieldModule
   ],
   providers: [ScreenTrackingService, UserTrackingService],
 })

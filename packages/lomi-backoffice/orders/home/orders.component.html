@@ -1,37 +1,7 @@
 <mat-drawer-container class="example-container" autosize>
 
     <mat-drawer #drawer opened class="actions-sidenav" mode="side" style="width:300px" position="end">
-        <div class="p">
-            <h3>Filtros</h3>
-            <form [formGroup]="filtersForm">
-
                 <lomii-filters-side></lomii-filters-side>
-                <mat-form-field>
-                    <mat-label>Estado</mat-label>
-                    <mat-select formControlName="deliveryState">
-                        <mat-option value="frutasVerduras">Confirmado</mat-option>
-                        <mat-option value="bebidas">Preparando pedido</mat-option>
-                        <mat-option value="junta">Listo para el despacho</mat-option>
-                        <mat-option value="">En despacho</mat-option>
-                        <mat-option value="">Entregado</mat-option>
-                        <mat-option value="">Devuelto</mat-option>
-                    </mat-select>
-                </mat-form-field>
-
-                <mat-form-field>
-                    <mat-label>Tienda</mat-label>
-                    <mat-select formControlName="stockLocationId" (selectionChange)="changeStockLocation()" >
-                        <mat-option value="25">Vicuña Mackenna Poniente 6690 local 30 - La Florida</mat-option>
-                        <mat-option value="1">Balmoral 309 local 217 - Las Condes</mat-option>
-                        <mat-option value="24">Irarrázaval 200 local 107 - Ñuñoa</mat-option>
-                        <mat-option value="28">Sewell 20, Local 3 - Machalí</mat-option>
-                        <mat-option value="27">Av. Edmundo Eluchans 1737, Local 3 - Viña del Mar</mat-option>
-                        <mat-option value="-1">Todos</mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </form>
-
-       </div>
     </mat-drawer>
 
 
@@ -41,7 +11,7 @@
             <div class="filters" style="width: 100%;margin: 0 1em;">
                 <div style="width: 80%;display: flex;">
                     <div style="margin-top:0.5em">
-                        <button style="margin-right: 1em;" mat-raised-button color="accent">Filtros</button>
+                        <button style="margin-right: 1em;" mat-raised-button (click)="drawer.toggle()" color="accent">Filtros</button>
                     </div>
                     <mat-form-field>
                         <mat-label>Buscar por: </mat-label>
