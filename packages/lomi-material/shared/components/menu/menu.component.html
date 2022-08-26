@@ -1,5 +1,0 @@
-<div class="menu">
-    <div *ngFor="let menuItem of menuProvider.menu" class="menu-item  {{ router.url.includes(menuItem.route) ? 'selected' : '' }}" [routerLink]="[menuItem.route]">
-        <mat-icon class="material-symbols-outlined">{{menuItem.icon}}</mat-icon><p>{{menuItem.name}}</p>
-    </div>
-</div>
