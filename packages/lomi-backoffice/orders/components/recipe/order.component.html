@@ -16,17 +16,6 @@
             <h4 style="margin-top:0;margin-bottom: 0;opacity: 0.8;">{{order.ship_address_address2}}</h4>  
             <h4 style="margin-top:0;margin-bottom: 0;opacity: 0.8;">{{order.ship_address_city}}</h4>  
             <h4 style="margin-top:0;opacity: 0.8;">{{order.ship_address_phone}}</h4>  
-            <!--
-
-                <p *ngIf="!order.bill_address.company">{{order.hermexOrder ? order.hermexOrder.status.description : order.journey_state }}</p>
-                <p *ngIf="order.bill_address.company && order.journey_state == 'withdrawaled'">Pedido Retirado</p>
-                <p *ngIf="order.bill_address.company && order.journey_state != 'withdrawaled'">Pedido por recoger</p>
-                <p>Repartidor: {{order.hermexOrder ? order.hermexOrder.rider.name : ''}}</p>
-                <p>{{order.shipment_state}}</p>
-                <p>{{order.store_id}}</p>
-                <p>{{order.completed_at | date:'dd - MMM'}}</p>
-                <p>{{order.completed_at | date:'HH:mm:ss'}}</p>
-            -->
         </div>
     </mat-drawer>
   

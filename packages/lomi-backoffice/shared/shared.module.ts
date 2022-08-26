@@ -26,15 +26,20 @@ import { MatTableModule } from '@angular/material/table';
 import { MatSelectModule } from '@angular/material/select';
 import { ReactiveFormsModule } from '@angular/forms';
 import { LineItemComponent } from './line-item/line-item.component';
-import {MatTabsModule} from '@angular/material/tabs';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import { AngularFireAnalyticsModule, ScreenTrackingService, UserTrackingService } from '@angular/fire/compat/analytics';
-import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import {
+  AngularFireAnalyticsModule,
+  ScreenTrackingService,
+  UserTrackingService,
+} from '@angular/fire/compat/analytics';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatRadioModule } from '@angular/material/radio';
-import {MatExpansionModule} from '@angular/material/expansion';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { SafePipe } from './pipes/safe-pipe';
 import { UberStatusPipe } from './pipes/status-uber-pipe';
-import {MatBadgeModule} from '@angular/material/badge';
+import { MatBadgeModule } from '@angular/material/badge';
+import { FiltersSideComponent } from './components/filters-side/filters-side.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +48,8 @@ import {MatBadgeModule} from '@angular/material/badge';
     AuthComponent,
     LineItemComponent,
     SafePipe,
-    UberStatusPipe
+    UberStatusPipe,
+    FiltersSideComponent,
   ],
   imports: [
     CommonModule,
@@ -74,7 +80,7 @@ import {MatBadgeModule} from '@angular/material/badge';
     MatRadioModule,
     MatBottomSheetModule,
     MatExpansionModule,
-    MatBadgeModule
+    MatBadgeModule,
   ],
   exports: [
     MatCardModule,
@@ -104,11 +110,10 @@ import {MatBadgeModule} from '@angular/material/badge';
     MatExpansionModule,
     MatBadgeModule,
     SafePipe,
-    UberStatusPipe
+    UberStatusPipe,
+    MatInputModule,
+    FiltersSideComponent
   ],
-  providers: [
-    ScreenTrackingService,
-    UserTrackingService
-  ]
+  providers: [ScreenTrackingService, UserTrackingService],
 })
 export class SharedModule {}

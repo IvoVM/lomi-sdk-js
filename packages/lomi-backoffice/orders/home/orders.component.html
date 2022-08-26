@@ -5,21 +5,7 @@
             <h3>Filtros</h3>
             <form [formGroup]="filtersForm">
 
-                <mat-form-field>
-                    <mat-label>E-mail</mat-label>
-                    <input matInput>
-                </mat-form-field>
-
-                <mat-form-field>
-                    <mat-label>Numero de pedido empieza por</mat-label>
-                    <input matInput>
-                </mat-form-field>
-
-                <mat-form-field>
-                    <mat-label>Nombre empieza por</mat-label>
-                    <input matInput>
-                </mat-form-field>
-
+                <lomii-filters-side></lomii-filters-side>
                 <mat-form-field>
                     <mat-label>Estado</mat-label>
                     <mat-select formControlName="deliveryState">

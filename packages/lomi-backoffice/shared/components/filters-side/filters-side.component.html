@@ -1,0 +1,8 @@
+<div class="accent-bg p">
+    <div class="filters" *ngFor="let filter of filters">
+        <mat-form-field *ngIf="filter.type === 'input'">
+            <mat-label>{{filter.name}}</mat-label>
+            <input matInput>
+        </mat-form-field>
+    </div>
+</div>
