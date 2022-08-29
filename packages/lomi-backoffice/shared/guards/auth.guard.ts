@@ -25,7 +25,6 @@ export class AuthGuard implements CanActivate {
         return this.afAuth.user.pipe(
           map((user)=>{
             if(user){
-              debugger
               return true
             }else{
               this.router.navigateByUrl('/auth')

@@ -4,18 +4,19 @@ import {Actions, ofType, createEffect }            from '@ngrx/effects';
 
 
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { Observable, of, from } from 'rxjs';
-import { delay, map, mergeMap, switchMap }   from 'rxjs/operators';
+import { Observable, of, from, lastValueFrom } from 'rxjs';
+import { delay, map, mergeMap, switchMap, take, takeLast }   from 'rxjs/operators';
 
 import {User} from '../../types/user';
 import {UsersQuery} from '../reducers/user.reducer';
 import firebase from 'firebase/compat/app';
 
 import * as userActions from '../actions/user.actions';
-import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { BackofficeState } from '..';
 import { defer } from 'rxjs';
 import { Route, Router } from '@angular/router';
+import { collectionData, doc, Firestore, startAt, setDoc } from '@angular/fire/firestore';
+import { docSnapshots } from '@angular/fire/firestore';
 type Action = userActions.All;
 
 
@@ -36,12 +37,32 @@ getUser$: Observable<Action> = createEffect(() => this.actions$.pipe(
                 ofType(userActions.GET_USER),
                 map((action: userActions.GetUser) => action.payload ),
                 switchMap(payload => this.afAuth.authState ),
-                map( (authData) => {
-                   if (authData) {
+                switchMap(user => {
+                    if(user){
+                        this.router.navigateByUrl('/')
+                        this.store.dispatch(new userActions.Authenticated({
+                            uid: user.uid,
+                            email: user.email,
+                        }));
+                        const userDoc = doc(this.afs,`backoffice-users/${user.uid}`)
+                        docSnapshots(userDoc).pipe(take(1)).subscribe((doc) => {
+                            if(!doc.exists()){
+                                setDoc(userDoc,{
+                                    uid: user.uid,
+                                    email: user.email,
+                                })
+                            }
+                        })
+                        return docSnapshots(userDoc)
+                    } else {
+                        return of(null)
+                    }
+                }),
+                map( (userDocSnapshot) => {
+                    if (userDocSnapshot?.exists()) {
                        /// User logged in
-                       const user = new User(authData.uid, authData.displayName as any);
-                       this.router.navigateByUrl('/')
-                       return new userActions.Authenticated(user);
+                       const user = userDocSnapshot.data() as User;
+                       return new userActions.UserUpdated();
                    } else {
                        /// User not logged in
                        return new userActions.NotAuthenticated();
@@ -99,7 +120,7 @@ getUser$: Observable<Action> = createEffect(() => this.actions$.pipe(
       private store: Store<BackofficeState>,
       private afAuth: AngularFireAuth,
       private router: Router,
-      private db: AngularFireDatabase
+      private afs: Firestore,
   ) { }
 
   /**

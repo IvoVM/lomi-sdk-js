@@ -4,6 +4,7 @@ import { OrdersComponent } from '../../orders/home/orders.component';
 import { OrderComponent } from '../../orders/components/recipe/order.component';
 import { AuthGuard } from '../../shared/guards/auth.guard';
 import { AuthComponent } from '../../shared/auth/auth.component';
+import { UsersIndexComponent } from 'packages/lomi-backoffice/users/users-index/users-index.component';
 
 const routes: Routes = [
   {path: 'auth', component: AuthComponent},
@@ -12,9 +13,11 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       {path: 'dashboard', component: OrdersComponent},
+      { path: 'orders-history', component: OrdersComponent},
       {path: 'orders', component: OrdersComponent},
       {path: 'orders/:number', component: OrderComponent},
-      {path : '', redirectTo: '/dashboard', pathMatch: "full" },
+      {path: 'users', component: UsersIndexComponent},
+      {path : '', redirectTo: '/orders', pathMatch: "full" },
     ]
   }
 ];

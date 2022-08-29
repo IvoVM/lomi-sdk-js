@@ -1,8 +1,25 @@
 export type IUser = {
     uid:         string;
     displayName: string;
+    userRol: number;
+    email: string;
+    currentUserPrivileges: UserPrivelege[]
     loading?:    boolean;
     error?:      string;
+}
+
+export type UserRol = {
+    id: number;
+    rolName: string;
+    userPrivileges: UserPrivelege[];
+}
+
+export type UserPrivelege = {
+    privilegeName: string;
+    collectionNames: string[]
+    read?: boolean
+    write?: boolean
+    delete?: boolean
 }
 
 export class User {

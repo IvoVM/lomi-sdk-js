@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { BackofficeState } from 'packages/lomi-backoffice/ngrx';
+import { Query } from 'packages/lomi-backoffice/ngrx/actions/app.actions';
 import { OrdersService } from '../../providers/lomi/orders.service';
 
 @Component({
@@ -14,8 +16,10 @@ export class AppComponent {
 
   constructor(
     public orders:OrdersService,
-    public store:Store<BackofficeState>
+    public store:Store<BackofficeState>,
+    public router: Router,
     ){
+      this.store.dispatch(new Query())
       this.store.select('user').subscribe((user:any)=>{
         this.userId = user.uid
       })

@@ -3,25 +3,26 @@ import {Effect, Actions, ofType, createEffect} from '@ngrx/effects';
 import { BackofficeState } from '..';
 import { collectionData, doc, Firestore, startAt } from '@angular/fire/firestore';
 import { Action } from '@ngrx/store';
-import { collection, limit, onSnapshot, orderBy, query, QuerySnapshot, where } from 'firebase/firestore';
+import { collection, limit, onSnapshot, orderBy, query, QuerySnapshot, setDoc, updateDoc, where } from 'firebase/firestore';
 import { map, mergeMap, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators'
-import { ADDED, Query, QUERY, QUERY_SUCCESS } from '../actions/orders.actions';
+import { ADDED, Query, QUERY, QUERY_SUCCESS } from '../actions/users.actions';
 import { snapshotChanges } from '@angular/fire/compat/database';
 
 @Injectable()
-export class OrderEffects {
+export class UsersEffects {
     
     query$: Observable<Action> = createEffect(() => this.actions$.pipe(
         ofType(QUERY),
         switchMap((action: Query) => {
             const queryDefinition = query(
-              collection(this.afs,`SPREE_ORDERS_${action.payload.stock_location_id}`),
+              collection(this.afs,`backoffice-users`),
               ...(action.payload.name ? [orderBy('name', 'asc'),
               where('name', '>=', action.payload.name ? action.payload.name : ''),
               where('name', '<=', (action.payload.name ? action.payload.name : '') + '\uf8ff')] : []),
-            //OrderBy
-            action.payload.orderBy ? action.payload.orderBySort ? orderBy(action.payload.orderBy,action.payload.orderBySort) : orderBy(action.payload.orderBy) : orderBy('completed_at', 'desc'),
+              ...(action.payload.email ? [orderBy('name', 'asc'),
+              where('name', '>=', action.payload.email ? action.payload.email: ''),
+              where('name', '<=', (action.payload.email ? action.payload.email : '') + '\uf8ff')] : []),
             //Limit
             limit(action.payload.per_page ? action.payload.per_page : 25),
             )
@@ -35,16 +36,35 @@ export class OrderEffects {
         }),
         mergeMap((actions:any) => {
             const returnedActions = actions.docChanges().map((change:any) => {
-              return {
-                type: change.type,
-                payload: change.doc.data()
-              }  
+                return {
+                    type: change.type,
+                    payload: change.doc.data()
+                }  
             })
             return returnedActions
         }),
         map((action:any) => {
-            return { type: `[Orders] Order ${action.type}`, payload: action.payload }
+            return { type: `[Users] User ${action.type}`, payload: action.payload }
         })
     ))
+
+    updateUser: Observable<Action> = createEffect(() => this.actions$.pipe(
+        ofType('[Users] Update'),
+        switchMap((action: any) => {
+            const { uid, changes } = action;
+            return updateDoc(doc(this.afs, `backoffice-users/${uid}`), changes);
+        }),
+        map((res:any)=>{
+            if(res){
+                return { type: '[Users] User modified' , payload: {
+                    uid: res.uid,
+                    changes: res.changes
+                }}
+            } else {
+                return { type: '[Users] User not modified' }
+            }
+        })
+    ))
+
     constructor(private actions$: Actions, private afs: Firestore) {}
 }

@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
-import { NxWelcomeComponent } from './nx-welcome.component';
 import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -19,11 +18,13 @@ import { reducers } from 'packages/lomi-backoffice/ngrx';
 import { EffectsModule } from '@ngrx/effects';
 import { metaReducers } from 'packages/lomi-backoffice/ngrx';
 import { OrderEffects } from '../../ngrx/effects/orders.effects';
-import { MainHeaderComponent } from './main-header/main-header.component';
 import { UserEffects } from 'packages/lomi-backoffice/ngrx/effects/user.effects';
-
+import { UsersModule } from 'packages/lomi-backoffice/users/users.module';
+import { MainHeaderComponent } from 'packages/lomi-backoffice/shared/components/main-header/main-header.component';
+import { AppEffects } from 'packages/lomi-backoffice/ngrx/effects/app.effects';
+import { UsersEffects } from 'packages/lomi-backoffice/ngrx/effects/users.effects';
 @NgModule({
-  declarations: [AppComponent, NxWelcomeComponent, MainHeaderComponent],
+  declarations: [AppComponent, MainHeaderComponent],
   imports: [
     BrowserModule,
     MatToolbarModule,
@@ -31,11 +32,13 @@ import { UserEffects } from 'packages/lomi-backoffice/ngrx/effects/user.effects'
     RouterModule.forRoot([], { initialNavigation: 'enabledBlocking' }),
     BrowserAnimationsModule,
     StoreModule.forRoot(reducers, { metaReducers }),
-    EffectsModule.forRoot([OrderEffects, UserEffects]),
+    EffectsModule.forRoot([OrderEffects, UserEffects, AppEffects, UsersEffects]),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     OrdersModule,
     SharedModule,
+    UsersModule
   ],
+  exports: [],
   providers: [],
   bootstrap: [AppComponent],
 })

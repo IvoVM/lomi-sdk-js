@@ -1,10 +1,11 @@
 <div>
     <mat-toolbar style="background: white;" class="shadow">
-        <div style="width:12em;display: flex;justify-content: left;align-items: flex-end;">
+        <div style="width:6.5em;display: flex;justify-content: left;align-items: flex-end; border-right: 1px solid lightgrey;">
             <img [routerLink]="['/']" style="max-height: 40px" src="assets/images/lomi.svg">       
-            <h6 style="margin-left:0.5em;font-size: 1rem">Backoffice.</h6>
         </div>
-        <span class="spacer"></span>
+        <span class="spacer">
+            <h2 class="hoverable" class="{{router.url.split('/')[router.url.split('/').length - 1] === route.route ? 'primary-color' : 'accent-color'}}" *ngFor="let route of routes" [routerLink]="['/'+route.route]">{{route.name}}</h2>
+        </span>
         <div style="display: flex;align-items: center;justify-content: center;">
             <button [matMenuTriggerFor]="menu" mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
                 <mat-icon class="material-symbols-outlined">account_circle_outline</mat-icon>

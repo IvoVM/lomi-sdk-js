@@ -24,6 +24,10 @@
   color: var(--primary-color)
 }
 
+.accent-color{
+  color: var(--accent-color)
+}
+
 .accent-bg{
   background: var(--accent-color);
   color: white;
@@ -43,7 +47,7 @@
 mat-card{
   &.hoverable{
     opacity: 0.5;
-    transition: 0.3s ease;
+    transition: 0.5s ease;
     &:hover{
       cursor: pointer;
       opacity: 1;
@@ -168,6 +172,11 @@ mat-form-field{
 
 .spacer{
   flex: 1 1 auto;
+  display: flex;
+  h2{
+    margin: 0 1em;
+    font-size: 0.8em;
+  }
 }
 .bars{
   display: flex;
@@ -192,7 +201,8 @@ mat-form-field{
 .half-card{
   background-color: white;
   border-radius: 25px 25px 0 0;
-  min-height: 80vh;
+  height: 100%;
+  overflow: scroll;
 }
 
 button[mat-button], button[mat-raised-button], button[mat-stroked-button]{
@@ -232,5 +242,71 @@ img[name=sign-in-with-google]{
   }
   &:active{
     filter: contrast(0.8)
+  }
+}
+
+.mat-drawer-content{
+  overflow: hidden !important;
+  height: calc(100vh - 65px) !important;
+}
+
+.example-sidenav-content{
+  overflow: hidden !important;
+  height: 100%;
+}
+
+.example-sidenav{
+  height: 100%;
+}
+
+.table-responsive {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  .mat-table {
+      width: 100%;
+      max-width: 100%;
+      margin-bottom: 1rem;
+      display: table;
+      border-collapse: collapse;
+      margin: 0px;
+  }
+  .mat-row,
+  .mat-header-row {
+      display: table-row;
+  }
+  .mat-cell,
+  .mat-header-cell {
+      word-wrap: initial;
+      display: table-cell;
+      padding: 0px 5px;
+      line-break: unset;
+      width: auto;
+      white-space: nowrap;
+      overflow: hidden;
+      vertical-align: middle;
+  }
+}
+
+.gradient {
+  animation-duration: 1.8s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: placeHolderShimmer;
+  animation-timing-function: linear;
+  background: #f6f7f8;
+  background: linear-gradient(to right, #04C8D4 8%, #04C8D4 38%, #fafafa 54%);
+  background-size: 1000px 640px;
+  
+  position: relative;
+  
+}
+
+@keyframes placeHolderShimmer{
+  0%{
+      background-position: -468px 0
+  }
+  100%{
+      background-position: 468px 0
   }
 }

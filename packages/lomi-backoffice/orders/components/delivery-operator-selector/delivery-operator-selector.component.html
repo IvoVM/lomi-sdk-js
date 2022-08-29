@@ -1,7 +1,7 @@
 <h1>Selecciona un operador</h1>
 <mat-radio-group [(ngModel)]="selectedOperator" style="display: flex;flex-direction: column;">
         <div *ngFor="let trip of trips;let i  = index;">
-            <mat-card>
+            <mat-card *ngIf="!(requestingOperator && selectedOperator != i)" class="{{selectedOperator == i && requestingOperator ? 'gradient' : ''}}">
                 <mat-radio-button [disabled]="!trip.duration_display"  [value]="i" style="width: 100%;">
                     <div style="width: 100%;">
                         <h3 style="margin: 0;display: flex;align-items: center;"><img style="height: 1.5em;width: auto;margin: 0 1em 0 0;" src="assets/images/{{trip.icon}}">
@@ -47,5 +47,5 @@
                 </mat-radio-button>
             </mat-card>
         </div>
-    <button (click)="selectOperator()" mat-raised-button color="accent">Solicitar Envio</button>
+    <button [disabled]="requestingOperator" (click)="selectOperator()" mat-raised-button color="accent">Solicitar Envio</button>
 </mat-radio-group>

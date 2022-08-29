@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject} from '@angular/core';
-import {MAT_BOTTOM_SHEET_DATA} from '@angular/material/bottom-sheet';
+import {MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA} from '@angular/material/bottom-sheet';
 import { OrdersService } from 'packages/lomi-backoffice/providers/lomi/orders.service';
 
 @Component({
@@ -9,6 +9,7 @@ import { OrdersService } from 'packages/lomi-backoffice/providers/lomi/orders.se
 })
 export class DeliveryOperatorSelectorComponent implements OnInit {
   public trips:any = []
+  public requestingOperator = false;
   public operators = [
     {
       name: "Cabify",
@@ -60,6 +61,7 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
 
 
   constructor(
+    private _bottomSheetRef: MatBottomSheetRef<DeliveryOperatorSelectorComponent>,
     @Inject(MAT_BOTTOM_SHEET_DATA) public order: any,
     private _orders: OrdersService,
     ) {
@@ -79,8 +81,24 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
         name: lineItem.name
       }
     })
+    this.requestingOperator = true;
     switch(selectedTrip.operator){
-      case "Uber": this._orders.createUberTrip(order); break;
+      case "Uber": this._orders.createUberTrip(order).subscribe(
+        this.listenForOperator,
+        (err)=>{
+          console.log(err)
+          this.requestingOperator = false;
+        }
+        ); break;
+    }
+  }
+
+  listenForOperator = (order:any) => {
+    if(order.uberTrip){
+      this._orders.currentStep++
+      this._bottomSheetRef.dismiss(order)
+    } else {
+      this.requestingOperator = false
     }
   }
   

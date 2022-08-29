@@ -138,9 +138,7 @@ export class OrdersService {
 
   createUberTrip(order: any) {
     const req = this.httpClient.post("https://us-central1-lomi-35ab6.cloudfunctions.net/creatUberTrip",order)
-    req.subscribe((res)=>{
-      console.log(res)
-    })
+    return req
   }
 
   refreshUberTrips(order:any) {

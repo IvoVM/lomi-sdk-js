@@ -1,13 +1,2 @@
-<ng-container *ngIf="userId">
-    <lomii-main-header></lomii-main-header>
-    <mat-drawer-container class="example-container" autosize>
-
-      
-        <div class="example-sidenav-content">
-            <div style="padding-top:0em;height: 100vh;" class="p">
-                <router-outlet></router-outlet>
-            </div>
-        </div>
-      </mat-drawer-container>
-</ng-container>
-<lomii-auth></lomii-auth>
+<lomii-main-header *ngIf="!router.url.includes('auth')"></lomii-main-header>
+<router-outlet></router-outlet>

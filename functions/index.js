@@ -9,18 +9,21 @@ admin.initializeApp();
 const DEBUG_NUMBER = "+56935103087"
 const FORCE_STATE_ON_DELIVERY = "En despacho"
 
+const STORE_PICKING_STATE = 0
+const SCHEDULED_STATE = 1
+const PENDING_STATE = 2
+const ON_PICKING_STATE = 3
+const WAITING_AT_DRIVER_STATE = 4
+const DELIVERING_ORDER_STATE = 5
+const FINISHED_STATE = 6
+
 exports.addCompletedOrder = functions.https.onRequest(
   async (request, response) => {
     const order = request.body;
     collectionKey = 'SPREE_ORDERS_' + order.shipment_stock_location_id;
     order.completed_at = new Date(order.completed_at);
-
-    const credentialsRef = admin
-      .firestore()
-      .collection(collectionKey)
-      .doc(order.number);
+    const credentialsRef = admin.firestore().collection(collectionKey).doc(order.number);
     credentialsRef.set(order);
-
     return response.send('ok');
   }
 );
@@ -69,33 +72,6 @@ exports.evaluateUber = functions.https.onRequest(async (request, response) => {
   });
 });
 
-exports.refresUberTrip = functions.https.onRequest(async (request, response) => {
-  //uberStatus = "pending" | "accepted" | "arriving" | "in_progress" | "completed" | "driver_canceled" | "rider_canceled" | "no_drivers_available" | "unknown"
-  cors(request, response, async () => {
-    try{
-      const order = request.body;
-      await uberDispatcher.auth();
-      order.uberTrips = await Promise.all(order.uberTrips.map(
-        async (trip)=>{
-          const uberTrip = await uberDispatcher.getTrip(trip.id);
-          const ref = await admin
-          .firestore()
-          .doc(collectionKey + '/' + order.number + "/journeys/" + order.journey_id)
-          .update({
-            status: order.uberTrip.status,
-          });
-          return uberTrip
-        }
-      ))
-      const collectionKey = 'SPREE_ORDERS_' + order.shipment_stock_location_id;
-
-      return response.status(200).send(order.uberTrips);
-    } catch (e){
-      return response.status(500).send(e);
-    }
-  })
-})
-
 exports.creatUberTrip = functions.https.onRequest(async (request, response) => {
   cors(request, response, async () => {
     try {
@@ -123,7 +99,7 @@ exports.creatUberTrip = functions.https.onRequest(async (request, response) => {
         .firestore()
         .doc(collectionKey + '/' + order.number)
       ref.update({
-        status: 5,
+        status: DELIVERING_ORDER_STATE,
       })
 
       const snapshot = await ref.get()
@@ -157,16 +133,27 @@ exports.scheduledFunction = functions.pubsub.schedule('* * * * *').onRun(async (
     console.log(doc)
     await uberDispatcher.auth()
     const trip = await uberDispatcher.getTrip(doc.data().uberTrip.id)
-    await admin.firestore().doc("deliveringJourneys/" + doc.id).update({
-      status: trip.status,
-      updatedAt: new Date(),
-      uberTrip: trip
-    })
+    const journeyDoc = admin.firestore().doc("deliveringJourneys/" + doc.id)
+    
+    if(trip.complete){
+      await journeyDoc.delete()
+      admin.firestore().doc("SPREE_ORDERS_" + doc.data().stock_location_id + "/" + doc.data().orderNumber).update({
+        status: trip.status == 'canceled' ? WAITING_AT_DRIVER_STATE : FINISHED_STATE
+      })
+    } else {
+      await journeyDoc.update({
+        status: trip.status,
+        updatedAt: new Date(),
+        uberTrip: trip
+      })
+    }
+    
     await admin.firestore().doc("SPREE_ORDERS_" + doc.data().stock_location_id + "/" + doc.data().orderNumber + "/journeys/" + doc.data().id).update({
       status: trip.status,
       updatedAt: new Date(),
       uberTrip: trip
     })
+
   }))
   return null;
 });

@@ -8,16 +8,23 @@ import { environment } from '../src/environments/environment';
 import { Order } from '../types/orders';
 import { User } from '../types/user';
 import * as fromOrders from './reducers/orders.reducer';
+import * as fromApp from './reducers/app.reducer';
+import * as fromUsers from './reducers/users.reducer';
 import { userReducer } from './reducers/user.reducer';
+import { App } from '../types/app';
 
 export interface BackofficeState {
     orders: fromOrders.State
     user: User,
+    app: App,
+    users: fromUsers.State
 }
 
 export const reducers: ActionReducerMap<BackofficeState> = {
     orders: fromOrders.reducer,
-    user: userReducer
+    user: userReducer,
+    app: fromApp.reducer,
+    users: fromUsers.reducer
 };
 
 

@@ -44,6 +44,8 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
+import { MainHeaderComponent } from './components/main-header/main-header.component';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @NgModule({
   declarations: [
@@ -88,7 +90,8 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
     MatBadgeModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatToolbarModule,
   ],
   exports: [
     MatCardModule,
@@ -123,7 +126,7 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
     MatDatepickerModule,
     MatNativeDateModule,
     MatFormFieldModule,
-    MatProgressBarModule
+    MatProgressBarModule,
   ],
   providers: [ScreenTrackingService, UserTrackingService],
 })

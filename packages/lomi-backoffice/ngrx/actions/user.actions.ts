@@ -3,6 +3,7 @@ import { Action } from '@ngrx/store';
 export const GET_USER               = '[Auth] Get user';
 export const AUTHENTICATED          = '[Auth] Authenticated';
 export const NOT_AUTHENTICATED      = '[Auth] Not Authenticated';
+export const USER_UPDATED           = '[Auth] User Updated';
 
 export const GOOGLE_LOGIN           = '[Auth] Google login attempt';
 export const LOGOUT                 = '[Auth] Logout';
@@ -17,6 +18,10 @@ export class GetUser implements Action {
     constructor(public payload?: any) {}
 }
 
+export class UserUpdated implements Action {
+    readonly type = USER_UPDATED;
+    constructor() {}
+}
 export class Authenticated implements Action {
     readonly type = AUTHENTICATED;
     constructor(public payload?: any) {}
@@ -53,4 +58,5 @@ export type All
 | NotAuthenticated
 | GoogleLogin
 | AuthError
+| UserUpdated
 | Logout;
