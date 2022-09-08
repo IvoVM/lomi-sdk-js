@@ -1,5 +1,6 @@
 import { Component, OnInit, Inject} from '@angular/core';
 import {MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA} from '@angular/material/bottom-sheet';
+import { WAITING_AT_DRIVER_STATE } from 'packages/lomi-backoffice/providers/lomi/mocks/states.mock';
 import { OrdersService } from 'packages/lomi-backoffice/providers/lomi/orders.service';
 
 @Component({
@@ -50,9 +51,17 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
       name: "Hermex",
       icon: "hermex.png",
       trips: (order:any)=>{
-       const hermexEstimated = !order.hermexEstimated ? {
-          duration_display: order.cabifyEstimated ? order.cabifyEstimated[0].duration_display : order.uberEstimated? order.uberEstimated.duration_display : null,
-        } : order.hermexEstimated
+       const hermexEstimated = order.cabifyEstimated || order.uberEstimated ? 
+          order.uberEstimated?
+          {
+            duration_display: order.uberEstimated.duration
+          } :
+          {
+            duration_display: Math.round(order.cabifyEstimated[0].duration / 60)
+          }
+        : {
+          duration_display: 0,
+        }
         return [hermexEstimated]
       }
     }
@@ -90,11 +99,18 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
           this.requestingOperator = false;
         }
         ); break;
+      case "Hermex": this._orders.createHermexTrip(order).subscribe(
+        this.listenForOperator,
+        (err)=>{
+          console.log(err)
+          this.requestingOperator = false;
+        }
+      )
     }
   }
 
   listenForOperator = (order:any) => {
-    if(order.uberTrip){
+    if(order.status == WAITING_AT_DRIVER_STATE){
       this._orders.currentStep++
       this._bottomSheetRef.dismiss(order)
     } else {

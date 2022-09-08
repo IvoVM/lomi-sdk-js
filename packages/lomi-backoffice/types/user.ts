@@ -1,9 +1,8 @@
 export type IUser = {
     uid:         string;
     displayName: string;
-    userRol: number;
+    userRol: number | UserRol;
     email: string;
-    currentUserPrivileges: UserPrivelege[]
     loading?:    boolean;
     error?:      string;
 }

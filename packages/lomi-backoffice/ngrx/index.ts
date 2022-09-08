@@ -3,10 +3,10 @@
 import { Dictionary } from '@ngrx/entity';
 import { ActionReducer, ActionReducerMap, createFeatureSelector, createSelector, MetaReducer, select } from '@ngrx/store';
 import { filter, map, pipe } from 'rxjs';
-import { PENDING_STATE, STORE_PICKING_STATE } from '../providers/lomi/mocks/states.mock';
+import { FINISHED_STATE, PENDING_STATE, STORE_PICKING_STATE } from '../providers/lomi/mocks/states.mock';
 import { environment } from '../src/environments/environment';
 import { Order } from '../types/orders';
-import { User } from '../types/user';
+import { IUser, User } from '../types/user';
 import * as fromOrders from './reducers/orders.reducer';
 import * as fromApp from './reducers/app.reducer';
 import * as fromUsers from './reducers/users.reducer';
@@ -15,7 +15,7 @@ import { App } from '../types/app';
 
 export interface BackofficeState {
     orders: fromOrders.State
-    user: User,
+    user: IUser,
     app: App,
     users: fromUsers.State
 }
@@ -50,7 +50,13 @@ export function debug(reducer: ActionReducer<any>): ActionReducer<any> {
     select(selectOrders),
     map((orders) => {
       return Object.values(orders).filter((order: Order | undefined) => {
-        if(order?.name?.includes('Retiro')){
+        if(order?.status == FINISHED_STATE){
+          if(statusId == FINISHED_STATE){
+            return true
+          }
+          return false
+        }
+        else if(order?.name?.includes('Retiro')){
           if(statusId == STORE_PICKING_STATE){
             return order.name.includes("Retiro")
           }

@@ -37,6 +37,14 @@ export class FiltersSideComponent implements OnInit {
       type: 'date',
     },
     {
+      name: 'Correo',
+      type: 'input',
+    },
+    {
+      name: 'Numero de pedido',
+      type: 'input',
+    },
+    {
       name: 'Cliente',
       type: 'input',
     },
@@ -85,6 +93,12 @@ export class FiltersSideComponent implements OnInit {
       }
       if(value['Cliente']) {
         queryValues.name = value['Cliente']
+      }
+      if(value['Numero de pedido']) {
+        queryValues.number = value['Numero de pedido']
+      }
+      if(value['Correo']) {
+        queryValues.email = value['Correo']
       }
       this.store.dispatch(new Query(queryValues))
       console.log(value)

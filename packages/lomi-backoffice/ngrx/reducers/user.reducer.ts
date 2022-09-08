@@ -1,10 +1,16 @@
 import * as userActions from '../actions/user.actions';
 import { BackofficeState } from '..';
-import { User } from 'packages/lomi-backoffice/types/user';
+import { IUser, User } from 'packages/lomi-backoffice/types/user';
+import { createSelector } from '@ngrx/store'
 
 export type Action = userActions.All;
 
-const defaultUser = new User("0", 'GUEST');
+const defaultUser = {
+    uid: '',
+    email: '',
+    displayName: '',
+    userRol: 0,
+}
 
 /**
  * Define all store queries for Post(s)
@@ -16,11 +22,14 @@ export namespace UsersQuery {
 
 
 /// Reducer function
-export function userReducer(state: User = defaultUser, action: any) {
+export function userReducer(state: IUser = defaultUser, action: any) {
   switch (action.type) {
 
     case userActions.GET_USER:
         return { ...state, loading: true };
+    case userActions.USER_UPDATED:
+        console.log(action)
+        return { ...state, ...action.payload, loading: false };
     
     case userActions.AUTHENTICATED:
         return { ...state, ...action.payload, loading: false };
@@ -42,3 +51,19 @@ export function userReducer(state: User = defaultUser, action: any) {
 
   }
 }
+
+export const currentUserSelector = createSelector(
+    (state: BackofficeState) => {
+        const userRolDefinition = state.app.userRols.find(rol => rol.id === state.user.userRol)
+        console.log("userRolDefinition", userRolDefinition, state.app.userRols)
+        if(userRolDefinition) {
+            return {
+                ...state.user,
+                userRol: userRolDefinition.rolName
+            }
+        } else {
+            return state.user
+        }
+    },
+    (user) => user
+)

@@ -1,10 +1,23 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+
 const cabifyEstimates = require('./cabify');
 const uberDispatcher = require('./uber');
+const HmxDispatcher = require('./hermex');
+
 const cors = require('cors')({ origin: true });
 const Geocoder = require('./geocoder');
+const { default: axios } = require('axios');
+const { env } = require('process');
+const { orderInitialState } = require('./fillOrderState');
 admin.initializeApp();
+
+const PRODUCTION = env.PRODUCTION === 'true';
+const DEBUG = true;
+const DEBUG_EMAILS = [
+  "marco@lomi.cl",
+  "orlando@lomi.cl",
+]
 
 const DEBUG_NUMBER = "+56935103087"
 const FORCE_STATE_ON_DELIVERY = "En despacho"
@@ -71,6 +84,65 @@ exports.evaluateUber = functions.https.onRequest(async (request, response) => {
     return response.status(200).send(uberEstimated);
   });
 });
+
+exports.createHmxTrip = functions.https.onRequest(async (request, response) => {
+  cors(request, response, async () => {
+    const hmxOrder = await HmxDispatcher.placeOrder(request.body);
+    const order = request.body;
+    if(hmxOrder.status === 200){
+
+      // SET DOCUMENT INFORMATION
+      const collectionKey = 'SPREE_ORDERS_' + order.shipment_stock_location_id;
+      const orderDocRef = admin.firestore().doc(collectionKey + '/' + order.number)
+      await orderDocRef.update({
+        status: DELIVERING_ORDER_STATE
+      })
+      const orderJourneyDocRef = admin.firestore().doc(collectionKey + '/' + order.number + '/journeys/' + hmxOrder.data.trackingId)
+      const orderJourneyPayload = {
+        status: hmxOrder.data.status,
+        id: hmxOrder.data.trackingId,
+        orderNumber: hmxOrder.data.orderId,
+        stock_location_id: order.shipment_stock_location_id,
+      }
+      await orderJourneyDocRef.set(orderJourneyPayload)
+
+      const journeyDocRef = admin.firestore().doc('deliveringJourneys/' + hmxOrder.data.trackingId)
+      await journeyDocRef.set(orderJourneyPayload)
+      //SET DOCUMENT INFORMATION COULD BE A FUNCTION
+
+      return response.status(200).send(hmxOrder.data);
+    } else {
+      return response.status(500).send(hmxOrder.data);
+    }
+  })
+})
+
+exports.cancelHmxTrip = functions.https.onRequest(async (request, response) => {
+  cors(request, response, async () => {
+    const hmxOrder = await HmxDispatcher.cancelTrip(request.body);
+    const order = request.body;
+    if(hmxOrder.status === 200){
+            // SET DOCUMENT INFORMATION
+            const collectionKey = 'SPREE_ORDERS_' + order.shipment_stock_location_id;
+            const orderDocRef = admin.firestore().doc(collectionKey + '/' + order.number)
+            await orderDocRef.update({
+              status: WAITING_AT_DRIVER_STATE
+            })
+            const orderJourneyDocRef = admin.firestore().doc(collectionKey + '/' + order.number + '/journeys/' + hmxOrder.data.trackingId)
+            const orderJourneyPayload = {
+              status: "canceled",
+            }
+            await orderJourneyDocRef.update(orderJourneyPayload)
+      
+            const journeyDocRef = admin.firestore().doc('deliveringJourneys/' + hmxOrder.data.trackingId)
+            await journeyDocRef.delete()
+            //SET DOCUMENT INFORMATION COULD BE A FUNCTION
+
+            return response.status(200).send(hmxOrder.data);
+    }
+    return response.status(500).send(hmxOrder.data);
+  })
+})
 
 exports.creatUberTrip = functions.https.onRequest(async (request, response) => {
   cors(request, response, async () => {
@@ -157,3 +229,87 @@ exports.scheduledFunction = functions.pubsub.schedule('* * * * *').onRun(async (
   }))
   return null;
 });
+
+function statusAdapter(status){
+    switch(status){
+      case PENDING_STATE:
+        return "confirmado";
+      case ON_PICKING_STATE:
+        return "preparando pedido";
+      case WAITING_AT_DRIVER_STATE:
+        return "listo para el despacho";
+      case DELIVERING_ORDER_STATE:
+        return "en despacho";
+      case FINISHED_STATE:
+        return "Entregado";
+    }
+}
+
+exports.listenToOrderStatusChange = functions.firestore.document('SPREE_ORDERS_1/{docId}').onUpdate(async (change, context) => {
+  const order = change.after.data();
+  const previousOrder = change.before.data();
+  if(order.status == previousOrder.status){
+    return
+  }
+  if(!order.status){
+    console.log(order)
+    return
+  }
+  console.log(order)
+  if(DEBUG || !PRODUCTION  ){
+    DEBUG_EMAILS.forEach((email)=>{
+      axios.post('https://app-push-delivery.herokuapp.com/api/notification', {
+        email: email,
+        status: statusAdapter(order.status),
+        data: {
+          ruta: 'tabs/orders',
+        }
+      })
+    })
+  } else {
+    if(order.user_email){
+      axios.post('https://app-push-delivery.herokuapp.com/api/notification', {
+        email: "", //order.user_email,
+        status: statusAdapter(order.status)
+      })
+    }
+  }
+
+  return null;
+});
+
+exports.showLastOrders = functions.https.onRequest(async (request, response) => {
+  const stockLocation = request.query.stockLocation ? request.query.stockLocation : 1;
+  const limit = request.query.limit ? parseInt(request.query.limit) : 25;
+  const startsAt = request.query.startsAt ? new Date(request.query.startsAt) : new Date();
+  const endsAt = request.query.endsAt ? new Date(request.query.endsAt) : new Date();
+
+
+
+  cors(request, response, async () => {
+    try {
+      let snapshot = await admin
+        .firestore()
+        .collection("SPREE_ORDERS_"+stockLocation)
+        .orderBy('completed_at', 'desc')
+      if(request.query.startsAt){
+        snapshot = snapshot.where('completed_at', '>=', new Date(startsAt))
+      }
+      if(request.query.endsAt){
+        snapshot = snapshot.where('completed_at', '<=', new Date(endsAt))
+      }
+      snapshot = await snapshot.limit(limit).get()
+      const orders = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        data.line_items = data.line_items.map((item) => item.id)
+        delete data.uberTrip;
+        delete data.uberEstimated;
+        delete data.cabifyEstimated;
+        return {...orderInitialState, ...data};
+      })
+      return response.status(200).send(orders);
+    } catch (e) {
+      return response.status(e.status ? e.status : 500).send(e);
+    }
+  });
+})

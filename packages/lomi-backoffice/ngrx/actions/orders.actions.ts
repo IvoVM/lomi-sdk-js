@@ -23,7 +23,10 @@ export class Query implements Action {
 
     //Where clausules
     name?: string
-  }) {}
+    number?: string
+    state?: number
+    email?: string,
+}) {}
 }
 
 export class QuerySuccess implements Action {

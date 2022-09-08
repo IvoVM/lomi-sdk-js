@@ -1,13 +1,12 @@
-
 <mat-drawer-container class="example-container" autosize>
 
-    <mat-drawer #drawer opened class="actions-sidenav" mode="side" style="width:300px" position="end">
+    <mat-drawer #drawer class="actions-sidenav" mode="side" style="width:300px" position="end">
                 <lomii-filters-side></lomii-filters-side>
     </mat-drawer>
 
 
     <div class="example-sidenav-content p" *ngIf="ordersProvider.orders">
-        <div style="display:flex;flex-direction: row;align-items: flex-end;justify-content: space-between;margin: 1em 0;">
+        <div style="display:flex;flex-direction: row;align-items: flex-end;justify-content: space-between;margin: 1em 0;width:100%;max-width: 1080px;">
             <h1 style="margin:0 !important"><b>Pedidos</b></h1>
             <div class="actions" style="display: flex;flex-direction: row;">
                 <button (click)="drawer.toggle()" mat-raised-button color="accent">Filtros</button>

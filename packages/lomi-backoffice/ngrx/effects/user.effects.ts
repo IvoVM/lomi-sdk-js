@@ -7,7 +7,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Observable, of, from, lastValueFrom } from 'rxjs';
 import { delay, map, mergeMap, switchMap, take, takeLast }   from 'rxjs/operators';
 
-import {User} from '../../types/user';
+import {IUser, User} from '../../types/user';
 import {UsersQuery} from '../reducers/user.reducer';
 import firebase from 'firebase/compat/app';
 
@@ -61,8 +61,8 @@ getUser$: Observable<Action> = createEffect(() => this.actions$.pipe(
                 map( (userDocSnapshot) => {
                     if (userDocSnapshot?.exists()) {
                        /// User logged in
-                       const user = userDocSnapshot.data() as User;
-                       return new userActions.UserUpdated();
+                       const user = userDocSnapshot.data() as IUser;
+                       return new userActions.UserUpdated(user);
                    } else {
                        /// User not logged in
                        return new userActions.NotAuthenticated();

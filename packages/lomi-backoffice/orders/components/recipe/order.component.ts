@@ -1,5 +1,11 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { collectionData, Firestore } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { collection } from 'firebase/firestore';
+import { BackofficeState } from 'packages/lomi-backoffice/ngrx';
+import { Order } from 'packages/lomi-backoffice/types/orders';
+import { take, Unsubscribable } from 'rxjs';
 import { OrdersService } from '../../../providers/lomi/orders.service';
 
 
@@ -15,13 +21,19 @@ export class OrderComponent implements OnInit {
   lat = 51.678418;
   lng = 7.809007;
   
-  public order:any;
+  public order:Order | undefined;
+
+  public storeUnsubscribe:Unsubscribable | null = null;
   
   constructor( 
     public activatedRoute:ActivatedRoute,
-    public ordersProvider:OrdersService
-    
+    public ordersProvider:OrdersService,
+    public store:Store<BackofficeState>,
+
+    //BAD PRACTICE SHOULD BE SYNCED IN JOURNEYS STORE
+    public afs: Firestore,
     ){
+
     }
     
     evalType(value:any, typeName:string){
@@ -31,10 +43,22 @@ export class OrderComponent implements OnInit {
       return typeof value == typeName
     }
     ngOnInit(): void {
-      this.activatedRoute.params.subscribe((params:any)=>{
-        this.order = this.ordersProvider.getOrderByNumber(params.number)
-        this.ordersProvider.refreshUberTrips(this.order)
-        console.log(this.order)
+      this.activatedRoute.params.subscribe(async (params:any)=>{
+        const orderNumber = params.number
+        this.storeUnsubscribe?.unsubscribe ? this.storeUnsubscribe.unsubscribe() : null
+        this.storeUnsubscribe = this.store.select("orders").subscribe((state)=>{
+          this.order = Object.values(state.entities).find((order:any)=>order.number == orderNumber)
+          if(this.order){
+            const orderJourneysCollection = collection(this.afs,`SPREE_ORDERS_${this.order?.shipment_stock_location_id}/${this.order.number}/journeys`)
+            const orderJourneysObservable = collectionData(orderJourneysCollection)
+            orderJourneysObservable.pipe(take(1)).subscribe((journeys:any)=>{
+              if(this.order && journeys.length){
+                this.order.journeys = journeys
+              }
+            })
+          }
+          console.log(this.order)
+        })
     })
   }
 }

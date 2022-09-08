@@ -17,9 +17,20 @@ export class OrderEffects {
         switchMap((action: Query) => {
             const queryDefinition = query(
               collection(this.afs,`SPREE_ORDERS_${action.payload.stock_location_id}`),
-              ...(action.payload.name ? [orderBy('name', 'asc'),
+              ...(action.payload.name ? [
+                orderBy('name', 'asc'),
               where('name', '>=', action.payload.name ? action.payload.name : ''),
               where('name', '<=', (action.payload.name ? action.payload.name : '') + '\uf8ff')] : []),
+
+              ...(action.payload.email? [
+                orderBy('email', 'asc'),
+              where('email', '>=', action.payload.email ? action.payload.email : ''),
+              where('email', '<=', (action.payload.email ? action.payload.email : '') + '\uf8ff')] : []),
+
+              ...(action.payload.number ? [
+                orderBy('number', 'asc'),
+              where('number', '>=', action.payload.number ? action.payload.number : ''),
+              where('number', '<=', (action.payload.number ? action.payload.number : '') + '\uf8ff')] : []),
             //OrderBy
             action.payload.orderBy ? action.payload.orderBySort ? orderBy(action.payload.orderBy,action.payload.orderBySort) : orderBy(action.payload.orderBy) : orderBy('completed_at', 'desc'),
             //Limit

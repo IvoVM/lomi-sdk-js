@@ -59,6 +59,13 @@ export class TableComponent implements OnInit {
     this.ordersProvider.currentStep++  
   }
 
+  completeOrder(order:Order){
+    this.ordersProvider.updateOrder(order.number, {
+      status: OrderStates.FINISHED_STATE
+    })
+    this.ordersProvider.currentStep = OrderStates.FINISHED_STATE
+  }
+
   selectPicker(order:PendingOrder){
     this._bottomSheet.open(PickerSelectComponent,{
       data: order.number
@@ -83,6 +90,7 @@ export class TableComponent implements OnInit {
       case PENDING_STATE: return 'person_add'
       case ON_PICKING_STATE: return 'arrow_forward_ios'
       case WAITING_AT_DRIVER_STATE: return 'local_shipping'
+      case OrderStates.STORE_PICKING_STATE: return 'slide-toggle'
     }
     return 'shopping_cart'
   }
@@ -93,6 +101,7 @@ export class TableComponent implements OnInit {
       case PENDING_STATE: return this.selectPicker(order)
       case ON_PICKING_STATE: return this.pickOrder(order)
       case WAITING_AT_DRIVER_STATE: return this.createTrip(order)
+      case OrderStates.STORE_PICKING_STATE: return this.completeOrder(order)
     }
     console.log(this.state,"state",)
     return this.showItems
@@ -103,6 +112,7 @@ export class TableComponent implements OnInit {
       case PENDING_STATE: return ['selectPicker']
       case ON_PICKING_STATE: return ['pickOrder']
       case WAITING_AT_DRIVER_STATE: return ['createTrip']
+      case OrderStates.STORE_PICKING_STATE: return ['completeOrder']
     }
     return []
   }

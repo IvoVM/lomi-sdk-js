@@ -31,7 +31,12 @@ import { UsersEffects } from 'packages/lomi-backoffice/ngrx/effects/users.effect
     HttpClientModule,
     RouterModule.forRoot([], { initialNavigation: 'enabledBlocking' }),
     BrowserAnimationsModule,
-    StoreModule.forRoot(reducers, { metaReducers }),
+    StoreModule.forRoot(reducers, { metaReducers,
+      runtimeChecks: {
+        strictStateImmutability: false,
+        strictActionImmutability: false,
+      },
+    }),
     EffectsModule.forRoot([OrderEffects, UserEffects, AppEffects, UsersEffects]),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     OrdersModule,

@@ -1,4 +1,5 @@
 import { Action } from '@ngrx/store';
+import { IUser } from 'packages/lomi-backoffice/types/user';
 
 export const GET_USER               = '[Auth] Get user';
 export const AUTHENTICATED          = '[Auth] Authenticated';
@@ -20,7 +21,7 @@ export class GetUser implements Action {
 
 export class UserUpdated implements Action {
     readonly type = USER_UPDATED;
-    constructor() {}
+    constructor(public payload:IUser) {}
 }
 export class Authenticated implements Action {
     readonly type = AUTHENTICATED;

@@ -24,15 +24,19 @@ export class UsersIndexComponent implements OnInit {
 
   public users: IUser[] = []
   public rols:UserRol[] = []
-  public columnsToDisplay = ['email', 'id', 'rol', 'expandedDetail']
+  public columnsToDisplay = ['email',  'rol', 'expandedDetail']
   public expandedElement : IUser | null = null;
+
+  getRolName(rol:number){
+    const rolName = this.rols.find(rolName=>rolName.id == rol)?.rolName
+    return rolName
+  }
 
   constructor( private store:Store<BackofficeState> ) {
     this.store.dispatch(new Query({}))
     this.store.select('app').subscribe((app:App)=>{
       this.rols = app.userRols
       console.log(this.rols)
-      debugger
     })
     this.store.select('users').pipe(
       map((users:any)=>Object.values(users.entities))

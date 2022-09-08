@@ -8,9 +8,14 @@
     <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef> Acciones</th>
         <td mat-cell *matCellDef="let order"  > 
-            <button style="transform: scale(0.9);" mat-mini-fab *ngFor="let action of actions" (click)="actionFunction(order)" color="accent" aria-label="Example icon button with a menu icon">
-                <mat-icon style="transform: scale(0.9);">{{actionIcon}}</mat-icon>
-            </button> 
+            <ng-container *ngIf="actionIcon != 'slide-toggle'">
+                <button style="transform: scale(0.9);" mat-mini-fab *ngFor="let action of actions" (click)="actionFunction(order)" color="accent" aria-label="Example icon button with a menu icon">
+                    <mat-icon style="transform: scale(0.9);">{{actionIcon}}</mat-icon>
+                </button> 
+            </ng-container>
+            <mat-slide-toggle (toggleChange)="actionFunction(order)" *ngIf="actionIcon == 'slide-toggle'" >
+          Retirado
+        </mat-slide-toggle>
 
             
         </td>

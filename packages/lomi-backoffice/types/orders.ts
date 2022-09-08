@@ -31,8 +31,9 @@ export type placedOrder = {
 
     stops: Stop[],
 	statusChanges: statusChange[]
-	lineItems: LineItem[]
+	line_items: LineItem[]
 	reintegratedItems: LineItem[]
+	journeys?: Journey[]
 } 
 
 export type Stop = {
@@ -83,6 +84,10 @@ export type Journey = {
 	estimatedTime: number,
 	returned: boolean,
     line_items: LineItem[]
+	status: any,
+
+	uberTrip: any;
+
 }
 
 export type Picker = {
