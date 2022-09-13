@@ -48,8 +48,10 @@ getUser$: Observable<Action> = createEffect(() => this.actions$.pipe(
                         docSnapshots(userDoc).pipe(take(1)).subscribe((doc) => {
                             if(!doc.exists()){
                                 setDoc(userDoc,{
+                                    id: user.uid,
                                     uid: user.uid,
                                     email: user.email,
+                                    userRol: 0,
                                 })
                             }
                         })

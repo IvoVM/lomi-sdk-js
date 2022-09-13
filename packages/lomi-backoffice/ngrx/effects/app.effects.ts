@@ -22,8 +22,8 @@ export class AppEffects {
         return {
           type: '[App] Update Success',
           payload: {
-            userPrivileges: Object.values(app[0]),
-            userRols: Object.values(app[1] as Array<UserRol>),
+            userPrivileges: Object.values(app[3]),
+            userRols: Object.values(app[4] as Array<UserRol>),
           }
         }
       })

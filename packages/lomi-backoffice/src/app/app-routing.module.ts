@@ -5,6 +5,7 @@ import { OrderComponent } from '../../orders/components/recipe/order.component';
 import { AuthGuard } from '../../shared/guards/auth.guard';
 import { AuthComponent } from '../../shared/auth/auth.component';
 import { UsersIndexComponent } from 'packages/lomi-backoffice/users/users-index/users-index.component';
+import { SettingsComponent } from '../../settings/settings/settings.component';
 
 const routes: Routes = [
   {path: 'auth', component: AuthComponent},
@@ -17,6 +18,7 @@ const routes: Routes = [
       {path: 'orders', component: OrdersComponent},
       {path: 'orders/:number', component: OrderComponent},
       {path: 'users', component: UsersIndexComponent},
+      {path: 'settings', component: SettingsComponent},
       {path : '', redirectTo: '/orders', pathMatch: "full" },
     ]
   }

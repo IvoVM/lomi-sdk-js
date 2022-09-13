@@ -1,0 +1,45 @@
+<div class="example-sidenav-content">
+    <h1>Ajustes</h1>
+    <div class="half-card shadow">
+        <mat-tab-group style="width: 100%;">
+            <mat-tab label="Usuario">
+                <ng-template mat-tab-label>
+                    <span>Usuario</span>
+                </ng-template>
+                <div class="half-card">
+                    <div class="display-info-card">
+                        <div class="title">
+                            <h1>Informacion del usuario</h1>
+                        </div>
+                        <div class="section-header">
+                            <p>Correo :</p>
+                            <p>Rol :</p>
+                        </div>
+                        <div class="section-body">
+                            <p>Telefono : <span class="accent-color">{{userSettings?.phone ? userSettings.phone : 'Sin numero de telefono'}}</span></p>
+                            <p>Nombre : <span class="accent-color">{{userSettings?.phone ? userSettings.phone : 'Sin nombre'}}</span></p>
+                        </div>
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab label="Proveedores">
+                <div class="p">
+
+                    <ng-template mat-tab-label>
+                        <span>Proveedores de ultima milla</span>
+                    </ng-template>
+                    <div class="display-info-card" *ngFor="let lastMileProvider of lastMileProviders">
+                        <div class="title">
+                            <h1>{{lastMileProvider.name}}</h1>
+                        </div>
+                        <div class="section-body">
+                            <ng-container *ngFor="let keyvalue of lastMileProvider | keyvalue">
+                                <p *ngIf="keyvalue.key != 'name' && keyvalue.key != 'id'">{{keyvalue.key}} : <span class="accent-color">{{keyvalue.value}}</span></p>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</div>

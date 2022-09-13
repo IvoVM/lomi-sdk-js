@@ -23,6 +23,12 @@ import { UsersModule } from 'packages/lomi-backoffice/users/users.module';
 import { MainHeaderComponent } from 'packages/lomi-backoffice/shared/components/main-header/main-header.component';
 import { AppEffects } from 'packages/lomi-backoffice/ngrx/effects/app.effects';
 import { UsersEffects } from 'packages/lomi-backoffice/ngrx/effects/users.effects';
+import { JourneyEffects } from 'packages/lomi-backoffice/ngrx/effects/journey.effects';
+import { JourneysService } from 'packages/lomi-backoffice/providers/lomi/journeys.service';
+import { SettingsModule } from 'packages/lomi-backoffice/settings/settings.module';
+import { AngularFireMessagingModule } from '@angular/fire/compat/messaging';
+import { UserService } from './providers/user.service';
+
 @NgModule({
   declarations: [AppComponent, MainHeaderComponent],
   imports: [
@@ -37,14 +43,20 @@ import { UsersEffects } from 'packages/lomi-backoffice/ngrx/effects/users.effect
         strictActionImmutability: false,
       },
     }),
-    EffectsModule.forRoot([OrderEffects, UserEffects, AppEffects, UsersEffects]),
+    EffectsModule.forRoot([OrderEffects, UserEffects, AppEffects, UsersEffects, JourneyEffects]),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     OrdersModule,
     SharedModule,
-    UsersModule
+    UsersModule,
+    SettingsModule,
+    AngularFireMessagingModule
+    
   ],
   exports: [],
-  providers: [],
+  providers: [
+    JourneysService,
+    UserService
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

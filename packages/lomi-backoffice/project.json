@@ -18,7 +18,8 @@
         "inlineStyleLanguage": "scss",
         "assets": [
           "packages/lomi-backoffice/src/favicon.ico",
-          "packages/lomi-backoffice/src/assets"
+          "packages/lomi-backoffice/src/assets",
+          "packages/lomi-backoffice/src/firebase-messaging-sw.js"
         ],
         "styles": [
           "packages/lomi-backoffice/src/styles.scss",

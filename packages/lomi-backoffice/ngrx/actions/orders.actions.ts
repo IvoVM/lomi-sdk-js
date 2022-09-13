@@ -26,7 +26,11 @@ export class Query implements Action {
     number?: string
     state?: number
     email?: string,
-}) {}
+    
+    //StartsAt
+    startsAt?: Date,
+    endsAt?: Date,
+  }) {}
 }
 
 export class QuerySuccess implements Action {

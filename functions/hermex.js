@@ -33,7 +33,7 @@ async function cancelTrip(orderId){
         status: 9,
     }
 
-    const orderStatusChangeResponse = await axios.post(HMXURL+"/order/"+orderNumber+"/changeStatus", changeStatusPayload)
+    const orderStatusChangeResponse = await axios.post(HMXURL+"/order/"+orderId+"/changeStatus", changeStatusPayload)
     return orderStatusChangeResponse
 }
 

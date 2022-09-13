@@ -100,6 +100,12 @@ export class FiltersSideComponent implements OnInit {
       if(value['Correo']) {
         queryValues.email = value['Correo']
       }
+      if(value['Fecha Inicio']) {
+        queryValues.startsAt = value['Fecha Inicio']
+      }
+      if(value['Fecha Fin']) {
+        queryValues.endsAt = value['Fecha Fin']
+      }
       this.store.dispatch(new Query(queryValues))
       console.log(value)
     })

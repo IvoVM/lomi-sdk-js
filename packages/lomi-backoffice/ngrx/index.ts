@@ -10,6 +10,7 @@ import { IUser, User } from '../types/user';
 import * as fromOrders from './reducers/orders.reducer';
 import * as fromApp from './reducers/app.reducer';
 import * as fromUsers from './reducers/users.reducer';
+import * as fromJourneys from './reducers/journeys.reducer';
 import { userReducer } from './reducers/user.reducer';
 import { App } from '../types/app';
 
@@ -17,14 +18,16 @@ export interface BackofficeState {
     orders: fromOrders.State
     user: IUser,
     app: App,
-    users: fromUsers.State
+    users: fromUsers.State,
+    journeys: fromJourneys.State
 }
 
 export const reducers: ActionReducerMap<BackofficeState> = {
     orders: fromOrders.reducer,
     user: userReducer,
     app: fromApp.reducer,
-    users: fromUsers.reducer
+    users: fromUsers.reducer,
+    journeys: fromJourneys.reducer
 };
 
 
@@ -49,7 +52,7 @@ export function debug(reducer: ActionReducer<any>): ActionReducer<any> {
   export const selectState0 = ((statusId:any) => pipe(
     select(selectOrders),
     map((orders) => {
-      return Object.values(orders).filter((order: Order | undefined) => {
+      return Object.values(orders).filter((order: Order | undefined) => {
         if(order?.status == FINISHED_STATE){
           if(statusId == FINISHED_STATE){
             return true

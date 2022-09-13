@@ -10,6 +10,7 @@ const Geocoder = require('./geocoder');
 const { default: axios } = require('axios');
 const { env } = require('process');
 const { orderInitialState } = require('./fillOrderState');
+
 admin.initializeApp();
 
 const PRODUCTION = env.PRODUCTION === 'true';
@@ -29,6 +30,11 @@ const ON_PICKING_STATE = 3
 const WAITING_AT_DRIVER_STATE = 4
 const DELIVERING_ORDER_STATE = 5
 const FINISHED_STATE = 6
+
+//Imported Handlers
+const listenToNewOrder = require('./handlers/sendFcmNotifications')(admin);
+exports.sendFcmNotificationOnNewOrder = listenToNewOrder
+//End of Imported Handlers
 
 exports.addCompletedOrder = functions.https.onRequest(
   async (request, response) => {
@@ -103,6 +109,7 @@ exports.createHmxTrip = functions.https.onRequest(async (request, response) => {
         id: hmxOrder.data.trackingId,
         orderNumber: hmxOrder.data.orderId,
         stock_location_id: order.shipment_stock_location_id,
+        providerId: 2,
       }
       await orderJourneyDocRef.set(orderJourneyPayload)
 
@@ -210,7 +217,7 @@ exports.scheduledFunction = functions.pubsub.schedule('* * * * *').onRun(async (
     if(trip.complete){
       await journeyDoc.delete()
       admin.firestore().doc("SPREE_ORDERS_" + doc.data().stock_location_id + "/" + doc.data().orderNumber).update({
-        status: trip.status == 'canceled' ? WAITING_AT_DRIVER_STATE : FINISHED_STATE
+        status: trip.status == 'canceled' ? WAITING_AT_DRIVER_STATE : 'delivered' ? FINISHED_STATE : DELIVERING_ORDER_STATE
       })
     } else {
       await journeyDoc.update({
@@ -258,7 +265,7 @@ exports.listenToOrderStatusChange = functions.firestore.document('SPREE_ORDERS_1
   console.log(order)
   if(DEBUG || !PRODUCTION  ){
     DEBUG_EMAILS.forEach((email)=>{
-      axios.post('https://app-push-delivery.herokuapp.com/api/notification', {
+      axios.post('https://us-central1-lomi-35ab6.cloudfunctions.net/appPush/notification', {
         email: email,
         status: statusAdapter(order.status),
         data: {
@@ -268,7 +275,7 @@ exports.listenToOrderStatusChange = functions.firestore.document('SPREE_ORDERS_1
     })
   } else {
     if(order.user_email){
-      axios.post('https://app-push-delivery.herokuapp.com/api/notification', {
+      axios.post('https://us-central1-lomi-35ab6.cloudfunctions.net/appPush/notification', {
         email: "", //order.user_email,
         status: statusAdapter(order.status)
       })

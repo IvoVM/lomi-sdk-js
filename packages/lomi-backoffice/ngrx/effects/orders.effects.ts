@@ -2,12 +2,13 @@ import {Injectable} from '@angular/core';
 import {Effect, Actions, ofType, createEffect} from '@ngrx/effects';
 import { BackofficeState } from '..';
 import { collectionData, doc, Firestore, startAt } from '@angular/fire/firestore';
-import { Action } from '@ngrx/store';
+import { Action, Store } from '@ngrx/store';
 import { collection, limit, onSnapshot, orderBy, query, QuerySnapshot, where } from 'firebase/firestore';
 import { map, mergeMap, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators'
 import { ADDED, Query, QUERY, QUERY_SUCCESS } from '../actions/orders.actions';
 import { snapshotChanges } from '@angular/fire/compat/database';
+import { JourneyQuery } from '../actions/journey.actions';
 
 @Injectable()
 export class OrderEffects {
@@ -31,6 +32,17 @@ export class OrderEffects {
                 orderBy('number', 'asc'),
               where('number', '>=', action.payload.number ? action.payload.number : ''),
               where('number', '<=', (action.payload.number ? action.payload.number : '') + '\uf8ff')] : []),
+            
+            //StartsAt
+            ...(action.payload.startsAt ? [
+              where('completed_at', '>=', action.payload.startsAt ? action.payload.startsAt : ''),
+            ] : []),
+
+            //EndsAt
+            ...(action.payload.endsAt ? [
+              where('completed_at', '<=', action.payload.endsAt ? action.payload.endsAt : ''),
+            ] : []),
+            
             //OrderBy
             action.payload.orderBy ? action.payload.orderBySort ? orderBy(action.payload.orderBy,action.payload.orderBySort) : orderBy(action.payload.orderBy) : orderBy('completed_at', 'desc'),
             //Limit
@@ -54,8 +66,11 @@ export class OrderEffects {
             return returnedActions
         }),
         map((action:any) => {
+            this.store.dispatch(new JourneyQuery({
+              orderId: action.payload.number,
+            }))
             return { type: `[Orders] Order ${action.type}`, payload: action.payload }
         })
     ))
-    constructor(private actions$: Actions, private afs: Firestore) {}
+    constructor(private actions$: Actions, private afs: Firestore, private store:Store) {}
 }

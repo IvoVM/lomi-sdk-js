@@ -12,10 +12,10 @@
               </button>
               <mat-menu #menu="matMenu">
                 <button (click)="logout()" mat-menu-item><mat-icon>logout</mat-icon>Cerrar Sesión</button>
-                <button  mat-menu-item><mat-icon>settings</mat-icon>Configuración</button>
+                <button  mat-menu-item [routerLink]="['/settings']"><mat-icon>settings</mat-icon>Configuración</button>
               </mat-menu>            
             <h6 style="font-size: 1rem;">{{ user ? user['userRol']: null }}</h6>
         </div>
     </mat-toolbar>
 
-</div>
+</div>     
