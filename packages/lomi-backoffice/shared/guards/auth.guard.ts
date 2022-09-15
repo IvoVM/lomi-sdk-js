@@ -25,6 +25,12 @@ export class AuthGuard implements CanActivate {
         return this.afAuth.user.pipe(
           map((user)=>{
             if(user){
+              console.log(this.user)
+              if(this.user.id && !(this.user.userRol)){
+                console.log(this.user)
+                this.router.navigate(['/user-without-rol'])
+                return false
+              }
               return true
             }else{
               this.router.navigateByUrl('/auth')

@@ -36,6 +36,12 @@ const listenToNewOrder = require('./handlers/sendFcmNotifications')(admin);
 exports.sendFcmNotificationOnNewOrder = listenToNewOrder
 //End of Imported Handlers
 
+//Imported Firestore listeners
+const listenToRolAssigned = require('./firestore/listenToRolAssign')(admin);
+exports.rolAssigned = listenToRolAssigned
+//End of Imported Firestore listeners
+
+
 exports.addCompletedOrder = functions.https.onRequest(
   async (request, response) => {
     const order = request.body;
@@ -77,7 +83,8 @@ exports.evaluateUber = functions.https.onRequest(async (request, response) => {
         order.ship_address_city +
         ', ' +
         order.ship_address_country,
-      order.shipment_stock_location_name
+      order.shipment_stock_location_name,
+      order
     );
     collectionKey = 'SPREE_ORDERS_' + order.shipment_stock_location_id;
     const ref = await admin
@@ -88,6 +95,19 @@ exports.evaluateUber = functions.https.onRequest(async (request, response) => {
         stops,
       });
     return response.status(200).send(uberEstimated);
+  });
+});
+
+exports.cancelUberTrip = functions.https.onRequest(async (request, response) => {
+  cors(request, response, async () => {
+    const tripId = request.body;
+    const trip = await uberDispatcher.getTrip(trip);
+    if(trip){
+      const cancelTrip = await uberDispatcher.cancelTrip(trip);
+      return response.status(200).send(cancelTrip);
+    }else{
+      return response.status(200).send("No trip found");
+    }
   });
 });
 
@@ -171,7 +191,8 @@ exports.creatUberTrip = functions.https.onRequest(async (request, response) => {
           : order.shipment_stock_location_name,
         'Lomi Spa',
         DEBUG_NUMBER,
-        order.line_items
+        order.line_items.map(item => ({...item, size: "medium"})),
+        order
       );
       collectionKey = 'SPREE_ORDERS_' + order.shipment_stock_location_id;
       const ref = await admin
@@ -182,26 +203,31 @@ exports.creatUberTrip = functions.https.onRequest(async (request, response) => {
       })
 
       const snapshot = await ref.get()
-      if(snapshot.exists){
-        const order = snapshot.data();
-        const journey = {
-          id: ref.collection("journeys").doc().id,
-          status: uberTrip.status,
-          orderNumber: order.number,
-          stock_location_id: order.shipment_stock_location_id,
-          uberTrip: uberTrip
-        }
-        await ref.collection("journeys").doc(journey.id).set(journey);
-        await admin
-        .firestore().doc("deliveringJourneys/" + journey.id).set(journey);
-        return response.status(200).send(journey);
-      }
       if(uberTrip){
-        return response.status(500).send(uberTrip);
+        if(snapshot.exists){
+          const order = snapshot.data();
+          const journey = {
+            id: ref.collection("journeys").doc().id,
+            status: uberTrip.status,
+            orderNumber: order.number,
+            stock_location_id: order.shipment_stock_location_id,
+            uberTrip: uberTrip
+          }
+          await ref.collection("journeys").doc(journey.id).set(journey);
+          await admin
+          .firestore().doc("deliveringJourneys/" + journey.id).set(journey);
+          return response.status(200).json(journey);
+        }
+        return response.status(500).json({
+          kind: "error",
+          code: uberTrip.code,
+          message: uberTrip.message,
+          params: uberTrip.params,
+        });
       }
       return response.status(500).send("Ha ocurrido un error desconocido al crear el viaje");
     } catch (e) {
-      return response.status(e.status ? e.status : 500).send(e);
+      return response.status(e.status ? e.status : 500).json(e);
     }
   });
 });

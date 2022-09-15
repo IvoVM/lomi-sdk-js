@@ -1,0 +1,26 @@
+<mat-drawer-container class="example-container" autosize>
+
+    <mat-drawer #drawer class="actions-sidenav" mode="side" style="width:300px" position="end">
+                <lomii-filters-side></lomii-filters-side>
+    </mat-drawer>
+
+
+    <div class="example-sidenav-content p" *ngIf="ordersProvider.orders">
+        <div style="display:flex;flex-direction: row;align-items: flex-end;justify-content: space-between;margin: 1em 0;width:100%;max-width: 1080px;">
+            <h1 style="margin:0 !important"><b>Historial de pedidos</b></h1>
+            <div class="actions" style="display: flex;flex-direction: row;">
+                <button (click)="drawer.toggle()" mat-raised-button color="accent">Filtros</button>
+            </div>
+        </div>
+
+        <div class="half-card shadow" style="padding: 0.5em 1em;overflow: scroll;">
+         
+            <lomii-table></lomii-table>
+            <div *ngIf="ordersProvider.loadingOrders" style="width: 100%;height: 20em;display: flex;align-items: center;justify-content: center;flex-direction: column;">
+                <h1>Cargando ordenes...</h1>
+                <mat-spinner></mat-spinner>
+            </div>
+        </div>
+    </div>
+
+</mat-drawer-container>

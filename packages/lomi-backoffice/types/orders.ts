@@ -84,6 +84,7 @@ export type Journey = {
 	estimatedTime: number,
 	returned: boolean,
     line_items: LineItem[]
+	orderNumber: string,
 	status: any,
 
 	uberTrip: any;

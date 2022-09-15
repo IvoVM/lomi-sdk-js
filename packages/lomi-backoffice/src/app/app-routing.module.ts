@@ -6,15 +6,18 @@ import { AuthGuard } from '../../shared/guards/auth.guard';
 import { AuthComponent } from '../../shared/auth/auth.component';
 import { UsersIndexComponent } from 'packages/lomi-backoffice/users/users-index/users-index.component';
 import { SettingsComponent } from '../../settings/settings/settings.component';
+import { OrdersHistoryComponent } from 'packages/lomi-backoffice/orders/history/history.component';
+import { UserWithoutRolComponent } from 'packages/lomi-backoffice/users/user-without-rol/user-without-rol.component';
 
 const routes: Routes = [
   {path: 'auth', component: AuthComponent},
+  {path: 'user-without-rol', component: UserWithoutRolComponent},
   {
     path: '',
     canActivate: [AuthGuard],
     children: [
       {path: 'dashboard', component: OrdersComponent},
-      { path: 'orders-history', component: OrdersComponent},
+      { path: 'orders-history', component: OrdersHistoryComponent},
       {path: 'orders', component: OrdersComponent},
       {path: 'orders/:number', component: OrderComponent},
       {path: 'users', component: UsersIndexComponent},

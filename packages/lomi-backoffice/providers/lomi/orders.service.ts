@@ -66,7 +66,9 @@ export class OrdersService {
     private httpClient: HttpClient,
     private ngrxStore: Store<BackofficeState>
   ) {
-    this.updateStockLocation(1)
+    this.ngrxStore.select('orders').subscribe((orders)=>{
+      this.loadingOrders = orders.loading
+    })
   }
 
   updateStockLocation(stockLocationId: number) {
@@ -75,9 +77,7 @@ export class OrdersService {
     this.ngrxStore.dispatch(new OrderActions.Query({
       stock_location_id: this.filters.stockLocationId
     }))
-    this.ngrxStore.select('orders').subscribe((orders)=>{
-      this.loadingOrders = orders.loading
-    })
+
   }
 
   updateOrder(orderId: string, updateRecord: any, stock_location_id = this.filters.stockLocationId) {

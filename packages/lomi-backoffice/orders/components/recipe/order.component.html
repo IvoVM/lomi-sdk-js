@@ -10,7 +10,7 @@
             </div>
             <div class="section-header">
               <p>Operador: {{journey.uberTrip ? 'Uber' : 'Hermex'}} </p>
-              <p>Estado: {{journey.status}}</p>
+              <p>Estado: {{journey.status | uberStatus}}</p>
               <iframe *ngIf="false" [src]="journey.uberTrip.tracking_url | safe"> </iframe>
               <button style="margin-bottom:1em;margin-top:0.25em" *ngIf="journey.status == 'Order queued sucesfully'" mat-raised-button color="accent">Cancelar</button>
             </div>

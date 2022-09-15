@@ -1,5 +1,14 @@
 const axios = require('axios')
 
+function encode(data) {
+    let str = "";
+    str += data.street_address[0]+" "+data.street_address[1];
+    str+= ", " + data.city 
+    str+= ", " + data.state 
+    str+= ", " + data.zip_code
+    return str
+}
+
 class UberDispatcher{
     constructor(clientId, clientSecret, customerId){
         this.clientId = clientId
@@ -22,10 +31,33 @@ class UberDispatcher{
         return tripResponse.data
     }
 
-    async createQuote(dropoff_address, pickup_address){
+    async cancelTrip(delivery_id){
+        console.log(this.customerId,delivery_id, this.accessToken.data.access_token)
+        const cancel = await axios.post("https://api.uber.com/v1/customers/"+this.customerId+"/deliveries/"+delivery_id+"/cancel",{
+            "delivery_id": delivery_id,
+            "customer_id": this.customerId
+        } ,{
+            headers:{
+                'Authorization' : 'Bearer ' + this.accessToken.data.access_token
+            }
+        })
+        return cancel.data
+    }
+
+    async createQuote(dropoff_address, pickup_address,order){
         const quote = await axios.post("https://api.uber.com/v1/customers/"+this.customerId+"/delivery_quotes",{
-            dropoff_address: dropoff_address,
-            pickup_address: pickup_address
+            dropoff_address: encode({
+                street_address: [order.ship_address_address1,order.ship_address_address2],
+                city: order.ship_address_city,
+                state: order.ship_address_state,
+                zip_code: "",
+                country: order.ship_address_country,
+            }),
+            dropoff_latitude: parseFloat(dropoff_address.split(",")[0]),
+            dropoff_longitude: parseFloat(dropoff_address.split(",")[1]),
+            pickup_latitude: parseFloat(pickup_address.split(",")[0]),
+            pickup_longitude: parseFloat(pickup_address.split(",")[1]),
+            pickup_address: order.shipment_stock_location_name,
         },{
             headers:{
                 'Authorization' : 'Bearer ' + this.accessToken.data.access_token
@@ -34,16 +66,70 @@ class UberDispatcher{
         return quote.data
     }
 
-    async createTrip(dropoff_address, dropoff_name, dropoff_phone_number, pickup_address, pickup_name, pickup_phone_number, manifest_items){
-        console.log(dropoff_address, dropoff_name, dropoff_phone_number, pickup_address, pickup_name, pickup_phone_number, manifest_items)
+    async createTrip(dropoff_address, dropoff_name, dropoff_phone_number, pickup_address, pickup_name, pickup_phone_number, manifest_items, order){
+        console.log({
+            dropoff_address: encode({
+                street_address: [order.ship_address_address1,order.ship_address_address2],
+                city: order.ship_address_city,
+                state: order.ship_address_state,
+                zip_code: "",
+                country: order.ship_address_country,
+            }),
+            dropoff_latitude: parseFloat(dropoff_address.split(",")[0]),
+            dropoff_longitude: parseFloat(dropoff_address.split(",")[1]),
+            dropoff_notes: "",
+            dropoff_name: order.name,  
+            dropoff_phone_number: dropoff_phone_number,
+            dropoff_verification: {
+                picture: true,
+                signature: false
+            },
+            pickup_address: order.shipment_stock_location_name,   
+            pickup_latitude: parseFloat(pickup_address.split(",")[0]),
+            pickup_longitude: parseFloat(pickup_address.split(",")[1]),
+            pickup_name: order.shipment_stock_location_name.split("-")[1],
+            pickup_phone_number: pickup_phone_number,
+            pickup_notes: "",
+            pickup_verification: {
+                picture: false,
+                signature: false,
+            },
+            manifest_items: manifest_items,
+            manifest_reference: order.number,
+            manifest_total_value: parseInt(order.total) - parseInt(order.shipment_total),
+            undeliverable_action: "return",
+        })
         const trip = await axios.post("https://api.uber.com/v1/customers/"+this.customerId+"/deliveries",{
-            "dropoff_address": dropoff_address,
-            "dropoff_name": dropoff_name,
-            "dropoff_phone_number": dropoff_phone_number,
-            "pickup_address": pickup_address,
-            "pickup_name": pickup_name,
-            "pickup_phone_number": pickup_phone_number,
-            "manifest_items": manifest_items
+            dropoff_address: encode({
+                street_address: [order.ship_address_address1,order.ship_address_address2],
+                city: order.ship_address_city,
+                state: order.ship_address_state,
+                zip_code: "",
+                country: order.ship_address_country,
+            }),
+            dropoff_latitude: parseFloat(dropoff_address.split(",")[0]),
+            dropoff_longitude: parseFloat(dropoff_address.split(",")[1]),
+            dropoff_notes: "",
+            dropoff_name: order.name,
+            dropoff_phone_number: dropoff_phone_number,
+            dropoff_verification: {
+                picture: true,
+                signature: false
+            },
+            pickup_address: order.shipment_stock_location_name,   
+            pickup_latitude: parseFloat(pickup_address.split(",")[0]),
+            pickup_longitude: parseFloat(pickup_address.split(",")[1]),
+            pickup_name: order.shipment_stock_location_name.split("-")[1],
+            pickup_phone_number: pickup_phone_number,
+            pickup_notes: "",
+            pickup_verification: {
+                picture: false,
+                signature: false,
+            },
+            manifest_items: manifest_items.map(item => ({...item, price: parseInt(item.price)})),
+            manifest_reference: order.number,
+            manifest_total_value: parseInt(order.total) - parseInt(order.shipment_total),
+            undeliverable_action: "return",
         },{
             headers:{
                 'Authorization' : 'Bearer ' + this.accessToken.data.access_token,

@@ -4,7 +4,8 @@
   "license": "MIT",
   "scripts": {
     "postinstall": "ngcc --properties es2015 browser module main",
-    "build": "nx build lomi-material"
+    "build": "nx build lomi-material",
+    "test": "jest"
   },
   "dependencies": {
     "@angular/animations": "^14.0.0",

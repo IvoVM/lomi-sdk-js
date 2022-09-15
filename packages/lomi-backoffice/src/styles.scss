@@ -225,6 +225,12 @@ button[mat-button], button[mat-raised-button], button[mat-stroked-button]{
     background-color: #FF961B !important;
     color: white;
   }
+  &-2{
+    background-color: #F48C12;
+  }
+  &-6{
+    background-color: #6DC200;
+  }
 }
 
 table{
@@ -353,4 +359,18 @@ img[name=sign-in-with-google]{
     }
     padding: 6px 12px;
   }
+}
+
+.notification{
+  position: absolute;
+    top: 4em;
+    z-index: 1000;
+    &-body{
+      background-color: white;
+      border-radius: 25px;
+      padding: 16px;
+    }
+    width: 100vw;
+    display: flex;
+    justify-content: flex-end;
 }

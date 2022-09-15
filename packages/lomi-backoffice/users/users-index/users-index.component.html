@@ -6,7 +6,7 @@
 
 
     <div class="example-sidenav-content p">
-        <div style="display:flex;flex-direction: row;align-items: flex-end;justify-content: space-between;margin: 1em 0;">
+        <div style="width:75%;display:flex;flex-direction: row;align-items: flex-start;justify-content: space-between;margin: 1em 0;">
             <h1 style="margin:0 !important"><b>Usuarios </b></h1>
         </div>
 
@@ -38,6 +38,9 @@
                         <div > 
                             <mat-form-field>
                                 <mat-select [ngModel]="element.userRol">
+                                    <mat-option matInput (click)="updateRol(0, element)" [value]="0">
+                                        Sin asignar
+                                    </mat-option>
                                     <mat-option matInput *ngFor="let rol of rols" (click)="updateRol(rol.id, element)" [value]="rol.id">
                                         {{rol.rolName}}
                                     </mat-option>

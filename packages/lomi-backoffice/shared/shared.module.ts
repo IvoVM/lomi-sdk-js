@@ -46,6 +46,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import { MainHeaderComponent } from './components/main-header/main-header.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { StatusPipe } from './pipes/status.pipe';
 
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     SafePipe,
     UberStatusPipe,
     FiltersSideComponent,
+    StatusPipe,
   ],
   imports: [
     CommonModule,
@@ -127,6 +129,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     MatNativeDateModule,
     MatFormFieldModule,
     MatProgressBarModule,
+    StatusPipe,
   ],
   providers: [ScreenTrackingService, UserTrackingService],
 })

@@ -3,7 +3,7 @@
 import { Dictionary } from '@ngrx/entity';
 import { ActionReducer, ActionReducerMap, createFeatureSelector, createSelector, MetaReducer, select } from '@ngrx/store';
 import { filter, map, pipe } from 'rxjs';
-import { FINISHED_STATE, PENDING_STATE, STORE_PICKING_STATE } from '../providers/lomi/mocks/states.mock';
+import { FINISHED_STATE, PENDING_STATE, SCHEDULED_STATE, STORE_PICKING_STATE } from '../providers/lomi/mocks/states.mock';
 import { environment } from '../src/environments/environment';
 import { Order } from '../types/orders';
 import { IUser, User } from '../types/user';
@@ -53,7 +53,11 @@ export function debug(reducer: ActionReducer<any>): ActionReducer<any> {
     select(selectOrders),
     map((orders) => {
       return Object.values(orders).filter((order: Order | undefined) => {
-        if(order?.status == FINISHED_STATE){
+        if(statusId == undefined && !(order?.name?.includes('Retiro'))){
+
+          return true
+        }
+        else if(order?.status == FINISHED_STATE){
           if(statusId == FINISHED_STATE){
             return true
           }

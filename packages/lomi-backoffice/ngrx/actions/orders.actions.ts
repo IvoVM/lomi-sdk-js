@@ -15,7 +15,8 @@ export const UPDATE_SUCCESS = '[Orders] Update Success';
 export class Query implements Action {
   readonly type = QUERY;
   constructor(public payload:{
-    stock_location_id: number,
+    stock_location_id?: number,
+    collections_names?: string[],
     start_at?: number,
     per_page?: number,
     orderBy? : string,

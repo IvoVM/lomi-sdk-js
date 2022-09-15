@@ -1,6 +1,6 @@
 export type IUser = {
     uid:         string;
-    displayName: string;
+    displayName?: string;
     userRol: number | UserRol;
     email: string;
     loading?:    boolean;
@@ -10,7 +10,7 @@ export type IUser = {
 export type UserRol = {
     id: number;
     rolName: string;
-    userPrivileges: UserPrivelege[];
+    userPrivileges: number[];
 }
 
 export type UserPrivelege = {

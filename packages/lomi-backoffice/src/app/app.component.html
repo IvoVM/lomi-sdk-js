@@ -1,2 +1,8 @@
 <lomii-main-header *ngIf="!router.url.includes('auth')"></lomii-main-header>
+<div class="notification" *ngIf="lastNotification">
+    <div class="notification-body shadow">
+        <h5>{{lastNotification.notification.title}}</h5>
+        <h6>{{lastNotification.notification.body}}</h6>
+    </div>
+</div>
 <router-outlet></router-outlet>

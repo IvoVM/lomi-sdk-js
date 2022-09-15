@@ -39,15 +39,14 @@ getUser$: Observable<Action> = createEffect(() => this.actions$.pipe(
                 switchMap(payload => this.afAuth.authState ),
                 switchMap(user => {
                     if(user){
-                        this.router.navigateByUrl('/')
                         this.store.dispatch(new userActions.Authenticated({
                             uid: user.uid,
                             email: user.email,
                         }));
                         const userDoc = doc(this.afs,`backoffice-users/${user.uid}`)
-                        docSnapshots(userDoc).pipe(take(1)).subscribe((doc) => {
+                        docSnapshots(userDoc).pipe(take(1)).subscribe(async (doc) => {
                             if(!doc.exists()){
-                                setDoc(userDoc,{
+                                await setDoc(userDoc,{
                                     id: user.uid,
                                     uid: user.uid,
                                     email: user.email,
@@ -61,9 +60,15 @@ getUser$: Observable<Action> = createEffect(() => this.actions$.pipe(
                     }
                 }),
                 map( (userDocSnapshot) => {
+                    if(this.router.url === '/auth'){
+                        this.router.navigateByUrl('/')
+                    }
                     if (userDocSnapshot?.exists()) {
                        /// User logged in
                        const user = userDocSnapshot.data() as IUser;
+                       if(!user.userRol){
+                            this.router.navigateByUrl("user-without-rol")
+                       }
                        return new userActions.UserUpdated(user);
                    } else {
                        /// User not logged in
@@ -128,7 +133,7 @@ getUser$: Observable<Action> = createEffect(() => this.actions$.pipe(
   /**
    *
    */
-  login() : Observable<User> {
+  login() : Observable<IUser> {
     this.store.dispatch(new userActions.GoogleLogin());
     return this.user$;
   }
@@ -136,7 +141,7 @@ getUser$: Observable<Action> = createEffect(() => this.actions$.pipe(
   /**
    *
    */
-  logout() : Observable<User> {
+  logout() : Observable<IUser> {
     this.store.dispatch(new userActions.Logout());
     return this.user$;
   }

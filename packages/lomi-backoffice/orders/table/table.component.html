@@ -36,10 +36,13 @@
     </ng-container>
 
     <ng-container matColumnDef="state">
-        <th mat-header-cell *matHeaderCellDef> Journey Status </th>
+        <th mat-header-cell *matHeaderCellDef> Estado del pedido </th>
         <td mat-cell *matCellDef="let order" > 
-            <img *ngIf="order.uberTrips" style="height: 1.5em;width: auto;margin: 0 1em 0 0;" src="assets/images/uber.png">
-            <span class="status-chip status-chip-{{order.uberTrips[0].status}}" *ngIf="order.uberTrips">{{order.uberTrips[0].status | uberStatus }}</span>
+            <p style="margin-top:1em" class="status-chip-{{order.status ? order.status : order.name.includes('Retiro') ? 0 : 2}} status-chip">
+                <img *ngIf="getJourneyByOrderNumber(order.number)" style="height: 1.3em;width: auto;margin: 0 1em -0.25em 0;" src="assets/images/uber.png">
+                <span *ngIf="!getJourneyByOrderNumber(order.number)?.uberTrip">{{(order.status ? order.status : order.name.includes("Retiro") ? 0 : 2) | status}}</span>
+                <span *ngIf="getJourneyByOrderNumber(order.number)?.uberTrip">{{getJourneyByOrderNumber(order.number)?.uberTrip.status | uberStatus}}</span>
+            </p>
         </td>
     </ng-container>
 

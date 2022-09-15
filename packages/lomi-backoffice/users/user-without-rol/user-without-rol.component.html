@@ -1,0 +1,16 @@
+<div class="auth-container" >
+    <div class="layout" style="align-items: flex-start !important;">
+        <img style="width: 15em;padding: 5em 0" src="assets/images/lomi.svg">
+        <div style="text-align:left;width:100%;">
+            <h1 style="">Hola <b>{{user.email}}</b> !</h1>
+            <p> Para ingresar, debes esperar que algún administrador te conceda el acceso</p>
+        </div>
+        <mat-form-field>
+            <mat-label >Tienda</mat-label>
+            <mat-select>
+                <mat-option *ngFor="let option of stores | keyvalue" value="{{option.key}}">{{option?.value?.name}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <button style="margin-top:1em" mat-raised-button color="accent">Solicitar acceso</button>
+    </div>
+</div>

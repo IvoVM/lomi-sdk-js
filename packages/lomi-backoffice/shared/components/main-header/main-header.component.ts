@@ -6,6 +6,7 @@ import { BackofficeState } from 'packages/lomi-backoffice/ngrx';
 import { Logout } from 'packages/lomi-backoffice/ngrx/actions/user.actions';
 import { currentUserSelector } from 'packages/lomi-backoffice/ngrx/reducers/user.reducer';
 import { OrdersService } from 'packages/lomi-backoffice/providers/lomi/orders.service';
+import { IUser } from 'packages/lomi-backoffice/types/user';
 
 @Component({
   selector: 'lomii-main-header',
@@ -14,7 +15,12 @@ import { OrdersService } from 'packages/lomi-backoffice/providers/lomi/orders.se
 })
 export class MainHeaderComponent implements OnInit {
 
-  public user:User = {};
+  public user:IUser = {
+    uid: "",
+    email:'',
+    userRol: 0,
+
+  };
 
   public routes = [
     {
@@ -40,6 +46,24 @@ export class MainHeaderComponent implements OnInit {
       currentUserSelector
     ).subscribe((user:any)=>{
       this.user = user
+      if(!this.user.userRol){
+        this.routes = []
+      } else {
+        this.routes = [
+          {
+            route: "orders",
+            name: "Pedidos",
+          },
+          {
+            route: "orders-history",
+            name: "Historial de pedidos",
+          },
+          {
+            route: "users",
+            name: "Usuarios",
+          }
+        ]
+      }
     })
   }
 

@@ -1,7 +1,7 @@
 export const statesMock = [
     'Retiro en Tienda',
-    'Programados',
-    'Pendientes',
+    'Programado',
+    'Pendiente',
     'On Picking',
     'Esperando al repartidor',
     'Entregando',

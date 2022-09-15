@@ -2,15 +2,16 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { select, Store } from '@ngrx/store';
-import {  selectState0 } from 'packages/lomi-backoffice/ngrx';
+import {  BackofficeState, selectState0 } from 'packages/lomi-backoffice/ngrx';
 import { selectAll } from 'packages/lomi-backoffice/ngrx/reducers/orders.reducer';
 import { ON_PICKING_STATE, PENDING_STATE, WAITING_AT_DRIVER_STATE } from 'packages/lomi-backoffice/providers/lomi/mocks/states.mock';
 import { OrdersService } from 'packages/lomi-backoffice/providers/lomi/orders.service';
-import { OnPickingOrder, Order, PendingOrder } from 'packages/lomi-backoffice/types/orders';
+import { Journey, OnPickingOrder, Order, PendingOrder } from 'packages/lomi-backoffice/types/orders';
 import { DeliveryOperatorSelectorComponent } from '../components/delivery-operator-selector/delivery-operator-selector.component';
 import { PickerSelectComponent } from '../picker-select/picker-select.component';
 import * as OrderStates from '../../providers/lomi/mocks/states.mock';
 import { Timestamp } from 'firebase/firestore';
+import { EntityState } from '@ngrx/entity';
 @Component({
   selector: 'lomii-table',
   templateUrl: './table.component.html',
@@ -21,8 +22,12 @@ export class TableComponent implements OnInit {
   public secondsToWarning = 24 * 60 * 60;
   public secondsToAlert = 7 * 60 * 60;
   public orderStates = OrderStates
-  public columnsToDisplay = ['number','name', 'completed_at', 'state','actions', 'cabify_estimated'];
+  public columnsToDisplay = ['number','name', 'completed_at','actions', 'cabify_estimated'];
   public commonColumns = ['name'];
+  public journeys: EntityState<Journey> = {
+    entities: {},
+    ids: []
+  };
 
   @Input() state:any = null;
   @Output() recordsFetched = new EventEmitter<number>();
@@ -33,7 +38,7 @@ export class TableComponent implements OnInit {
   constructor(
     public ordersProvider:OrdersService,
     private _bottomSheet: MatBottomSheet,
-    private store: Store,
+    private store: Store<BackofficeState>,
     ) {
       
     }
@@ -117,9 +122,31 @@ export class TableComponent implements OnInit {
     return []
   }
 
+  getJourneys(){
+    this.store.select("journeys").subscribe((journeys:EntityState<Journey>)=>{
+      this.journeys = journeys
+    })
+  }
+
+  getJourneyByOrderNumber(orderNumber:string){
+    return Object.values(this.journeys.entities).find((journey:any)=>{
+      return journey.orderNumber == orderNumber
+    })
+  }
+
 
   ngOnInit(): void {
     console.log(this.state,"state")
+    if(this.state == OrderStates.DELIVERING_ORDER_STATE){
+      this.getJourneys()
+      this.columnsToDisplay.push("state")
+    }
+    if(this.state == undefined){
+      this.columnsToDisplay = ["number","name","completed_at","state"]
+    }
+
+    this.getJourneys()
+    
     const selector = selectState0(this.state)
     this.store.pipe(
       selector

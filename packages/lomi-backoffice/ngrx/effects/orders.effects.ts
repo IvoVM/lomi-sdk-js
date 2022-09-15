@@ -4,8 +4,8 @@ import { BackofficeState } from '..';
 import { collectionData, doc, Firestore, startAt } from '@angular/fire/firestore';
 import { Action, Store } from '@ngrx/store';
 import { collection, limit, onSnapshot, orderBy, query, QuerySnapshot, where } from 'firebase/firestore';
-import { map, mergeMap, Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators'
+import { lastValueFrom, map, mergeMap, Observable } from 'rxjs';
+import { switchMap, take } from 'rxjs/operators'
 import { ADDED, Query, QUERY, QUERY_SUCCESS } from '../actions/orders.actions';
 import { snapshotChanges } from '@angular/fire/compat/database';
 import { JourneyQuery } from '../actions/journey.actions';
@@ -16,8 +16,12 @@ export class OrderEffects {
     query$: Observable<Action> = createEffect(() => this.actions$.pipe(
         ofType(QUERY),
         switchMap((action: Query) => {
+          console.log(action.payload.collections_names)
+          console.log(action.payload.collections_names ? action.payload.collections_names[0] : action.payload.stock_location_id ? `SPREE_ORDERS_${action.payload.stock_location_id}` : 'SPREE_ORDERS_1')
             const queryDefinition = query(
-              collection(this.afs,`SPREE_ORDERS_${action.payload.stock_location_id}`),
+              collection(
+                this.afs,
+                (action.payload.collections_names ? action.payload.collections_names[0] : action.payload.stock_location_id ? `SPREE_ORDERS_${action.payload.stock_location_id}` : 'SPREE_ORDERS_1'),),
               ...(action.payload.name ? [
                 orderBy('name', 'asc'),
               where('name', '>=', action.payload.name ? action.payload.name : ''),
@@ -72,5 +76,5 @@ export class OrderEffects {
             return { type: `[Orders] Order ${action.type}`, payload: action.payload }
         })
     ))
-    constructor(private actions$: Actions, private afs: Firestore, private store:Store) {}
+    constructor(private actions$: Actions, private afs: Firestore, private store:Store<BackofficeState>) {}
 }
