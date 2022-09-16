@@ -66,6 +66,9 @@ export class AppComponent {
               case "Nuevo Rol Asignado":
                 this.router.navigateByUrl("/");
             }
+            if(message.data){
+              const data = message.data as any;
+            }
             console.log(message, "Notification");
             this.lastNotification = message;
             setTimeout(()=>{

@@ -7,10 +7,10 @@
         </div>
         <mat-form-field>
             <mat-label >Tienda</mat-label>
-            <mat-select>
-                <mat-option *ngFor="let option of stores | keyvalue" value="{{option.key}}">{{option?.value?.name}}</mat-option>
+            <mat-select #select>
+                <mat-option *ngFor="let option of stores | keyvalue" [value]="{ id: option?.key, value: option?.value }">{{option?.value?.name}}</mat-option>
             </mat-select>
         </mat-form-field>
-        <button style="margin-top:1em" mat-raised-button color="accent">Solicitar acceso</button>
+        <button (click)="requestAccess(select.value)" style="margin-top:1em" mat-raised-button color="accent">Solicitar acceso</button>
     </div>
 </div>

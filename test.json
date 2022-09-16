@@ -1,0 +1,182 @@
+{
+    "dropoff_address":"{\\"street_address\\":[\\"Alonso de soto mayor 4358\\",\\"\\"],\\"city\\":\\"Santiago\\",\\"state\\":\\"Región Metropolitana\\",\\"zip_code\\":\\"\\",\\"country\\":\\"Chile\\"}",
+    "dropoff_latitude":-33.396248,
+    "dropoff_longitude":-70.59002029999999,
+    "dropoff_phone_number":"+56935103087",
+    "dropoff_verification":{
+      "picture":true,
+      "signature":false
+    },
+    "pickup_address":"Balmoral 309 local 217 ",
+    "pickup_latitude":-33.4058168,
+    "pickup_longitude":-70.56987389999999,
+    "pickup_name":" Las Condes",
+    "pickup_phone_number":"+56935103087",
+    "pickup_notes":"",
+    "pickup_verification":{
+      "picture":false,
+      "signature":false
+    },
+    "manifest_items":[
+      {
+        "quantity":2,
+        "name":"Mantequilla con sal 250 grs.",
+        "size":"medium"
+      },{
+        "quantity":3,
+        "name":"Leche descremada 1 lt.",
+        "size":"medium"
+      },{
+        "quantity":2,
+        "name":"Ketchup picante 350 grs.",
+        "size":"medium"
+      },{
+        "quantity":1,
+        "name":"Toalla nova clásica 3 un.",
+        "size":"medium"
+      },{
+        "quantity":1,
+        "name":"Lavalozas mandarina biodegradable 500 ml.",
+        "size":"medium"
+      },{
+        "quantity":1,
+        "name":"Pimentón Rojo",
+        "size":"medium"
+      },{
+        "quantity":1,
+        "name":"Aceituna Sevillana rellena con pimentón 1 kg",
+        "size":"medium"
+      },{
+        "quantity":2,
+        "name":"Champiñón Bandeja",
+        "size":"medium"
+      },{
+        "quantity":1,
+        "name":"Zanahoria 1 kg",
+        "size":"medium"
+      },{
+        "quantity":1,
+        "name":"Acelga 500 grs",
+        "size":"medium"
+      },{
+        "quantity":1,
+        "name":"Espinaca 500 Grs",
+        "size":"medium"
+      },{
+        "quantity":1,
+        "name":"Ravioli ricota espinaca 400 grs.",
+        "size":"medium"
+      },{
+        "quantity":1,
+        "name":"Queso ranco laminado 500 grs.",
+        "size":"medium"
+      },{
+        "quantity":1,
+        "name":"Queso parmesano rallado 80 grs.",
+        "size":"medium"
+      },{
+        "quantity":3,
+        "name":"Hamburguesa vegana poroto rojo salsa BBQ",
+        "size":"medium"
+      },{
+        "quantity":1,
+        "name":"Nuggets de pollo crocantes congelados 750 grs.",
+        "size":"medium"
+      },{
+        "quantity":3,
+        "name":"Hamburguesa vegana garbanzo cilantro",
+        "size":"medium"
+      },{
+        "quantity":3,
+        "name":"Hamburguesa vegana zapallo asado curcuma",
+        "size":"medium"
+      },{
+        "quantity":1,
+        "name":"Tomate 1 kg",
+        "size":"medium"
+      },{
+        "quantity":1,
+        "name":"Salsa de Tomate 500 grs.",
+        "size":"medium"
+      },{
+        "quantity":1,
+        "name":"Salsa napoletana 400 grs.",
+        "size":"medium"
+      },{
+        "quantity":1,
+        "name":"Jamón Campestre Ahumado La Crianza 200 grs.",
+        "size":"medium"
+      },{
+        "quantity":1,
+        "name":"Palta 1 Kg",
+        "size":"medium"
+      },{
+        "quantity":1,
+        "name":"Salsa pesto alla genovese 190 grs.",
+        "size":"medium"
+      },{
+        "quantity":1,
+        "name":"Naranja 1 kg",
+        "size":"medium"
+      },{
+        "quantity":1,
+        "name":"Mandarina 1 Kg",
+        "size":"medium"
+      },{
+        "quantity":4,
+        "name":"Atún lomitos al agua 160 grs.",
+        "size":"medium"
+      },{
+        "quantity":1,
+        "name":"Aceite de oliva extra virgen Everyday (suave y fresco) 750 cc",
+        "size":"medium"
+      },{
+        "quantity":2,
+        "name":"Papas 1 kg",
+        "size":"medium"
+      },{
+        "quantity":4,
+        "name":"Carne molida de vacuno 250 gr",
+        "size":"medium"
+      },{
+        "quantity":1,
+        "name":"Ravioli carne 400 grs.",
+        "size":"medium"
+      },{
+        "quantity":1,
+        "name":"Lentejas 600 grs.",
+        "size":"medium"
+      },{
+        "quantity":1,
+        "name":"Miel multiflora nativa 550 grs.",
+        "size":"medium"
+      },{
+        "quantity":1,
+        "name":"Not Mayo original 350 grs.",
+        "size":"medium"
+      },{
+        "quantity":1,
+        "name":"Pan ciabatta 8 un",
+        "size":"medium"
+      },{
+        "quantity":1,
+        "name":"Huevos gallina libre tamaño grande 30 un.",
+        "size":"medium"
+      },{
+        "quantity":1,
+        "name":"Zapallo Camote 500 Grs",
+        "size":"medium"
+      },{
+        "quantity":1,
+        "name":"Cebolla 1 kg",
+        "size":"medium"
+      },{
+        "quantity":1,
+        "name":"Franuí de frambuesas en chocolate con leche",
+        "size":"medium"
+      }],
+    "manifest_reference":"R478065742",
+    "manifest_total_value":132180,
+    "undeliverable_action":"return"
+  }
+  

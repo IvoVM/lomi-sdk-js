@@ -31,6 +31,12 @@ const WAITING_AT_DRIVER_STATE = 4
 const DELIVERING_ORDER_STATE = 5
 const FINISHED_STATE = 6
 
+//Imported API functions
+const sendNotificationByType = require('./https/sendNotificationByType')(admin);
+exports.sendNotificationByType = sendNotificationByType
+//End Imported API functions
+
+
 //Imported Handlers
 const listenToNewOrder = require('./handlers/sendFcmNotifications')(admin);
 exports.sendFcmNotificationOnNewOrder = listenToNewOrder
@@ -41,6 +47,7 @@ const listenToRolAssigned = require('./firestore/listenToRolAssign')(admin);
 exports.rolAssigned = listenToRolAssigned
 //End of Imported Firestore listeners
 
+// // Create and Deploy Your First Cloud Functions
 
 exports.addCompletedOrder = functions.https.onRequest(
   async (request, response) => {

@@ -1,5 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { BackofficeState } from 'packages/lomi-backoffice/ngrx';
 import { Modified, Query, Update } from 'packages/lomi-backoffice/ngrx/actions/users.actions';
@@ -32,7 +33,7 @@ export class UsersIndexComponent implements OnInit {
     return rolName
   }
 
-  constructor( private store:Store<BackofficeState> ) {
+  constructor( private store:Store<BackofficeState> , private router:Router) {
     this.store.dispatch(new Query({}))
     this.store.select('app').subscribe((app:App)=>{
       this.rols = app.userRols
@@ -42,6 +43,12 @@ export class UsersIndexComponent implements OnInit {
       map((users:any)=>Object.values(users.entities))
     ).subscribe((users:any)=>{
       this.users = users
+      const user = this.users.find(user=>user.uid == this.router.url.split("#")[1])
+      console.log(this.users,"users")
+      if(user){
+        this.router.navigateByUrl("/users")
+        this.expandedElement = user;
+      }
     })
   }
 
@@ -79,5 +86,7 @@ export class UsersIndexComponent implements OnInit {
   }
 
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+
+  }
 }

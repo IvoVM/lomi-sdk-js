@@ -20,14 +20,21 @@ module.exports = (admin) => {
         const journeyCanceledNotification = userPrivelegesFiltered.map((privelege) => privelege.collectionNames[0]+":JOURNEY_CANCELED");
         const journeyCompletedNotification = userPrivelegesFiltered.map((privelege) => privelege.collectionNames[0]+":JOURNEY_COMPLETED");
 
+        const allNotifications = [
+            ...collectionNewOrderNotifications,
+            ...journeyCanceledNotification,
+            ...journeyCompletedNotification
+        ]
+
+        if(afterRolDefinition.rolName.includes("Jefe")){
+            allNotifications.push(...collectionNewUserNotifications);
+        }
+
         if(beforeRol != afterRol){
             const tokens = (await fcmTokens.getTokensByEmail(email)).map(token => ({
                 ...token,
                 notifications: [
-                    ...collectionNewOrderNotifications,
-                    ...collectionNewUserNotifications,
-                    ...journeyCanceledNotification,
-                    ...journeyCompletedNotification,
+                    ...allNotifications,
                     "BACKOFFICE_USERS:OWN_STATUS_CHANGED"
                 ]
             }));

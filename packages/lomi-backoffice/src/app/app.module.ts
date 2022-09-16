@@ -28,6 +28,7 @@ import { JourneysService } from 'packages/lomi-backoffice/providers/lomi/journey
 import { SettingsModule } from 'packages/lomi-backoffice/settings/settings.module';
 import { AngularFireMessagingModule } from '@angular/fire/compat/messaging';
 import { UserService } from './providers/user.service';
+import { NotificationsService } from './providers/notifications.service';
 
 @NgModule({
   declarations: [AppComponent, MainHeaderComponent],
@@ -55,7 +56,8 @@ import { UserService } from './providers/user.service';
   exports: [],
   providers: [
     JourneysService,
-    UserService
+    UserService,
+    NotificationsService
   ],
   bootstrap: [AppComponent],
 })

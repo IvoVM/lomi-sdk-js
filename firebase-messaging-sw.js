@@ -25,3 +25,9 @@ firebase.initializeApp(
 // messages.
 const messaging = firebase.messaging();
 
+onMessage(messaging, (payload) => {
+  console.log('Message received. ', payload);
+  if(payload.data.url){
+    clients.openWindow(payload.data.url);
+  }
+});

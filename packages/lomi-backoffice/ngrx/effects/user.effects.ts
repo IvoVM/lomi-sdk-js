@@ -69,6 +69,9 @@ getUser$: Observable<Action> = createEffect(() => this.actions$.pipe(
                        if(!user.userRol){
                             this.router.navigateByUrl("user-without-rol")
                        }
+                       else if(user.userRol && this.router.url.includes("user-without-rol")){
+                        this.router.navigateByUrl("/")
+                       }
                        return new userActions.UserUpdated(user);
                    } else {
                        /// User not logged in
