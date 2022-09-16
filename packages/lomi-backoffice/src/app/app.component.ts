@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { PickersModalComponent } from 'packages/lomi-backoffice/pickers/components/pickers-modal/pickers-modal.component';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { BackofficeState } from 'packages/lomi-backoffice/ngrx';
@@ -31,6 +33,7 @@ export class AppComponent {
     public router: Router,
     private angularFireMessaging: AngularFireMessaging,
     private userService: UserService,
+    public dialog: MatDialog
     ){
       this.requestMessagingPermission();
       this.store.dispatch(new Query())
@@ -80,4 +83,9 @@ export class AppComponent {
     }
 
   title = 'lomi-material';
+
+  openPickersDialog(): void {
+    this.dialog.open(PickersModalComponent, {
+    });
+  }
 }

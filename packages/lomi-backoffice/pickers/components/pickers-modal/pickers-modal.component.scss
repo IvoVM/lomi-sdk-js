@@ -1,0 +1,44 @@
+h1 {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 29px;
+    letter-spacing: -0.02em;
+    color: #424962;
+}
+
+.add-picker-form {
+    width: 100%;
+
+    button {
+        border-radius: 25px;
+        position: absolute;
+        right: 0px;
+        top: -30px;
+    }
+}
+
+.delete-picker {
+    background-color: #424962;
+    width: 50vw;
+    height: 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #2D2D2D;
+    border: 1px solid #2D2D2D;
+    border-radius: 25px;
+    margin-top: 1em;
+    padding: 0 1em;
+}
+
+.picker-name {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 22px;
+    letter-spacing: -0.408px;
+    color: #FFFFFF;
+}

@@ -18,6 +18,7 @@ import { reducers } from 'packages/lomi-backoffice/ngrx';
 import { EffectsModule } from '@ngrx/effects';
 import { metaReducers } from 'packages/lomi-backoffice/ngrx';
 import { OrderEffects } from '../../ngrx/effects/orders.effects';
+import { PickresModule } from 'packages/lomi-backoffice/pickers/pickres.module';
 import { UserEffects } from 'packages/lomi-backoffice/ngrx/effects/user.effects';
 import { UsersModule } from 'packages/lomi-backoffice/users/users.module';
 import { MainHeaderComponent } from 'packages/lomi-backoffice/shared/components/main-header/main-header.component';
@@ -47,6 +48,7 @@ import { NotificationsService } from './providers/notifications.service';
     EffectsModule.forRoot([OrderEffects, UserEffects, AppEffects, UsersEffects, JourneyEffects]),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     OrdersModule,
+    PickresModule,
     SharedModule,
     UsersModule,
     SettingsModule,
