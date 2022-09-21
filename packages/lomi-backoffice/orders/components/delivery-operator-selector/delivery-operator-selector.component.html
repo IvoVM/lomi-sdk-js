@@ -2,7 +2,7 @@
 <mat-radio-group [(ngModel)]="selectedOperator" style="display: flex;flex-direction: column;">
         <div *ngFor="let trip of trips;let i  = index;">
             <mat-card *ngIf="!(requestingOperator && selectedOperator != i)" class="{{selectedOperator == i && requestingOperator ? 'gradient' : ''}}">
-                <mat-radio-button [disabled]="!trip.duration_display"  [value]="i" style="width: 100%;">
+                <mat-radio-button [disabled]="!trip.duration_display || trip.kind === 'error'"  [value]="i" style="width: 100%;">
                     <div style="width: 100%;">
                         <h3 style="margin: 0;display: flex;align-items: center;"><img style="height: 1.5em;width: auto;margin: 0 1em 0 0;" src="assets/images/{{trip.icon}}">
                             <b>
@@ -14,7 +14,7 @@
                             </b>
                         </h3>
                         <div style="display:flex;justify-content: space-between;width: 100%;">
-                            <div *ngIf="trip">
+                            <div *ngIf="trip && !(trip.kind === 'error')">
                                 <div style="display: flex;flex-direction: column;">
                                     <span *ngIf="trip.deliveryTime_display">
                                         <b>Total viaje: </b>{{trip.deliveryTime_display}} Minutos
@@ -40,6 +40,13 @@
                                 <div style="display: flex;flex-direction: column;">
                                     <span>
                                         <b>No hay viajes disponible</b>
+                                    </span>
+                                </div>
+                            </div>
+                            <div *ngIf="trip && trip.kind === 'error'">
+                                <div style="display: flex;flex-direction: column;">
+                                    <span>
+                                        <b>{{trip.message}}</b>
                                     </span>
                                 </div>
                             </div>
