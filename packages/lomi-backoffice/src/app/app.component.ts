@@ -23,7 +23,6 @@ import { App } from 'packages/lomi-backoffice/types/app';
 })
 export class AppComponent {
   public lastNotification:any;
-
   public userId:any = 0;
   public stockLocationId:any = 0;
 
@@ -51,7 +50,6 @@ export class AppComponent {
           }))
         }
       })
-
     }
     
     private requestMessagingPermission(){
@@ -82,7 +80,6 @@ export class AppComponent {
       );
     }
 
-  title = 'lomi-material';
 
   openPickersDialog(): void {
     this.dialog.open(PickersModalComponent, {
