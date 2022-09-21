@@ -137,11 +137,11 @@ export class TableComponent implements OnInit {
 
   ngOnInit(): void {
     console.log(this.state,"state")
+    if (this.state != OrderStates.WAITING_AT_DRIVER_STATE) this.columnsToDisplay.pop()
     if(this.state == OrderStates.DELIVERING_ORDER_STATE){
       this.getJourneys()
       this.columnsToDisplay.push("state")
     }
-    if (this.state != OrderStates.WAITING_AT_DRIVER_STATE) this.columnsToDisplay.pop()
     if(this.state == undefined){
       this.columnsToDisplay = ["number","name","completed_at","state"]
     }
