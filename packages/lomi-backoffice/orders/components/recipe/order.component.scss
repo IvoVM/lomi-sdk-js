@@ -26,3 +26,26 @@
     background-color: white;
     box-shadow: -1px 0 5px 15px rgba(0,0,0,0.0);
 }
+
+.section-separator {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    border-bottom: 1px solid #E5E5E5;
+    
+    .title-grid {
+        padding-left: 13px;
+        color: #000000;
+        border-right: 1px solid #E5E5E5;
+        margin: 0;
+        padding-top: 6px;
+    }
+    
+    .info-grid {
+        margin-left: 6px;
+        color: #424962;
+    }
+}
+
+.section-separator:last-child {
+    border-bottom: none;
+}

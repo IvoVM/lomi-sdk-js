@@ -39,6 +39,50 @@
             <lomii-line-item *ngFor="let lineItem of order.line_items" [lineItem]="lineItem"></lomii-line-item>
           </div>
         </div>
+
+        <div class="display-info-card">
+          <div class="title">
+            <h1>Dirección de envio</h1>
+          </div>
+          <div class="section-body" style="padding: 0px;">
+            <div class="section-separator">
+              <p class="title-grid">Nombre Completo:</p>
+              <p class="info-grid">{{order.name ? order.name: 'No name'}}</p>
+            </div>
+            <div class="section-separator">
+              <p class="title-grid">Correo:</p>
+              <p class="info-grid">{{order.email}}</p>
+            </div>
+            <div class="section-separator">
+              <p class="title-grid">Dirección completa:</p>
+              <p class="info-grid">{{order.ship_address_address1}}</p>
+            </div>
+            <div class="section-separator">
+              <p class="title-grid">Número de departamento o residencia:</p>
+              <p class="info-grid">{{order.ship_address_address2}}</p>
+            </div>
+            <div class="section-separator">
+              <p class="title-grid">Región:</p>
+              <p class="info-grid">{{order.ship_address_state}}</p>
+            </div>
+            <div class="section-separator">
+              <p class="title-grid">Comuna:</p>
+              <p class="info-grid">{{order.ship_address_county}}</p>
+            </div>
+            <div class="section-separator">
+              <p class="title-grid">País:</p>
+              <p class="info-grid">{{order.ship_address_country}}</p>
+            </div>
+            <div class="section-separator">
+              <p class="title-grid">Teléfono:</p>
+              <p class="info-grid">{{order.ship_address_phone}}</p>
+            </div>
+            <div class="section-separator">
+              <p class="title-grid">Notas:</p>
+              <p class="info-grid">{{order.special_instructions? order.special_instructions: ''}}</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
