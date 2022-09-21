@@ -141,6 +141,7 @@ export class TableComponent implements OnInit {
       this.getJourneys()
       this.columnsToDisplay.push("state")
     }
+    if (this.state != OrderStates.WAITING_AT_DRIVER_STATE) this.columnsToDisplay.pop()
     if(this.state == undefined){
       this.columnsToDisplay = ["number","name","completed_at","state"]
     }
