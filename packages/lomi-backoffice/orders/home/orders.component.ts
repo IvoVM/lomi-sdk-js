@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { OrdersService } from '../../providers/lomi/orders.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'lomii-orders',
@@ -16,7 +17,8 @@ export class OrdersComponent implements OnInit {
 
   constructor(
     public ordersProvider:OrdersService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private router: Router,
   ) {
     this.filtersForm = this.formBuilder.group({
       stockLocationId: [null],
@@ -41,6 +43,10 @@ export class OrdersComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const currentStatus = this.router.url.split('#')[1]
+    if(currentStatus){
+      this.ordersProvider.currentStep = parseInt(currentStatus)
+    }
     return
   }
 }

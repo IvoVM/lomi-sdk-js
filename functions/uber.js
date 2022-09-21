@@ -23,12 +23,17 @@ class UberDispatcher{
     }
 
     async getTrip(trip_id){
+        console.log(trip_id, this.accessToken.data.access_token, this.customerId)
         const tripResponse = await axios.get("https://api.uber.com/v1/customers/"+this.customerId+"/deliveries/"+trip_id,{
             headers:{
                 'Authorization' : 'Bearer ' + this.accessToken.data.access_token
             }
         })
-        return tripResponse.data
+        if(tripResponse && tripResponse.data){
+            return tripResponse.data
+        } else {
+            return null
+        }
     }
 
     async cancelTrip(delivery_id){

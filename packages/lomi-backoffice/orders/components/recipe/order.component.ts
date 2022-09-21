@@ -1,9 +1,10 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { collectionData, Firestore } from '@angular/fire/firestore';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Route, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { collection } from 'firebase/firestore';
 import { BackofficeState } from 'packages/lomi-backoffice/ngrx';
+import { ON_PICKING_STATE, WAITING_AT_DRIVER_STATE } from 'packages/lomi-backoffice/providers/lomi/mocks/states.mock';
 import { Order } from 'packages/lomi-backoffice/types/orders';
 import { take, Unsubscribable } from 'rxjs';
 import { OrdersService } from '../../../providers/lomi/orders.service';
@@ -22,6 +23,7 @@ export class OrderComponent implements OnInit {
   lng = 7.809007;
   
   public order:Order | undefined;
+  public cancelingJourney = false;
 
   public storeUnsubscribe:Unsubscribable | null = null;
   
@@ -29,6 +31,7 @@ export class OrderComponent implements OnInit {
     public activatedRoute:ActivatedRoute,
     public ordersProvider:OrdersService,
     public store:Store<BackofficeState>,
+    private router: Router,
 
     //BAD PRACTICE SHOULD BE SYNCED IN JOURNEYS STORE
     public afs: Firestore,
@@ -42,6 +45,27 @@ export class OrderComponent implements OnInit {
       }
       return typeof value == typeName
     }
+
+    cancelUber(tripId:string){
+      this.cancelingJourney = true;
+      this.ordersProvider.cancelUberTrip(tripId).subscribe((response:any)=>{
+        if(this.order){
+          this.ordersProvider.updateOrder(this.order.number, {
+            status: WAITING_AT_DRIVER_STATE
+          })
+          this.order.status = WAITING_AT_DRIVER_STATE
+          const journeyIndex = this.order.journeys?.findIndex((journey:any)=>{
+            return journey.uberTrip.id == tripId
+          })
+          if(this.order && this.order.journeys && journeyIndex){
+            this.order.journeys[journeyIndex].status = response.status
+            this.order.journeys[journeyIndex].uberTrip = response
+            this.router.navigateByUrl("/orders#"+WAITING_AT_DRIVER_STATE)
+          }
+        }
+      })
+    }
+
     ngOnInit(): void {
       this.activatedRoute.params.subscribe(async (params:any)=>{
         const orderNumber = params.number

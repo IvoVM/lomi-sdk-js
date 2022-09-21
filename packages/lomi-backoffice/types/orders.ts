@@ -86,7 +86,7 @@ export type Journey = {
     line_items: LineItem[]
 	orderNumber: string,
 	status: any,
-
+	id:	string,
 	uberTrip: any;
 
 }

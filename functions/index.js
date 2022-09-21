@@ -107,13 +107,18 @@ exports.evaluateUber = functions.https.onRequest(async (request, response) => {
 
 exports.cancelUberTrip = functions.https.onRequest(async (request, response) => {
   cors(request, response, async () => {
-    const tripId = request.body;
-    const trip = await uberDispatcher.getTrip(trip);
-    if(trip){
-      const cancelTrip = await uberDispatcher.cancelTrip(trip);
-      return response.status(200).send(cancelTrip);
-    }else{
-      return response.status(200).send("No trip found");
+    try{
+      await uberDispatcher.auth();
+      const tripId = request.body.tripId;
+      const trip = await uberDispatcher.getTrip(tripId);
+      if(trip){
+        const cancelTrip = await uberDispatcher.cancelTrip(tripId);
+        return response.status(200).send(cancelTrip);
+      }else{
+        return response.status(200).send("No trip found");
+      }
+    } catch(e){
+      return response.status(500).send(e);
     }
   });
 });

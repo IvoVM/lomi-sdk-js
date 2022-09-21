@@ -141,6 +141,13 @@ export class OrdersService {
     return req
   }
 
+  cancelUberTrip(tripId:string){
+    const req = this.httpClient.post("https://us-central1-lomi-35ab6.cloudfunctions.net/cancelUberTrip",{
+      tripId: tripId
+    })
+    return req
+  }
+
   createHermexTrip(order: any) {
     const req = this.httpClient.post("https://us-central1-lomi-35ab6.cloudfunctions.net/createHmxTrip",order)
     return req
