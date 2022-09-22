@@ -12,6 +12,7 @@ import { PickerSelectComponent } from '../picker-select/picker-select.component'
 import * as OrderStates from '../../providers/lomi/mocks/states.mock';
 import { Timestamp } from 'firebase/firestore';
 import { EntityState } from '@ngrx/entity';
+import { ConfirmModalComponent } from 'packages/lomi-backoffice/shared/components/modals/confirm-modal/confirm-modal.component';
 @Component({
   selector: 'lomii-table',
   templateUrl: './table.component.html',
@@ -65,15 +66,28 @@ export class TableComponent implements OnInit {
   }
 
   completeOrder(order:Order){
-    this.ordersProvider.updateOrder(order.number, {
-      status: OrderStates.FINISHED_STATE
+    this._bottomSheet.open(ConfirmModalComponent, {
+      data: { title: `¿Fué retirado el pedido por ${order.email}?` }
+    }).afterDismissed().subscribe((response) => {
+      if (response.result === 'confirm') {
+        this._bottomSheet.open(PickerSelectComponent,{
+          data: {orderNumber: order.number, stockLocation: order.shipment_stock_location_id, buttonText: 'y completar'}
+        }).afterDismissed().subscribe((picker)=>{
+          if(picker){
+            this.ordersProvider.updateOrder(order.number, {
+              status: OrderStates.FINISHED_STATE
+            })
+            this.ordersProvider.currentStep = OrderStates.FINISHED_STATE
+          }
+        })
+      }
     })
-    this.ordersProvider.currentStep = OrderStates.FINISHED_STATE
+
   }
 
   selectPicker(order:PendingOrder){
     this._bottomSheet.open(PickerSelectComponent,{
-      data: {orderNumber: order.number, stockLocation: order.shipment_stock_location_id}
+      data: { orderNumber: order.number, stockLocation: order.shipment_stock_location_id, buttonText: 'e iniciar' }
     }).afterDismissed().subscribe((picker)=>{
       if(picker){
         this.ordersProvider.updateOrder(order.number, {
