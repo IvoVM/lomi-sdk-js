@@ -1,0 +1,26 @@
+.paginator {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    
+    .per-page {
+        margin-top: 16px;
+        display: flex;
+        align-items: baseline;
+        justify-content: flex-end;
+        font-size: 11px;
+
+        p {
+            margin-right: 13px;
+        }
+
+        .select-paginator {
+            width: 15%;
+        }
+
+    }
+}
+
+.delte-button:hover {
+    color: red;
+}

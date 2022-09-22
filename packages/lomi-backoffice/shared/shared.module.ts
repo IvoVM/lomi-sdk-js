@@ -47,6 +47,8 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 import { MainHeaderComponent } from './components/main-header/main-header.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { StatusPipe } from './pipes/status.pipe';
+import {MatPaginatorModule} from '@angular/material/paginator';
+
 
 @NgModule({
   declarations: [
@@ -94,6 +96,7 @@ import { StatusPipe } from './pipes/status.pipe';
     MatNativeDateModule,
     MatProgressBarModule,
     MatToolbarModule,
+    MatPaginatorModule,
   ],
   exports: [
     MatCardModule,
@@ -130,6 +133,7 @@ import { StatusPipe } from './pipes/status.pipe';
     MatFormFieldModule,
     MatProgressBarModule,
     StatusPipe,
+    MatPaginatorModule,
   ],
   providers: [ScreenTrackingService, UserTrackingService],
 })
