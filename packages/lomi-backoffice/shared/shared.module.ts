@@ -40,15 +40,15 @@ import { SafePipe } from './pipes/safe-pipe';
 import { UberStatusPipe } from './pipes/status-uber-pipe';
 import { MatBadgeModule } from '@angular/material/badge';
 import { FiltersSideComponent } from './components/filters-side/filters-side.component';
-import {MatDatepickerModule} from '@angular/material/datepicker';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import {MatProgressBarModule} from '@angular/material/progress-bar';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MainHeaderComponent } from './components/main-header/main-header.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { StatusPipe } from './pipes/status.pipe';
-import {MatPaginatorModule} from '@angular/material/paginator';
-
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { ConfirmModalComponent } from './components/modals/confirm-modal/confirm-modal.component';
 
 @NgModule({
   declarations: [
@@ -60,6 +60,7 @@ import {MatPaginatorModule} from '@angular/material/paginator';
     UberStatusPipe,
     FiltersSideComponent,
     StatusPipe,
+    ConfirmModalComponent,
   ],
   imports: [
     CommonModule,
