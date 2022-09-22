@@ -33,6 +33,7 @@ export class PickerSelectComponent implements OnInit {
     this.ordersProvider.updateOrder(this.data.orderNumber,{
       picker: this.selectedPicker
     })
+    window.open(`https://lomi.cl/admin/orders/${this.data.orderNumber}/invoice`)
     this.bottomSheetRef.dismiss({
       picker: this.selectedPicker
     })
