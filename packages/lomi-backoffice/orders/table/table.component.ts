@@ -73,7 +73,7 @@ export class TableComponent implements OnInit {
 
   selectPicker(order:PendingOrder){
     this._bottomSheet.open(PickerSelectComponent,{
-      data: order.number
+      data: {orderNumber: order.number, stockLocation: order.shipment_stock_location_id}
     }).afterDismissed().subscribe((picker)=>{
       if(picker){
         this.ordersProvider.updateOrder(order.number, {

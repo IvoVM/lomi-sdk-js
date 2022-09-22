@@ -19,18 +19,18 @@ export class PickerSelectComponent implements OnInit {
   constructor(
     private firestore:Firestore,
     private ordersProvider:OrdersService,
-    @Inject(MAT_BOTTOM_SHEET_DATA) public orderNumber: any,
+    @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     private bottomSheetRef:MatBottomSheetRef<PickerSelectComponent>
   ) {
     this.pickersRef = collection(this.firestore, 'pickers');
     this.pickers$ = collectionData(this.pickersRef) as Observable<any[]>
     this.pickers$.subscribe((pickers)=>{
-      this.pickers = pickers
+      this.pickers = pickers.filter((store: any) => store.store == this.data.stockLocation)
     })
   }
 
   selectPicker(){
-    this.ordersProvider.updateOrder(this.orderNumber,{
+    this.ordersProvider.updateOrder(this.data.orderNumber,{
       picker: this.selectedPicker
     })
     this.bottomSheetRef.dismiss({
