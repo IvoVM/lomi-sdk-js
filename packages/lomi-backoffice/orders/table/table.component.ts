@@ -29,6 +29,7 @@ export class TableComponent implements OnInit {
     entities: {},
     ids: []
   };
+  checkedSlide!: boolean
 
   @Input() state:any = null;
   @Output() recordsFetched = new EventEmitter<number>();
@@ -66,6 +67,7 @@ export class TableComponent implements OnInit {
   }
 
   completeOrder(order:Order){
+    this.checkedSlide = true
     this._bottomSheet.open(ConfirmModalComponent, {
       data: { title: `¿Fué retirado el pedido por ${order.email}?` }
     }).afterDismissed().subscribe((response) => {
@@ -78,9 +80,9 @@ export class TableComponent implements OnInit {
               status: OrderStates.FINISHED_STATE
             })
             this.ordersProvider.currentStep = OrderStates.FINISHED_STATE
-          }
+          } else this.checkedSlide = false 
         })
-      }
+      } else this.checkedSlide = false
     })
 
   }

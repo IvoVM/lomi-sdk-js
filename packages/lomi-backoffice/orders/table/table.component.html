@@ -14,7 +14,10 @@
                 </button> 
                 
             </ng-container>
-            <mat-slide-toggle (toggleChange)="actionFunction(order)" *ngIf="actionIcon == 'slide-toggle'" >
+            <mat-slide-toggle 
+                [checked]="checkedSlide"
+                (toggleChange)="actionFunction(order)" 
+                *ngIf="actionIcon == 'slide-toggle'" >
           Retirado
         </mat-slide-toggle>
 
