@@ -3,5 +3,5 @@
     <mat-radio-button *ngFor="let picker of pickers" [value]="picker.name" style="margin-bottom:12px;">
         {{picker.name}}
     </mat-radio-button>
-    <button (click)="selectPicker()" mat-raised-button color="accent">Imprimir comanda e iniciar</button>
+    <button (click)="selectPicker()" mat-raised-button color="accent">Imprimir comanda {{data.buttonText}}</button>
 </mat-radio-group>
