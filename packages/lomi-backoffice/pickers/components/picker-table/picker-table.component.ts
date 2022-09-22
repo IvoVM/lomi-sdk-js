@@ -1,8 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Firestore } from '@angular/fire/firestore';
-import { collection, onSnapshot, query, startAt, orderBy, limit, startAfter, deleteDoc, doc } from 'firebase/firestore';
-import { BehaviorSubject } from 'rxjs';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+import { collection, onSnapshot, query, deleteDoc, doc } from 'firebase/firestore';
 import { storesMock } from '../../../providers/lomi/mocks/stores.mock'
+
+
 @Component({
   selector: 'lomii-picker-table',
   templateUrl: './picker-table.component.html',
@@ -10,44 +13,35 @@ import { storesMock } from '../../../providers/lomi/mocks/stores.mock'
 })
 export class PickerTableComponent implements OnInit {
 
-  public columnsToDisplay = ['name',  'store', 'delete']
-  public pickers$= new BehaviorSubject<any []>([])
-  pickers: any
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  dataSource!: MatTableDataSource<any>;
+
+  public columnsToDisplay = ['name', 'store', 'delete']
 
   constructor(
-    private firestore:Firestore,
-  ) {
-    this.pickers$.subscribe((pickers) => {
-      this.pickers = pickers
-      this.pickers.forEach((element: any, index: number) => {
-        let storeName = Object.values(storesMock)
-        .filter((store: any) => store.value == element.store)
-        .map((store: any) => store.county)
-        if (storeName.length > 0) this.pickers[index].storeName = storeName[0]
-      });
-    })
-  }
+    private firestore: Firestore,
+  ) { }
 
-  ngOnInit(): void {
-    this.getPickers()
-  }
+  ngOnInit(): void { }
 
-  async getPickers(lastPicker?: string, perPage: number = 5): Promise<void> {
-    const q = query(collection(this.firestore, 'pickers'), orderBy('name'), startAfter(lastPicker ? lastPicker: ''), limit(perPage))
-    onSnapshot(q, { includeMetadataChanges: true } , (snapShotResponse) => {
+
+  ngAfterViewInit() {
+    const q = query(collection(this.firestore, 'pickers'))
+    onSnapshot(q, { includeMetadataChanges: true }, (snapShotResponse) => {
       let responseArray: any = []
       snapShotResponse.forEach((doc) => {
+        let storeName = Object.values(storesMock)
+          .filter((store: any) => store.value == doc.data()['store'])
+          .map((store: any) => store.county)
         responseArray.push({
           id: doc.id,
-          ...doc.data()
+          ...doc.data(),
+          storeName: storeName[0]
         })
       })
-      this.pickers$.next(responseArray)
+      this.dataSource = new MatTableDataSource<any>(responseArray);
+      this.dataSource.paginator = this.paginator;
     })
-  }
-
-  changePerPage(perPage: number) {
-    this.getPickers('', perPage)
   }
 
   async deletePicker(picker: any): Promise<any> {
