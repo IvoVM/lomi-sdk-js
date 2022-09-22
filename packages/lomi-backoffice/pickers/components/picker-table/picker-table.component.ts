@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { PickersModalComponent } from '../pickers-modal/pickers-modal.component'
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { collection, onSnapshot, query, deleteDoc, doc } from 'firebase/firestore';
+import { collection, onSnapshot, query, deleteDoc, doc, orderBy } from 'firebase/firestore';
 import { storesMock } from '../../../providers/lomi/mocks/stores.mock'
 
 
@@ -29,7 +29,7 @@ export class PickerTableComponent implements OnInit {
 
 
   ngAfterViewInit() {
-    const q = query(collection(this.firestore, 'pickers'))
+    const q = query(collection(this.firestore, 'pickers'), orderBy('store'))
     onSnapshot(q, { includeMetadataChanges: true }, (snapShotResponse) => {
       let responseArray: any = []
       snapShotResponse.forEach((doc) => {
