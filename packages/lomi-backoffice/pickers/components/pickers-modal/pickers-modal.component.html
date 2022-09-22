@@ -1,23 +1,26 @@
 <h1 mat-dialog-title>Pickers</h1>
 <div mat-dialog-content>
-  <mat-form-field class="add-picker-form" style="padding: 0px;"  appearance="outline">
+  <mat-form-field class="add-picker-form" style="padding: 0px;" appearance="standard">
     <mat-label>Nuevo picker</mat-label>
-    <input  matInput placeholder="Nombre completo" [(ngModel)]="pickerName">
-    <button matSuffix mat-flat-button color="accent" (click)="registerPicker()">
-      <span>Agregar</span>
-    </button>
+    <input matInput placeholder="Nombre completo" [(ngModel)]="pickerName">
   </mat-form-field>
   <ng-container *ngIf="inputError">
     <mat-label style="color: red; margin-top: 0px;">{{inputError}}</mat-label>
   </ng-container>
   
-  <div class="pickers-container">
-    <div class="delete-picker" *ngFor="let picker of pickers">
-      <label class="picker-name">{{picker.name | titlecase}}</label>
-      <button  matSuffix mat-icon-button aria-label="Clear">
-        <mat-icon (click)="deletePicker(picker)" style="color: white;">close</mat-icon>
-      </button>
-    </div>
-  </div>
+  <mat-form-field >
+    <mat-label>Tienda</mat-label>
+    <mat-select [(ngModel)]="storeId">
+      <mat-option matInput *ngFor="let store of stores" [value]="store.value">{{store.county}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <ng-container *ngIf="storeError">
+    <mat-label style="color: red; margin-top: 0px;">{{storeError}}</mat-label>
+  </ng-container>
+
+  <button style="width: 100%; margin-top: 6px;" mat-raised-button color="accent" (click)="registerPicker()">
+    <span>Agregar</span>
+  </button>
 
 </div>

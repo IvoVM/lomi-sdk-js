@@ -1,8 +1,14 @@
 import { Component, OnInit } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Firestore } from '@angular/fire/firestore';
 import { MatDialogRef } from '@angular/material/dialog';
-import { addDoc, collection, deleteDoc, doc, onSnapshot, query } from 'firebase/firestore';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { addDoc, collection, onSnapshot, query } from 'firebase/firestore';
+import { BackofficeState } from 'packages/lomi-backoffice/ngrx';
+import { App } from 'packages/lomi-backoffice/types/app';
+import { UserRol } from 'packages/lomi-backoffice/types/user';
+import { BehaviorSubject, map,  } from 'rxjs';
+import { storesMock } from '../../../providers/lomi/mocks/stores.mock'
 
 @Component({
   selector: 'lomii-pickers-modal',
@@ -11,15 +17,22 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class PickersModalComponent implements OnInit {
 
+  public rols:UserRol[] = []
+  public user:any;
   pickerName: string = ''
+  storeId!: number 
   inputError: string = ''
+  storeError: string = ''
   public pickers$= new BehaviorSubject<any []>([])
   public pickers: any;
   public selectedPicker: any = null;
+  stores: any
+
   constructor(
     public dialogRef: MatDialogRef<PickersModalComponent>,
-    private firestore: Firestore
-  ) {
+    private firestore: Firestore,
+    private store: Store<BackofficeState>  
+    ) {
     this.pickers$.subscribe((pickers) => {
       this.pickers = pickers
     })
@@ -27,16 +40,33 @@ export class PickersModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.getPickers()
+    this.store.select('user').subscribe((user:any)=>{
+      this.user = user
+    })
+    this.store.select('app').subscribe((app:App)=>{
+      this.rols = app.userRols
+    })
+    const filterStore = this.rols.filter((rol: UserRol) => rol.id === this.user.userRol).map((userMergeRol: any) => userMergeRol.stockLocationId)
+    this.stores = Object.values(storesMock)
+    if (+filterStore != -1) this.stores = Object.values(storesMock).filter((stores: any) => stores.value == +filterStore)
   }
 
   async registerPicker(): Promise<string | void> {
     if (!this.pickerName) return this.inputError = 'El picker es requerido'
+    this.inputError = ''
+    if (!this.storeId) return this.storeError = 'La tienda es requerida'
+    this.storeError = ''
     let isUnisque = this.pickers.filter((p: any) => p.name.toLowerCase() === this.pickerName.toLowerCase())
     if (isUnisque.length > 0) return this.inputError = 'El picker ya existe'
     const docRef = await addDoc(collection(this.firestore, 'pickers'), {
-      name: this.pickerName
+      name: this.pickerName,
+      store: this.storeId
     });
-    if (docRef.id) return this.pickerName = '', this.inputError = ''
+    if (docRef.id) {
+      this.pickerName = '' 
+      this.storeId = 0
+      this.dialogRef.close()
+    }
   }
 
   async getPickers(): Promise<void> {
@@ -53,7 +83,4 @@ export class PickersModalComponent implements OnInit {
     })
   }
 
-  async deletePicker(picker: any): Promise<any> {
-    await deleteDoc(doc(this.firestore, 'pickers', picker.id));
-  }
 }

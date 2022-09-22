@@ -1,5 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Firestore } from '@angular/fire/firestore';
+import { MatDialog } from '@angular/material/dialog';
+import { PickersModalComponent } from '../pickers-modal/pickers-modal.component'
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { collection, onSnapshot, query, deleteDoc, doc } from 'firebase/firestore';
@@ -20,6 +22,7 @@ export class PickerTableComponent implements OnInit {
 
   constructor(
     private firestore: Firestore,
+    public dialog: MatDialog
   ) { }
 
   ngOnInit(): void { }
@@ -46,5 +49,10 @@ export class PickerTableComponent implements OnInit {
 
   async deletePicker(picker: any): Promise<any> {
     await deleteDoc(doc(this.firestore, 'pickers', picker.id));
+  }
+
+  openPickersDialog(): void {
+    this.dialog.open(PickersModalComponent, {
+    })
   }
 }
