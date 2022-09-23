@@ -57,6 +57,11 @@
         <td mat-cell *matCellDef="let order; let i = index" >{{timeLeft[i]?.hoursLeft}} {{timeLeft[i]?.hoursLeft != 1 || timeLeft[i]?.hoursLeft != -1? 'Horas': 'Hora'}} {{timeLeft[i]?.minutesLeft}} Minutos</td>
     </ng-container>
 
+    <ng-container matColumnDef="reason">
+        <th mat-header-cell *matHeaderCellDef> Motivo </th>
+        <td mat-cell *matCellDef="let order" > {{order.reason ? order.reason: 'Sin Motivo' }} </td>
+    </ng-container>
+
     <ng-container matColumnDef="state">
         <th mat-header-cell *matHeaderCellDef> Estado del pedido </th>
         <td mat-cell *matCellDef="let order" > 

@@ -3,7 +3,7 @@ import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { select, Store } from '@ngrx/store';
 import {  BackofficeState, selectState0 } from 'packages/lomi-backoffice/ngrx';
 import { selectAll } from 'packages/lomi-backoffice/ngrx/reducers/orders.reducer';
-import { ON_PICKING_STATE, PENDING_STATE, WAITING_AT_DRIVER_STATE, SCHEDULED_STATE } from 'packages/lomi-backoffice/providers/lomi/mocks/states.mock';
+import { ON_PICKING_STATE, PENDING_STATE, WAITING_AT_DRIVER_STATE, SCHEDULED_STATE, FAILED } from 'packages/lomi-backoffice/providers/lomi/mocks/states.mock';
 import { OrdersService } from 'packages/lomi-backoffice/providers/lomi/orders.service';
 import { Journey, OnPickingOrder, Order, PendingOrder } from 'packages/lomi-backoffice/types/orders';
 import { DeliveryOperatorSelectorComponent } from '../components/delivery-operator-selector/delivery-operator-selector.component';
@@ -165,6 +165,7 @@ export class TableComponent implements OnInit, AfterViewInit {
       this.getJourneys()
       this.columnsToDisplay.push("state")
     }
+    if (this.state == OrderStates.FAILED) this.columnsToDisplay.push('reason')
     if (this.state == OrderStates.STORE_PICKING_STATE || this.state == this.orderStates.PENDING_STATE) this.columnsToDisplay.splice(3, 0, 'total_time')
     if (this.state == OrderStates.SCHEDULED_STATE) {
       this.columnsToDisplay.splice(3, 0, 'scheduled_at', 'left_to')
@@ -200,6 +201,7 @@ export class TableComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    const hoursToPickUp = 72
     setInterval(() => {
       if (this.hourToDelivery.length > 0) {
         this.hourToDelivery.forEach((element: any, index: number) => {
@@ -209,6 +211,16 @@ export class TableComponent implements OnInit, AfterViewInit {
       if (this.completedAt.length > 0) {
         this.completedAt.forEach((element: any, index: number) => {
           this.totalTime[index] = UtilsTime.getTotalTime(element)
+          if (this.totalTime[index].totalHours >= hoursToPickUp && this.state == this.orderStates.STORE_PICKING_STATE && this.componentOrders[index]) {
+            this.ordersProvider.updateOrder(
+              this.componentOrders[index].number,
+              {
+                status: 7,
+                reason: `Pasaron las ${hoursToPickUp} horas`
+              },
+              this.componentOrders.shipment_stock_location_id
+            )
+          }
         })
       }
     }, 1000)
