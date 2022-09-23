@@ -9,6 +9,8 @@ import { storesMock } from '../../../providers/lomi/mocks/stores.mock'
 import { BackofficeState } from 'packages/lomi-backoffice/ngrx';
 import { Store } from '@ngrx/store';
 import { currentUserSelector } from 'packages/lomi-backoffice/ngrx/reducers/user.reducer';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { ConfirmModalComponent } from 'packages/lomi-backoffice/shared/components/modals/confirm-modal/confirm-modal.component';
 
 
 @Component({
@@ -26,7 +28,8 @@ export class PickerTableComponent implements OnInit {
   constructor(
     private firestore: Firestore,
     public dialog: MatDialog,
-    private store: Store<BackofficeState>  
+    private store: Store<BackofficeState>  ,
+    private _bottomSheet: MatBottomSheet
   ) { }
 
   ngOnInit(): void { }
@@ -55,9 +58,15 @@ export class PickerTableComponent implements OnInit {
       })
     })
   }
-
-  async deletePicker(picker: any): Promise<any> {
-    await deleteDoc(doc(this.firestore, 'pickers', picker.id));
+  
+    deletePicker(picker: any): void {
+    this._bottomSheet.open(ConfirmModalComponent, {
+      data: { title: `¿Quieres eliminar a ${picker.name}?` }
+    }).afterDismissed().subscribe(async (response) => {
+      if (response.result === 'confirm') {
+        await deleteDoc(doc(this.firestore, 'pickers', picker.id));
+      } 
+    })
   }
 
   openPickersDialog(): void {
