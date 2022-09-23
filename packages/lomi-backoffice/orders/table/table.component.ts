@@ -1,5 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { select, Store } from '@ngrx/store';
 import {  BackofficeState, selectState0 } from 'packages/lomi-backoffice/ngrx';
@@ -14,12 +13,13 @@ import { Timestamp } from 'firebase/firestore';
 import { EntityState } from '@ngrx/entity';
 import { ConfirmModalComponent } from 'packages/lomi-backoffice/shared/components/modals/confirm-modal/confirm-modal.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { Utils } from 'packages/lomi-backoffice/shared/utils/dateTime';
 @Component({
   selector: 'lomii-table',
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
 })
-export class TableComponent implements OnInit {
+export class TableComponent implements OnInit, AfterViewInit {
 
   public secondsToWarning = 24 * 60 * 60;
   public secondsToAlert = 7 * 60 * 60;
@@ -31,7 +31,9 @@ export class TableComponent implements OnInit {
     ids: []
   };
   checkedSlide!: boolean
-
+  hourToDelivery: any = []
+  timeNow: any
+  timeLeft: any = [{}]
   @Input() state:any = null;
   @Output() recordsFetched = new EventEmitter<number>();
 
@@ -163,7 +165,7 @@ export class TableComponent implements OnInit {
       this.columnsToDisplay.push("state")
     }
     if (this.state == OrderStates.SCHEDULED_STATE) {
-      this.columnsToDisplay = ['number','name', 'completed_at','scheduled_at' ,'actions',]
+      this.columnsToDisplay = ['number','name', 'completed_at','scheduled_at', 'left_to' ,'actions',]
     }
     if(this.state == undefined){
       this.columnsToDisplay = ["number","name","completed_at","state"]
@@ -177,7 +179,7 @@ export class TableComponent implements OnInit {
     ).subscribe((orders)=>{
       if(orders){
         this.componentOrders = orders
-        this.componentOrders.forEach((order:Order)=>{
+        this.componentOrders.forEach((order:Order, index: number)=>{
           if(order && !order.completed_at?.seconds){
             this.ordersProvider.updateOrder(
             order.number, 
@@ -186,9 +188,21 @@ export class TableComponent implements OnInit {
             }, 
             order.shipment_stock_location_id)
           }
+
+          if (order.scheduled_at) this.hourToDelivery[index] = new Date(order.scheduled_at).getTime()
         })
         this.recordsFetched.emit(orders.length)
       }
     })
+  }
+
+  ngAfterViewInit(): void {
+    setInterval(() => {
+      if (this.hourToDelivery.length > 0) {
+        this.hourToDelivery.forEach((element: any, index: number) => {
+          this.timeLeft[index] = Utils.getTimeDiff(element)
+        });
+      }
+    }, 1000)
   }
 }
