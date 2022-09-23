@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl } from '@angular/forms';
 import { statesMock } from 'packages/lomi-backoffice/providers/lomi/mocks/states.mock';
-import { OrdersService } from 'packages/lomi-backoffice/providers/lomi/orders.service';
 import { storesMock, storesMockAsArray } from '../../../providers/lomi/mocks/stores.mock';
-import { MatFormFieldControl } from '@angular/material/form-field'; 
 import { Store } from '@ngrx/store';
 import { Query } from 'packages/lomi-backoffice/ngrx/actions/orders.actions';
-import { CHANGE_STOCK_LOCATION } from 'packages/lomi-backoffice/ngrx/actions/app.actions';
+import { currentUserSelector } from 'packages/lomi-backoffice/ngrx/reducers/user.reducer';
+import { BackofficeState } from 'packages/lomi-backoffice/ngrx';
 
 export type Filter = {
   name: string;
@@ -67,9 +66,8 @@ export class FiltersSideComponent implements OnInit {
   }
 
   constructor(
-    private ordersProvider:OrdersService,
     private formBuilder: FormBuilder,
-    private store:Store,
+    private store:Store<BackofficeState>,
   ) {
     const formGroup = this.filters.reduce((acc:any = {},filter)=>{
       if(!acc.name){
@@ -83,6 +81,15 @@ export class FiltersSideComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.store.select(currentUserSelector).subscribe((user:any)=>{
+      if (user.stockLocationId && user.stockLocationId != -1) {
+        let storeByUserStore = Object.values(storesMock).filter((store: any) => store.value == user.stockLocationId).map((s: any) => s.name)
+        const storesFiltered = this.stores.filter((stores: any) => stores == storeByUserStore[0])
+        const filterStoreIndex = this.filters.findIndex((filter: any) => filter.name.toLowerCase() == 'tienda')
+        this.filters[filterStoreIndex].options = storesFiltered
+      }
+    })
+
     this.filtersForm.valueChanges.subscribe((value:any)=>{
       const queryValues:any = {}
       if(value['Tienda']) { 
