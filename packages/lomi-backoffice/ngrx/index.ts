@@ -69,6 +69,9 @@ export function debug(reducer: ActionReducer<any>): ActionReducer<any> {
           }
           return false
         } 
+        else if(order?.scheduled_at && !(order?.name?.includes('Retiro'))) {
+          return statusId == SCHEDULED_STATE
+        }
         else if(!order?.status){
           return statusId == PENDING_STATE
         }

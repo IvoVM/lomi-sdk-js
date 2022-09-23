@@ -178,14 +178,6 @@ export class TableComponent implements OnInit {
       if(orders){
         this.componentOrders = orders
         this.componentOrders.forEach((order:Order)=>{
-          // if (order.scheduled_at && !order.status) {
-          //   this.ordersProvider.updateOrder(
-          //     order.number, 
-          //     {
-          //       status: 1
-          //     }, 
-          //     order.shipment_stock_location_id)
-          // }
           if(order && !order.completed_at?.seconds){
             this.ordersProvider.updateOrder(
             order.number, 
