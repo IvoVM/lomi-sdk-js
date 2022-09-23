@@ -6,7 +6,7 @@ export const Utils = {
         let minutesLeft = 60 - mitunesNow
         return {
             hoursLeft,
-            minutesLeft
+            minutesLeft: hoursLeft < 1 ? mitunesNow: minutesLeft
           }
     }   
 }
