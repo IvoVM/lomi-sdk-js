@@ -72,7 +72,6 @@ export class TableComponent implements OnInit, AfterViewInit {
   }
 
   completeOrder(order:Order){
-    this.checkedSlide = true
     this._bottomSheet.open(ConfirmModalComponent, {
       data: { title: `¿Fué retirado el pedido por ${order.email}?` }
     }).afterDismissed().subscribe((response) => {

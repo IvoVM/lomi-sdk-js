@@ -6,6 +6,7 @@ export const statesMock = [
     'Esperando al repartidor',
     'Entregando',
     'Completado',
+    'Fallido',
   ]
 
 export const STORE_PICKING_STATE = 0
@@ -15,3 +16,4 @@ export const ON_PICKING_STATE = 3
 export const WAITING_AT_DRIVER_STATE = 4
 export const DELIVERING_ORDER_STATE = 5
 export const FINISHED_STATE = 6
+export const FAILED = 7
