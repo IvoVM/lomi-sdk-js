@@ -1,4 +1,4 @@
-export const Utils = {
+export const UtilsTime = {
     getTimeDiff: (time: any) => {
         let timeNow = new Date().getTime()
         let mitunesNow = new Date().getMinutes()
@@ -8,5 +8,14 @@ export const Utils = {
             hoursLeft,
             minutesLeft: hoursLeft < 1 ? mitunesNow: minutesLeft
           }
-    }   
+    },
+
+    getTotalTime: (time: any) => {
+        time = new Date(time * 1000).getTime()
+        let timeNow = new Date().getTime()
+        let totalHours = Math.trunc((timeNow - time) / 1000 / 3600)
+        return {
+            totalHours
+        }
+    }
 }

@@ -13,7 +13,7 @@ import { Timestamp } from 'firebase/firestore';
 import { EntityState } from '@ngrx/entity';
 import { ConfirmModalComponent } from 'packages/lomi-backoffice/shared/components/modals/confirm-modal/confirm-modal.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
-import { Utils } from 'packages/lomi-backoffice/shared/utils/dateTime';
+import { UtilsTime } from 'packages/lomi-backoffice/shared/utils/dateTime';
 @Component({
   selector: 'lomii-table',
   templateUrl: './table.component.html',
@@ -32,8 +32,10 @@ export class TableComponent implements OnInit, AfterViewInit {
   };
   checkedSlide!: boolean
   hourToDelivery: any = []
+  completedAt: any = []
   timeNow: any
   timeLeft: any = [{}]
+  totalTime: any = [{}]
   @Input() state:any = null;
   @Output() recordsFetched = new EventEmitter<number>();
 
@@ -164,8 +166,9 @@ export class TableComponent implements OnInit, AfterViewInit {
       this.getJourneys()
       this.columnsToDisplay.push("state")
     }
+    if (this.state == OrderStates.STORE_PICKING_STATE || this.state == this.orderStates.PENDING_STATE) this.columnsToDisplay.splice(3, 0, 'total_time')
     if (this.state == OrderStates.SCHEDULED_STATE) {
-      this.columnsToDisplay = ['number','name', 'completed_at','scheduled_at', 'left_to' ,'actions',]
+      this.columnsToDisplay.splice(3, 0, 'scheduled_at', 'left_to')
     }
     if(this.state == undefined){
       this.columnsToDisplay = ["number","name","completed_at","state"]
@@ -190,6 +193,7 @@ export class TableComponent implements OnInit, AfterViewInit {
           }
 
           if (order.scheduled_at) this.hourToDelivery[index] = new Date(order.scheduled_at).getTime()
+          if (order.completed_at) this.completedAt[index] = order.completed_at.seconds
         })
         this.recordsFetched.emit(orders.length)
       }
@@ -200,8 +204,13 @@ export class TableComponent implements OnInit, AfterViewInit {
     setInterval(() => {
       if (this.hourToDelivery.length > 0) {
         this.hourToDelivery.forEach((element: any, index: number) => {
-          this.timeLeft[index] = Utils.getTimeDiff(element)
+          this.timeLeft[index] = UtilsTime.getTimeDiff(element)
         });
+      }
+      if (this.completedAt.length > 0) {
+        this.completedAt.forEach((element: any, index: number) => {
+          this.totalTime[index] = UtilsTime.getTotalTime(element)
+        })
       }
     }, 1000)
   }
