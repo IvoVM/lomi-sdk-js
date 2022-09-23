@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Firestore } from '@angular/fire/firestore';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { addDoc, collection, onSnapshot, query } from 'firebase/firestore';
 import { BackofficeState } from 'packages/lomi-backoffice/ngrx';
-import { App } from 'packages/lomi-backoffice/types/app';
+import { currentUserSelector } from 'packages/lomi-backoffice/ngrx/reducers/user.reducer';
 import { UserRol } from 'packages/lomi-backoffice/types/user';
-import { BehaviorSubject, map,  } from 'rxjs';
+import { BehaviorSubject, } from 'rxjs';
 import { storesMock } from '../../../providers/lomi/mocks/stores.mock'
 
 @Component({
@@ -40,15 +39,11 @@ export class PickersModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.getPickers()
-    this.store.select('user').subscribe((user:any)=>{
-      this.user = user
+    this.store.select(currentUserSelector).subscribe((user:any)=>{
+      if (user) this.user = user
     })
-    this.store.select('app').subscribe((app:App)=>{
-      this.rols = app.userRols
-    })
-    const filterStore = this.rols.filter((rol: UserRol) => rol.id === this.user.userRol).map((userMergeRol: any) => userMergeRol.stockLocationId)
     this.stores = Object.values(storesMock)
-    if (+filterStore != -1) this.stores = Object.values(storesMock).filter((stores: any) => stores.value == +filterStore)
+    if (+this.user.stockLocationId != -1) this.stores = Object.values(storesMock).filter((stores: any) => stores.value == +this.user.stockLocationId)
   }
 
   async registerPicker(): Promise<string | void> {
