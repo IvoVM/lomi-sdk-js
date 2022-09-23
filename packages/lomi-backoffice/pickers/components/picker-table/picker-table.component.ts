@@ -4,8 +4,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { PickersModalComponent } from '../pickers-modal/pickers-modal.component'
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { collection, onSnapshot, query, deleteDoc, doc, orderBy } from 'firebase/firestore';
+import { collection, onSnapshot, query, deleteDoc, doc, orderBy, where } from 'firebase/firestore';
 import { storesMock } from '../../../providers/lomi/mocks/stores.mock'
+import { BackofficeState } from 'packages/lomi-backoffice/ngrx';
+import { Store } from '@ngrx/store';
+import { currentUserSelector } from 'packages/lomi-backoffice/ngrx/reducers/user.reducer';
 
 
 @Component({
@@ -17,33 +20,39 @@ export class PickerTableComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource!: MatTableDataSource<any>;
-
   public columnsToDisplay = ['name', 'store', 'delete']
+  user:any;
 
   constructor(
     private firestore: Firestore,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private store: Store<BackofficeState>  
   ) { }
 
   ngOnInit(): void { }
 
 
   ngAfterViewInit() {
-    const q = query(collection(this.firestore, 'pickers'), orderBy('store'))
-    onSnapshot(q, { includeMetadataChanges: true }, (snapShotResponse) => {
-      let responseArray: any = []
-      snapShotResponse.forEach((doc) => {
-        let storeName = Object.values(storesMock)
+    this.store.select(currentUserSelector).subscribe((user:any)=>{
+      if (user) this.user = user
+      const filterByStore = where('store','==',this.user.stockLocationId)
+      const orderByStore = orderBy('store')
+      const q = query(collection(this.firestore, 'pickers'), this.user.stockLocationId == '1' ? filterByStore: orderByStore)
+      onSnapshot(q, { includeMetadataChanges: true }, (snapShotResponse) => {
+        let responseArray: any = []
+        snapShotResponse.forEach((doc) => {
+          let storeName = Object.values(storesMock)
           .filter((store: any) => store.value == doc.data()['store'])
           .map((store: any) => store.county)
-        responseArray.push({
-          id: doc.id,
-          ...doc.data(),
-          storeName: storeName[0]
+          responseArray.push({
+            id: doc.id,
+            ...doc.data(),
+            storeName: storeName[0]
+          })
         })
+        this.dataSource = new MatTableDataSource<any>(responseArray);
+        this.dataSource.paginator = this.paginator;
       })
-      this.dataSource = new MatTableDataSource<any>(responseArray);
-      this.dataSource.paginator = this.paginator;
     })
   }
 
