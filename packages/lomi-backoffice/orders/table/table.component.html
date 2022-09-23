@@ -42,6 +42,11 @@
         <td mat-cell *matCellDef="let order" > {{order.completed_at.seconds*1000 | date:'dd/MM HH:mm:ss'}} </td>
     </ng-container>
 
+    <ng-container matColumnDef="scheduled_at">
+        <th mat-header-cell *matHeaderCellDef> Programado </th>
+        <td mat-cell *matCellDef="let order" > {{order.scheduled_at | date:'dd/MM HH:mm'}} </td>
+    </ng-container>
+
     <ng-container matColumnDef="state">
         <th mat-header-cell *matHeaderCellDef> Estado del pedido </th>
         <td mat-cell *matCellDef="let order" > 

@@ -4,7 +4,7 @@ import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { select, Store } from '@ngrx/store';
 import {  BackofficeState, selectState0 } from 'packages/lomi-backoffice/ngrx';
 import { selectAll } from 'packages/lomi-backoffice/ngrx/reducers/orders.reducer';
-import { ON_PICKING_STATE, PENDING_STATE, WAITING_AT_DRIVER_STATE } from 'packages/lomi-backoffice/providers/lomi/mocks/states.mock';
+import { ON_PICKING_STATE, PENDING_STATE, WAITING_AT_DRIVER_STATE, SCHEDULED_STATE } from 'packages/lomi-backoffice/providers/lomi/mocks/states.mock';
 import { OrdersService } from 'packages/lomi-backoffice/providers/lomi/orders.service';
 import { Journey, OnPickingOrder, Order, PendingOrder } from 'packages/lomi-backoffice/types/orders';
 import { DeliveryOperatorSelectorComponent } from '../components/delivery-operator-selector/delivery-operator-selector.component';
@@ -13,6 +13,7 @@ import * as OrderStates from '../../providers/lomi/mocks/states.mock';
 import { Timestamp } from 'firebase/firestore';
 import { EntityState } from '@ngrx/entity';
 import { ConfirmModalComponent } from 'packages/lomi-backoffice/shared/components/modals/confirm-modal/confirm-modal.component';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 @Component({
   selector: 'lomii-table',
   templateUrl: './table.component.html',
@@ -108,6 +109,7 @@ export class TableComponent implements OnInit {
 
   get actionIcon(){
     switch(this.state){
+      case SCHEDULED_STATE: return 'person_add'
       case PENDING_STATE: return 'person_add'
       case ON_PICKING_STATE: return 'arrow_forward_ios'
       case WAITING_AT_DRIVER_STATE: return 'local_shipping'
@@ -119,6 +121,7 @@ export class TableComponent implements OnInit {
   actionFunction(order:Order){
     console.log(order)
     switch(this.state){
+      case SCHEDULED_STATE: return this.selectPicker(order)
       case PENDING_STATE: return this.selectPicker(order)
       case ON_PICKING_STATE: return this.pickOrder(order)
       case WAITING_AT_DRIVER_STATE: return this.createTrip(order)
@@ -130,6 +133,7 @@ export class TableComponent implements OnInit {
 
   get actions(){
     switch(this.state){
+      case SCHEDULED_STATE: return ['selectPicker']
       case PENDING_STATE: return ['selectPicker']
       case ON_PICKING_STATE: return ['pickOrder']
       case WAITING_AT_DRIVER_STATE: return ['createTrip']
@@ -158,6 +162,9 @@ export class TableComponent implements OnInit {
       this.getJourneys()
       this.columnsToDisplay.push("state")
     }
+    if (this.state == OrderStates.SCHEDULED_STATE) {
+      this.columnsToDisplay = ['number','name', 'completed_at','scheduled_at' ,'actions',]
+    }
     if(this.state == undefined){
       this.columnsToDisplay = ["number","name","completed_at","state"]
     }
@@ -171,6 +178,14 @@ export class TableComponent implements OnInit {
       if(orders){
         this.componentOrders = orders
         this.componentOrders.forEach((order:Order)=>{
+          if (order.scheduled_at && !order.status) {
+            this.ordersProvider.updateOrder(
+              order.number, 
+              {
+                status: 1
+              }, 
+              order.shipment_stock_location_id)
+          }
           if(order && !order.completed_at?.seconds){
             this.ordersProvider.updateOrder(
             order.number, 
