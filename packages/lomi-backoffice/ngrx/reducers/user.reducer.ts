@@ -55,11 +55,11 @@ export function userReducer(state: IUser = defaultUser, action: any) {
 export const currentUserSelector = createSelector(
     (state: BackofficeState) => {
         const userRolDefinition = state.app.userRols.find(rol => rol.id === state.user.userRol)
-        console.log("userRolDefinition", userRolDefinition, state.app.userRols)
         if(userRolDefinition) {
             return {
                 ...state.user,
-                userRol: userRolDefinition.rolName
+                userRol: userRolDefinition.rolName,
+                stockLocationId: userRolDefinition.stockLocationId
             }
         } else {
             return state.user

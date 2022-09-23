@@ -11,6 +11,7 @@ export type UserRol = {
     id: number;
     rolName: string;
     userPrivileges: number[];
+    stockLocationId?: number;
 }
 
 export type UserPrivelege = {
