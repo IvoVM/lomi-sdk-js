@@ -37,7 +37,7 @@ export class PickerTableComponent implements OnInit {
       if (user) this.user = user
       const filterByStore = where('store','==',this.user.stockLocationId)
       const orderByStore = orderBy('store')
-      const q = query(collection(this.firestore, 'pickers'), this.user.stockLocationId == '1' ? filterByStore: orderByStore)
+      const q = query(collection(this.firestore, 'pickers'), this.user.stockLocationId != '-1' ? filterByStore: orderByStore)
       onSnapshot(q, { includeMetadataChanges: true }, (snapShotResponse) => {
         let responseArray: any = []
         snapShotResponse.forEach((doc) => {
