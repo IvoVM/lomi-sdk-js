@@ -7,6 +7,7 @@ import { TableComponent } from './table/table.component';
 import { DeliveryOperatorSelectorComponent } from './components/delivery-operator-selector/delivery-operator-selector.component';
 import { PickerSelectComponent } from './picker-select/picker-select.component';
 import { OrdersHistoryComponent } from './history/history.component';
+import { ReintegrateOrderComponent } from './components/reintegrate-order/reintegrate-order.component';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { OrdersHistoryComponent } from './history/history.component';
     DeliveryOperatorSelectorComponent,
     PickerSelectComponent,
     OrdersHistoryComponent,
+    ReintegrateOrderComponent,
   ],
   imports: [CommonModule, SharedModule],
   exports: [OrdersComponent, OrderComponent],
