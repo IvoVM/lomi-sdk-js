@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 
 @Component({
   selector: 'lomii-reintegrate-order',
@@ -11,6 +11,7 @@ export class ReintegrateOrderComponent implements OnInit {
   
   constructor(
     private bottomSheetRef:MatBottomSheetRef<ReintegrateOrderComponent>,
+    @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
   ) { 
   }
 

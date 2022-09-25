@@ -93,28 +93,42 @@ export class TableComponent implements OnInit, AfterViewInit {
   }
 
   reintegrate(order: Order) {
-    this._bottomSheet.open(ReintegrateOrderComponent)
+    this._bottomSheet.open(ReintegrateOrderComponent, {
+      data: order.name
+    })
       .afterDismissed().subscribe((response) => {
-        if (response.result === 'reintegrate') {
-          this.ordersProvider.updateOrder(
-            order.number,
-            {
-              status: 0,
-              reason: ''
-            },
-            order.shipment_stock_location_id
-          )
-        } else if (response.result === 'complete') {
-          this.ordersProvider.updateOrder(
-            order.number,
-            {
-              status: 6,
-              reason: ''
-            },
-            order.shipment_stock_location_id
-          )
-        } else {
-          return
+        if (response) {
+
+          if (response.result === 'storePicking') {
+            this.ordersProvider.updateOrder(
+              order.number,
+              {
+                status: 0,
+                reason: ''
+              },
+              order.shipment_stock_location_id
+            )
+          } else if (response.result === 'waitingAtDriver') {
+            this.ordersProvider.updateOrder(
+              order.number,
+              {
+                status: 4,
+                reason: ''
+              },
+              order.shipment_stock_location_id
+            )
+          } else if (response.result === 'complete') {
+            this.ordersProvider.updateOrder(
+              order.number,
+              {
+                status: 6,
+                reason: ''
+              },
+              order.shipment_stock_location_id
+            )
+          } else {
+            return
+          }
         }
       })
   }
