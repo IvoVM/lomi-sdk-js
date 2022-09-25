@@ -30,6 +30,7 @@ const ON_PICKING_STATE = 3
 const WAITING_AT_DRIVER_STATE = 4
 const DELIVERING_ORDER_STATE = 5
 const FINISHED_STATE = 6
+const FAILED = 7
 
 //Imported API functions
 const sendNotificationByType = require('./https/sendNotificationByType')(admin);
@@ -255,7 +256,8 @@ exports.scheduledFunction = functions.pubsub.schedule('* * * * *').onRun(async (
     if(trip.complete){
       await journeyDoc.delete()
       admin.firestore().doc("SPREE_ORDERS_" + doc.data().stock_location_id + "/" + doc.data().orderNumber).update({
-        status: trip.status == 'canceled' ? WAITING_AT_DRIVER_STATE : 'delivered' ? FINISHED_STATE : DELIVERING_ORDER_STATE
+        status: trip.status == 'canceled' ? WAITING_AT_DRIVER_STATE : 'returned' ? FAILED : 'delivered' ? FINISHED_STATE : DELIVERING_ORDER_STATE,
+        reason: trip.status == 'returned' ? trip.undeliverable_reason : ''
       })
     } else {
       await journeyDoc.update({
