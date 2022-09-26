@@ -1,49 +1,13 @@
-const functions = require('firebase-functions');
+const axios = require('axios')
 
-module.exports = (admin) => {
-    const db = admin.firestore();
-    const fcm = admin.messaging();
 
-    const listenToNewOrder = functions.firestore.document('SPREE_ORDERS_1/{docId}').onCreate(async (snap, context) => {
-        const newValue = snap.data();
-        const { number, state } = newValue;
-
-        const tokens = await db.doc('backoffice-app/fcmTokens').get();
-        const tokensData = tokens.data();
-        const deviceTokens = Object.keys(tokensData);
-
-        const tokensValues = Object.values(tokensData);
-   
-
-        if (state === 'complete') {
-            const message = {
-                notification: {
-                    title: `Tienda ${order.shipment_stock_location_name.split("-")[0]}`,
-                    body: `Nueva Orden #${number}`,
-                },
-            };
-
-            try {
-                const response = await fcm.sendToDevice(deviceTokens, message);
-                tokensValues.forEach((token) => {
-                    if (response.results[0].error) {
-                        throw new Error('Failure sending notification to', token);
-                    } else {
-                        const userDoc = db.doc(`backoffice-users/${token.userId}/notifications/${response.results[0].messageId}`);
-                        userDoc.set({
-                            ...message,
-                            id: response.results[0].messageId,
-                        })
-                        console.log('Successfully sent message:', response);
-                    }
-                })
-                return response;
-            } catch (error) {
-                console.log('Error sending message:', error);
-                return error;
-            }
-        }
+const sendNoti = async (stock_location, number) => {
+    await axios.post('https://us-central1-lomi-35ab6.cloudfunctions.net/sendFcmNotificationOnNewOrder', {
+        stock_location: stock_location,
+        number: number
     })
-    
-    return listenToNewOrder;
+
+    return true
 }
+
+module.exports = sendNoti

@@ -10,6 +10,7 @@ const Geocoder = require('./geocoder');
 const { default: axios } = require('axios');
 const { env } = require('process');
 const { orderInitialState } = require('./fillOrderState');
+const sendNoti = require('./handlers/sendFcmNotifications');
 
 admin.initializeApp();
 
@@ -39,8 +40,39 @@ exports.sendNotificationByType = sendNotificationByType
 
 
 //Imported Handlers
-const listenToNewOrder = require('./handlers/sendFcmNotifications')(admin);
-exports.sendFcmNotificationOnNewOrder = listenToNewOrder
+exports.sendFcmNotificationOnNewOrder = functions.https.onRequest(
+  async (request, response) => {
+    const { number, stock_location} = request.body
+    
+    const tokens = await admin.firestore().doc('backoffice-app/fcmTokens').get()
+    const tokensData = tokens.data()
+    const deviceTokens = Object.keys(tokensData)
+  
+    deviceTokens.forEach(async element => {
+      console.log(element)
+      try {
+        await admin.messaging().send({
+          token: element,
+          notification: {
+            title: `Tienda ${stock_location.split("-")[0]}`,
+            body: `Nueva Orden #${number}`,
+          },
+          data: {
+            number: number
+          },
+          webpush: {
+            notification: {
+              click_action: '/orders'
+            }
+          }
+        })
+      } catch (error) {
+        console.log(error)
+      }
+      response.status(200).send('ok')
+    })
+  }
+)
 //End of Imported Handlers
 
 //Imported Firestore listeners
@@ -57,6 +89,8 @@ exports.addCompletedOrder = functions.https.onRequest(
     order.completed_at = new Date(order.completed_at);
     const credentialsRef = admin.firestore().collection(collectionKey).doc(order.number);
     credentialsRef.set(order);
+
+    await sendNoti(order.shipment_stock_location_name, order.number)
     return response.send('ok');
   }
 );
