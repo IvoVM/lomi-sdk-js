@@ -1,8 +1,8 @@
 <lomii-main-header *ngIf="!router.url.includes('auth')"></lomii-main-header>
 <div class="notification" *ngIf="lastNotification">
     <div class="notification-body shadow">
-        <h5>{{lastNotification.notification.title}}</h5>
-        <h6>{{lastNotification.notification.body}}</h6>
+        <h2 style="color: #424962; margin-bottom: 0;">{{lastNotification.notification.title}}</h2>
+        <h3 style="color: #7E7E7E; margin-bottom: 0;">{{lastNotification.notification.body}}</h3>
     </div>
 </div>
 <router-outlet></router-outlet>
