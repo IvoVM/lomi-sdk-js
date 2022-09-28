@@ -42,17 +42,21 @@ exports.sendNotificationByType = sendNotificationByType
 //Imported Handlers
 exports.sendFcmNotificationOnNewOrder = functions.https.onRequest(
   async (request, response) => {
-    const { number, stock_location} = request.body
+    const { number, stock_location, stock_location_id} = request.body
     
     const tokens = await admin.firestore().doc('backoffice-app/fcmTokens').get()
     const tokensData = tokens.data()
-    const deviceTokens = Object.keys(tokensData)
-  
-    deviceTokens.forEach(async element => {
-      console.log(element)
+    let tokensToPush = []
+    Object.entries(tokensData).map(entry => {
+      if (entry[1].notifications && entry[1].notifications.find(n => n.includes(`SPREE_ORDERS_${stock_location_id}`))) {
+        if (!Object.values(tokensToPush).find(t => t === entry[1].token)) tokensToPush.push({ userId: entry[1].userId, tokens: entry[1].token})
+      }
+    })
+    
+    tokensToPush.forEach(async element => {
       try {
         await admin.messaging().send({
-          token: element,
+          token: element.tokens,
           notification: {
             title: `Tienda ${stock_location.split("-")[0]}`,
             body: `Nueva Orden #${number}`,
@@ -66,11 +70,17 @@ exports.sendFcmNotificationOnNewOrder = functions.https.onRequest(
             }
           }
         })
+        await admin.firestore().doc(`backoffice-users/${element.userId}`).collection('notifications').add({
+          notification: {
+            title: `Tienda ${stock_location.split("-")[0]}`,
+            body: `Nueva Orden #${number}`,
+          }
+        })
       } catch (error) {
         console.log(error)
       }
-      response.status(200).send('ok')
     })
+    response.status(200).send('OK')
   }
 )
 //End of Imported Handlers
@@ -90,7 +100,7 @@ exports.addCompletedOrder = functions.https.onRequest(
     const credentialsRef = admin.firestore().collection(collectionKey).doc(order.number);
     credentialsRef.set(order);
 
-    await sendNoti(order.shipment_stock_location_name, order.number)
+    await sendNoti(order.shipment_stock_location_name, order.number, order.shipment_stock_location_id)
     return response.send('ok');
   }
 );
