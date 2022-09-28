@@ -54,7 +54,6 @@ export function debug(reducer: ActionReducer<any>): ActionReducer<any> {
     map((orders) => {
       return Object.values(orders).filter((order: Order | undefined) => {
         if(statusId == undefined && !(order?.name?.includes('Retiro'))){
-
           return true
         }
         else if(order?.status == FINISHED_STATE){
@@ -72,8 +71,18 @@ export function debug(reducer: ActionReducer<any>): ActionReducer<any> {
           }
           return false
         } 
-        else if(order?.scheduled_at && !(order?.name?.includes('Retiro'))) {
-          return statusId == SCHEDULED_STATE
+        else if(order?.scheduled_at && !order?.status) {
+          const scheduledTime = new Date(order.scheduled_at).getTime()
+          const currentTime = new Date().getTime()
+          if(scheduledTime > currentTime){
+            return statusId == SCHEDULED_STATE
+          } else {
+            if(order?.name?.includes("Retiro")){
+              return statusId == STORE_PICKING_STATE
+            } else {
+              return statusId == PENDING_STATE
+            }
+          }
         }
         else if(!order?.status){
           return statusId == PENDING_STATE
