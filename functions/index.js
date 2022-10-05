@@ -36,8 +36,10 @@ const FAILED = 7
 //Imported API functions
 const sendNotificationByType = require('./https/sendNotificationByType')(admin);
 exports.sendNotificationByType = sendNotificationByType
-//End Imported API functions
 
+const listenToUberStatusWebHook = require('./https/webhooks/uberStatus')(admin);
+exports.listenToUberStatusWebHook = listenToUberStatusWebHook
+//End Imported API functions
 
 //Imported Handlers
 exports.sendFcmNotificationOnNewOrder = functions.https.onRequest(

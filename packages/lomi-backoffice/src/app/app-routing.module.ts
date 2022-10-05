@@ -9,6 +9,7 @@ import { SettingsComponent } from '../../settings/settings/settings.component';
 import { OrdersHistoryComponent } from 'packages/lomi-backoffice/orders/history/history.component';
 import { UserWithoutRolComponent } from 'packages/lomi-backoffice/users/user-without-rol/user-without-rol.component';
 import { JourneysComponent } from 'packages/lomi-backoffice/journeys/journeys/journeys.component';
+import { JourneyComponent } from 'packages/lomi-backoffice/journeys/journey/journey.component';
 
 const routes: Routes = [
   {path: 'auth', component: AuthComponent},
@@ -24,6 +25,7 @@ const routes: Routes = [
       {path: 'users', component: UsersIndexComponent},
       {path: 'settings', component: SettingsComponent},
       {path: 'journeys', component: JourneysComponent},
+      {path: 'journeys/:id', component: JourneyComponent},
       {path : '', redirectTo: '/orders', pathMatch: "full" },
     ]
   }

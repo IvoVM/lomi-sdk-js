@@ -1,0 +1,26 @@
+<lomii-half-card
+    [title]="'Viaje #'+ (journey.id ? journey.id : '???')"
+>
+
+<div>
+    <div class="display-info-card">
+      <div class="title">
+        <h1>Informacion de despacho</h1>
+      </div>
+      <div class="section-header">
+        <p>Operador: {{journey.uberTrip ? 'Uber' : 'Hermex'}} </p>
+        <p>Estado: {{journey.status | uberStatus}}</p>
+        <iframe *ngIf="false" [src]="journey.uberTrip.tracking_url | safe"> </iframe>
+        <button [disabled]="cancelingJourney" style="margin-bottom:1em;margin-top:0.25em" *ngIf="journey.status == 'Order queued sucesfully'" mat-raised-button color="accent">Cancelar</button>
+        <button [disabled]="cancelingJourney" style="margin-bottom:1em;margin-top:0.25em" (click)="cancelTrip()" *ngIf="journey.uberTrip && journey.uberTrip.status == 'pending'" mat-raised-button color="accent">Cancelar</button>
+      </div>
+      <div class="section-body" *ngIf="journey.uberTrip">
+        <p >Monto: ${{journey.uberTrip.fee}}</p>
+        <p>Tracking Id: {{journey.uberTrip.id}} </p>
+        <p *ngIf="journey.uberTrip">Tracking Url: <a href="{{journey.uberTrip.tracking_url}}">{{journey.uberTrip.tracking_url}}</a></p>
+        <p *ngIf="journey.uberTrip">Hora solicitado: {{journey.uberTrip.created | date:'YYYY-MM-dd HH:mm:ss'}}</p>
+      </div>
+    </div>
+  </div>
+
+</lomii-half-card>

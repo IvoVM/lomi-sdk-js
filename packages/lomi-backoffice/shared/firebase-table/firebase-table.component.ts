@@ -9,6 +9,7 @@ export class FirebaseTableComponent implements OnInit {
 
   @Input() valuesToShow: any[] = [];
   @Input() dataSource: any[] = [];
+  @Input() linkToRecordId: boolean = false;
 
   constructor() {}
 
@@ -17,7 +18,6 @@ export class FirebaseTableComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.valuesToShow, this.dataSource)
-    debugger
+    
   }
 }

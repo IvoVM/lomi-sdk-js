@@ -79,15 +79,15 @@ export type LineItem = {
 
 export type Journey = {
 	providerId: number,
-	duration: number,
-	distance: number,
-	estimatedTime: number,
-	returned: boolean,
-    line_items: LineItem[]
-	orderNumber: string,
-	status: any,
-	id:	string,
-	uberTrip: any;
+	duration?: number,
+	distance?: number,
+	estimatedTime?: number,
+	returned?: boolean,
+    line_items?: LineItem[]
+	orderNumber?: string,
+	status?: any,
+	id?:	string,
+	uberTrip?: any;
 
 }
 
