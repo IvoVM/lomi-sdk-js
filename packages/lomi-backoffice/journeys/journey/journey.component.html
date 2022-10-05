@@ -21,6 +21,21 @@
         <p *ngIf="journey.uberTrip">Hora solicitado: {{journey.uberTrip.created | date:'YYYY-MM-dd HH:mm:ss'}}</p>
       </div>
     </div>
+
+    <div class="display-info-card" *ngIf="journey.uberTrip && journey.uberTrip.courier">
+      <div class="title">
+        <h1>Informacion del repartidor</h1>
+      </div>
+      <div class="section-header">
+        <p>Nombre : {{journey.uberTrip.courier.name }} </p>
+        <p>Numero de telefono: {{journey.uberTrip.courier.phone_number}}</p>
+      </div>
+      <div class="section-body">
+        <p>Color del vehiculo: ${{journey.uberTrip.courier.vehicle_color}}</p>
+        <p>Marca del vehicula: {{journey.uberTrip.courier.vehicle_make}} </p>
+      </div>
+    </div>
+
   </div>
 
 </lomii-half-card>
