@@ -30,6 +30,7 @@ import { SettingsModule } from 'packages/lomi-backoffice/settings/settings.modul
 import { AngularFireMessagingModule } from '@angular/fire/compat/messaging';
 import { UserService } from './providers/user.service';
 import { NotificationsService } from './providers/notifications.service';
+import { JourneysModule } from 'packages/lomi-backoffice/journeys/journeys.module';
 
 @NgModule({
   declarations: [AppComponent, MainHeaderComponent],
@@ -52,6 +53,7 @@ import { NotificationsService } from './providers/notifications.service';
     SharedModule,
     UsersModule,
     SettingsModule,
+    JourneysModule,
     AngularFireMessagingModule
     
   ],

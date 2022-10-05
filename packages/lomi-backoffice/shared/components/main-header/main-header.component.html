@@ -15,6 +15,12 @@
                 <button  mat-menu-item [routerLink]="['/settings']"><mat-icon>settings</mat-icon>Configuración</button>
               </mat-menu>            
             <h6 style="font-size: 1rem;">{{ user ? user['userRol']: null }}</h6>
+            <div class="clicklable hoverable">
+                <mat-icon style="margin-left:1em" class="material-symbols-outlined">
+                    notifications
+                </mat-icon>
+                <span matBadge="0" matBadgeColor="accent"></span>
+            </div>
         </div>
     </mat-toolbar>
 

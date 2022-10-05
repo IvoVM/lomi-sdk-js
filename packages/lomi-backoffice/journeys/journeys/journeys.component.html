@@ -1,0 +1,10 @@
+<lomii-half-card [title]="'Viajes de ultima milla'">
+    <mat-tab-group>
+        <mat-tab label="Viajes en curso">
+            <lomii-firebase-table
+                [valuesToShow] = "['id','status', 'providerId']"
+                [dataSource] = "journeysToShow"
+            ></lomii-firebase-table>
+        </mat-tab>
+    </mat-tab-group>    
+</lomii-half-card>

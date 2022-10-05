@@ -61,6 +61,10 @@ export class MainHeaderComponent implements OnInit {
           {
             route: "users",
             name: "Usuarios",
+          },
+          {
+            route: "journeys",
+            name: "Viajes de ultima milla",
           }
         ]
       }

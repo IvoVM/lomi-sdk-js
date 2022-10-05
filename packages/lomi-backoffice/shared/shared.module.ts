@@ -49,6 +49,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { StatusPipe } from './pipes/status.pipe';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { ConfirmModalComponent } from './components/modals/confirm-modal/confirm-modal.component';
+import { HalfCardComponent } from './half-card/half-card.component';
+import { FirebaseTableComponent } from './firebase-table/firebase-table.component';
 
 @NgModule({
   declarations: [
@@ -61,6 +63,8 @@ import { ConfirmModalComponent } from './components/modals/confirm-modal/confirm
     FiltersSideComponent,
     StatusPipe,
     ConfirmModalComponent,
+    HalfCardComponent,
+    FirebaseTableComponent,
   ],
   imports: [
     CommonModule,
@@ -135,6 +139,8 @@ import { ConfirmModalComponent } from './components/modals/confirm-modal/confirm
     MatProgressBarModule,
     StatusPipe,
     MatPaginatorModule,
+    HalfCardComponent,
+    FirebaseTableComponent,
   ],
   providers: [ScreenTrackingService, UserTrackingService],
 })

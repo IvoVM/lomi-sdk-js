@@ -268,7 +268,8 @@ exports.creatUberTrip = functions.https.onRequest(async (request, response) => {
             status: uberTrip.status,
             orderNumber: order.number,
             stock_location_id: order.shipment_stock_location_id,
-            uberTrip: uberTrip
+            uberTrip: uberTrip,
+            providerId: 1,
           }
           await ref.collection("journeys").doc(journey.id).set(journey);
           await admin
