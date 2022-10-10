@@ -14,13 +14,7 @@
                 <button (click)="logout()" mat-menu-item><mat-icon>logout</mat-icon>Cerrar Sesión</button>
                 <button  mat-menu-item [routerLink]="['/settings']"><mat-icon>settings</mat-icon>Configuración</button>
               </mat-menu>            
-            <h6 style="font-size: 1rem;">{{ user ? user['userRol']: null }}</h6>
-            <div class="clicklable hoverable">
-                <mat-icon style="margin-left:1em" class="material-symbols-outlined">
-                    notifications
-                </mat-icon>
-                <span matBadge="0" matBadgeColor="accent"></span>
-            </div>
+            <h6 style="font-size: 1rem;margin-right: 3em;">{{ user ? user['userRol']: null }}</h6>
         </div>
     </mat-toolbar>
 

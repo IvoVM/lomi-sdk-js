@@ -33,6 +33,16 @@ const DELIVERING_ORDER_STATE = 5
 const FINISHED_STATE = 6
 const FAILED = 7
 
+//Spree
+//const spreeUrl = "https://lomi-dev.herokuapp.com/";
+const spreeUrl = "https://lomi.cl/";
+const token = "8b9c307dd89928cc60e8e59d2233dbafc7618f26c52fa5d3";
+//End spree environment
+
+//Imported Scheduled functions
+const spreeScheduled = require('./scheduled/spreeScheduled')(spreeUrl, token, admin);
+exports.spreeScheduled = spreeScheduled
+
 //Imported API functions
 const sendNotificationByType = require('./https/sendNotificationByType')(admin);
 exports.sendNotificationByType = sendNotificationByType

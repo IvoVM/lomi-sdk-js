@@ -40,6 +40,20 @@
                     </div>
                 </div>
             </mat-tab>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <span>Recursos</span>
+                </ng-template>
+                <div class="p">
+                    <div class="half-card">
+                        <lomii-firebase-table
+                        [valuesToShow] = "['id','type', 'name']"
+                        [dataSource] = "resources"
+                        >
+                       </lomii-firebase-table>
+                    </div>
+                </div>
+            </mat-tab>
         </mat-tab-group>
     </div>
 </div>

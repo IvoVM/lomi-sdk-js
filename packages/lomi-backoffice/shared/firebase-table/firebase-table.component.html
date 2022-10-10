@@ -2,7 +2,16 @@
     <ng-container *ngFor="let value of valuesToShow">
         <ng-container [matColumnDef]="value">
             <th mat-header-cell *matHeaderCellDef> {{value}} </th>
-            <td mat-cell *matCellDef="let element"> {{element[value]}} </td>
+            <td mat-cell *matCellDef="let element"> 
+            
+                <p *ngIf="value != 'providerId'">{{element[value]}}</p>
+                <p  *ngIf="value == 'providerId' && !element[value]">
+                    UBER
+                </p>
+                <p  *ngIf="value == 'providerId' && element[value] == 2">
+                    HERMEX
+                </p>
+            </td>
         </ng-container>
     </ng-container>
 

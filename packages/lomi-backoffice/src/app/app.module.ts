@@ -31,22 +31,30 @@ import { AngularFireMessagingModule } from '@angular/fire/compat/messaging';
 import { UserService } from './providers/user.service';
 import { NotificationsService } from './providers/notifications.service';
 import { JourneysModule } from 'packages/lomi-backoffice/journeys/journeys.module';
+import { NotificationsComponent } from './notifications/notifications.component';
 
 @NgModule({
-  declarations: [AppComponent, MainHeaderComponent],
+  declarations: [AppComponent, MainHeaderComponent, NotificationsComponent],
   imports: [
     BrowserModule,
     MatToolbarModule,
     HttpClientModule,
     RouterModule.forRoot([], { initialNavigation: 'enabledBlocking' }),
     BrowserAnimationsModule,
-    StoreModule.forRoot(reducers, { metaReducers,
+    StoreModule.forRoot(reducers, {
+      metaReducers,
       runtimeChecks: {
         strictStateImmutability: false,
         strictActionImmutability: false,
       },
     }),
-    EffectsModule.forRoot([OrderEffects, UserEffects, AppEffects, UsersEffects, JourneyEffects]),
+    EffectsModule.forRoot([
+      OrderEffects,
+      UserEffects,
+      AppEffects,
+      UsersEffects,
+      JourneyEffects,
+    ]),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     OrdersModule,
     PickresModule,
@@ -54,15 +62,10 @@ import { JourneysModule } from 'packages/lomi-backoffice/journeys/journeys.modul
     UsersModule,
     SettingsModule,
     JourneysModule,
-    AngularFireMessagingModule
-    
+    AngularFireMessagingModule,
   ],
   exports: [],
-  providers: [
-    JourneysService,
-    UserService,
-    NotificationsService
-  ],
+  providers: [JourneysService, UserService, NotificationsService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

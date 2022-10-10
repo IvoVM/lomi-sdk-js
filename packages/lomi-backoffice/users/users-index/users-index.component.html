@@ -71,6 +71,15 @@
                 </ng-template>
                 <lomii-picker-table></lomii-picker-table>
             </mat-tab>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <span>Roles</span>
+                </ng-template>
+                <lomii-firebase-table
+                    [valuesToShow]="['id', 'rolName']"
+                    [dataSource]="rols"
+                ></lomii-firebase-table>
+            </mat-tab>
         </mat-tab-group>
             
         </div>

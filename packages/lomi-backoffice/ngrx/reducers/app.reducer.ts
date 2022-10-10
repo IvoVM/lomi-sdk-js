@@ -9,7 +9,7 @@ import { App } from 'packages/lomi-backoffice/types/app';
 const initialState:App = {
     userPrivileges: [],
     userRols: [],
-
+    resources: [],
     selectedStockLocationId: 0,
 }
 
