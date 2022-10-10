@@ -16,5 +16,5 @@
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="valuesToShow"></tr>
-    <tr [routerLink]="[row.id]" mat-row *matRowDef="let row; columns: valuesToShow;"></tr>
+    <tr [routerLink]="linkToRecordIdRoute ? [linkToRecordIdRoute+row.id] : [row.id]" mat-row *matRowDef="let row; columns: valuesToShow;"></tr>
 </table>

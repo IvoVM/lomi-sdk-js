@@ -12,11 +12,19 @@ module.exports = (spreeUrl, token, admin) => {
         const resourcesDoc = await admin.firestore().doc("backoffice-app/resources");
         const resources = await resourcesDoc.get();
 
+        const privilegesDoc = await admin.firestore().doc("backoffice-app/userPrivileges");
+
         stockLocations.stock_locations.forEach(async (stockLocation) => {
             if(!resources["SPREE_ORDERS_"+stockLocation.id]){
+                privilegesDoc.update({
+                    ["SPREE_ORDERS_"+stockLocation.id]: {
+                        id: "SPREE_ORDERS_"+stockLocation.id,
+                        name: "SPREE_ORDERS_"+stockLocation.id,
+                    }
+                })
                 resourcesDoc.update({
-                    ["SPREE_ORDERS"+stockLocation.id]: {
-                        id: stockLocation.id,
+                    ["SPREE_ORDERS_"+stockLocation.id]: {
+                        id: "SPREE_ORDERS_"+stockLocation.id,
                         name: stockLocation.name,
                         stockLocationId: stockLocation.id,
                         type: "SPREE_STOCK_LOCATION",

@@ -34,8 +34,7 @@ export class AppComponent {
         const [user,app] = args;
         this.userId = user.uid
         if(app?.userPrivileges){
-          const collectionNames = app.userPrivileges[app.userRols[user.userRol - 1]?.userPrivileges[0] - 1]?.collectionNames
-          console.log(collectionNames, app.userRols[user.userRol - 1], "orderEffect")
+          const collectionNames = app.resources.filter(resource=>resource.type == "SPREE_STOCK_LOCATION").map(resource=>resource.id)
           this.store.dispatch(new fromOrders.Query({
             collections_names: collectionNames
           }))

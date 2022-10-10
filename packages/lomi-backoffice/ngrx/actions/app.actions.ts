@@ -14,6 +14,20 @@ export const UPDATE_SUCCESS = '[App] Update Success';
 
 export const CHANGE_STOCK_LOCATION = '[App] Change Stock Location';
 
+export const ADD_USER_RESOURCE = '[App] Add User Resource';
+export const USER_RESOURCE_ADDED = '[App] User Resource Added';
+export const REMOVE_USER_RESOURCE = '[App] Remove User Resource';
+export const USER_RESOURCE_REMOVED = '[App] User Resource Removed';
+
+export const ADD_USER_ROL = '[App] Add User Rol';
+export const USER_ROL_ADDED = '[App] User Rol Added';
+export const REMOVE_USER_ROL = '[App] Remove User Rol';
+export const USER_ROL_REMOVED = '[App] User Rol Removed';
+
+export class AddUserResource{
+    readonly type = ADD_USER_RESOURCE;
+    constructor(public payload: {resourceId:string, privilegeName:string }){}
+}
 export class ChangeStockLocation {
     readonly type = CHANGE_STOCK_LOCATION;
     constructor(public stockLocationId: number) {}

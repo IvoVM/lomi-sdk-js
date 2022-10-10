@@ -15,10 +15,10 @@ module.exports = (admin) => {
         const userPrivelegesFiltered = await userRolsUtils.getUserRolPrivileges(afterRol);
         console.log(userPrivelegesFiltered);
 
-        const collectionNewUserNotifications = userPrivelegesFiltered.map((privelege) => privelege.collectionNames[0]+":NEW_USER");
-        const collectionNewOrderNotifications = userPrivelegesFiltered.map((privelege) => privelege.collectionNames[0]+":NEW_ORDER");
-        const journeyCanceledNotification = userPrivelegesFiltered.map((privelege) => privelege.collectionNames[0]+":JOURNEY_CANCELED");
-        const journeyCompletedNotification = userPrivelegesFiltered.map((privelege) => privelege.collectionNames[0]+":JOURNEY_COMPLETED");
+        const collectionNewUserNotifications = userPrivelegesFiltered.map((privelege) => privelege.name+":NEW_USER");
+        const collectionNewOrderNotifications = userPrivelegesFiltered.map((privelege) => privelege.name+":NEW_ORDER");
+        const journeyCanceledNotification = userPrivelegesFiltered.map((privelege) => privelege.name+":JOURNEY_CANCELED");
+        const journeyCompletedNotification = userPrivelegesFiltered.map((privelege) => privelege.name+":JOURNEY_COMPLETED");
 
         const allNotifications = [
             ...collectionNewOrderNotifications,

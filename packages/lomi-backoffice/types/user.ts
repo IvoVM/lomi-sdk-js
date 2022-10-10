@@ -10,6 +10,7 @@ export type IUser = {
 export type UserRol = {
     id: number;
     rolName: string;
+    description?: string;
     userPrivileges: number[];
     stockLocationId?: number;
 }

@@ -1,0 +1,19 @@
+<lomii-half-card *ngIf="userRol"
+    [title]="'Rol de usuario '+userRol.rolName"
+>
+    <div class="display-info-card">
+        <div class="title">
+            <h1>Informacion del rol</h1>
+        </div>
+        <div class="section-header">
+            <p>Nombre : {{userRol.rolName}}</p>
+            <p>Descripcion : {{userRol.description}}</p>
+        </div>
+        <div class="section-body">
+            <p>Permisos : <span class="accent-color">{{userRol.userPrivileges}}</span></p>
+            <div class="actions">
+                <button mat-raised-button color="accent" (click)="addUserRol()">Agregar permiso</button>
+            </div>
+        </div>
+    </div>
+</lomii-half-card>

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireMessaging } from '@angular/fire/compat/messaging';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { BackofficeState } from 'packages/lomi-backoffice/ngrx';
 import { UserService } from '../providers/user.service';
 
 @Component({
@@ -17,16 +19,21 @@ export class NotificationsComponent implements OnInit {
     private angularFireMessaging: AngularFireMessaging,
     private userService: UserService,
     public router: Router,
+    public store: Store<BackofficeState>
   ) {}
 
   ngOnInit(): void {
-    this.requestMessagingPermission();
-
+    this.store.select("user").subscribe((user:any)=>{
+      if(user.uid){
+        this.userId = user.uid;
+        this.requestMessagingPermission();
+      }
+    })
   }
 
   private requestMessagingPermission(){
     this.angularFireMessaging.requestToken.subscribe((token) => {
-      console.log(token);
+      console.log(token, "token", this.userId);
       if(token){
         this.userService.addUserToken(this.userId,token)
       }

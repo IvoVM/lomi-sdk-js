@@ -1,0 +1,18 @@
+<div>
+    <mat-form-field class="example-full-width" appearance="fill">
+        <mat-label>Recurso</mat-label>
+        <input type="text" matInput [(ngModel)]="resource.id" [matAutocomplete]="auto">
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let resource of resources" [value]="resource.id">
+            <h5 style="margin:0">{{resource.name}}</h5>
+            <h6 style="margin:0">{{resource.id}}</h6>
+          </mat-option>
+        </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Nombre del privilegio</mat-label>
+        <input  [(ngModel)]="userResource.name"  matInput>
+     </mat-form-field>
+    <button mat-raised-button color="accent" (click)="addUserResource(resource.id)">Agregar</button>
+</div>

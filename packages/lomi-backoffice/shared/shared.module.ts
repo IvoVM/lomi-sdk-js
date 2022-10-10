@@ -51,6 +51,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { ConfirmModalComponent } from './components/modals/confirm-modal/confirm-modal.component';
 import { HalfCardComponent } from './half-card/half-card.component';
 import { FirebaseTableComponent } from './firebase-table/firebase-table.component';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 
 @NgModule({
   declarations: [
@@ -102,6 +103,7 @@ import { FirebaseTableComponent } from './firebase-table/firebase-table.componen
     MatProgressBarModule,
     MatToolbarModule,
     MatPaginatorModule,
+    MatAutocompleteModule
   ],
   exports: [
     MatCardModule,
@@ -141,6 +143,7 @@ import { FirebaseTableComponent } from './firebase-table/firebase-table.componen
     MatPaginatorModule,
     HalfCardComponent,
     FirebaseTableComponent,
+    MatAutocompleteModule
   ],
   providers: [ScreenTrackingService, UserTrackingService],
 })

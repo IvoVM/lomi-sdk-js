@@ -10,6 +10,7 @@ export class FirebaseTableComponent implements OnInit {
   @Input() valuesToShow: any[] = [];
   @Input() dataSource: any[] = [];
   @Input() linkToRecordId: boolean = false;
+  @Input() linkToRecordIdRoute: string = "";
 
   constructor() {}
 

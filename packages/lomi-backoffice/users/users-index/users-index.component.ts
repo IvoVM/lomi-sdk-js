@@ -1,12 +1,14 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { BackofficeState } from 'packages/lomi-backoffice/ngrx';
 import { Modified, Query, Update } from 'packages/lomi-backoffice/ngrx/actions/users.actions';
 import { selectEntities } from 'packages/lomi-backoffice/ngrx/reducers/orders.reducer';
+import { AddUserRolDialogComponent } from 'packages/lomi-backoffice/settings/user-rol/add-user-rol-dialog/add-user-rol-dialog.component';
 import { App } from 'packages/lomi-backoffice/types/app';
-import { IUser, UserRol } from 'packages/lomi-backoffice/types/user';
+import { IUser, UserPrivelege, UserRol } from 'packages/lomi-backoffice/types/user';
 import { map, Observable } from 'rxjs';
 
 @Component({
@@ -24,6 +26,7 @@ import { map, Observable } from 'rxjs';
 export class UsersIndexComponent implements OnInit {
 
   public users: IUser[] = []
+  public privileges: UserPrivelege[] = [];
   public rols:UserRol[] = []
   public columnsToDisplay = ['email',  'rol', 'expandedDetail']
   public expandedElement : IUser | null = null;
@@ -33,10 +36,19 @@ export class UsersIndexComponent implements OnInit {
     return rolName
   }
 
-  constructor( private store:Store<BackofficeState> , private router:Router) {
+  addPrivilege(){
+    this.matDialog.open(AddUserRolDialogComponent)
+  }
+
+  constructor( 
+    private store:Store<BackofficeState> , 
+    private router:Router,
+    private matDialog: MatDialog,
+  ) {
     this.store.dispatch(new Query({}))
     this.store.select('app').subscribe((app:App)=>{
       this.rols = app.userRols
+      this.privileges = app.userPrivileges
       console.log(this.rols)
     })
     this.store.select('users').pipe(
