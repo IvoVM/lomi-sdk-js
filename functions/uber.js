@@ -114,7 +114,7 @@ class UberDispatcher{
             }),
             dropoff_latitude: parseFloat(dropoff_address.split(",")[0]),
             dropoff_longitude: parseFloat(dropoff_address.split(",")[1]),
-            dropoff_notes: "",
+            dropoff_notes: order.special_instructions ? order.special_instructions : '',
             dropoff_name: order.name,
             dropoff_phone_number: dropoff_phone_number,
             dropoff_verification: {
@@ -124,9 +124,9 @@ class UberDispatcher{
             pickup_address: order.shipment_stock_location_name,   
             pickup_latitude: parseFloat(pickup_address.split(",")[0]),
             pickup_longitude: parseFloat(pickup_address.split(",")[1]),
-            pickup_name: order.shipment_stock_location_name.split("-")[1],
+            pickup_name: 'Tienda LOMI' + order.shipment_stock_location_name.split("-")[1],
             pickup_phone_number: pickup_phone_number,
-            pickup_notes: "",
+            pickup_notes: order.store_notes,
             pickup_verification: {
                 picture: false,
                 signature: false,
