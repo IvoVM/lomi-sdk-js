@@ -126,7 +126,7 @@ class UberDispatcher{
             pickup_longitude: parseFloat(pickup_address.split(",")[1]),
             pickup_name: 'Tienda LOMI' + order.shipment_stock_location_name.split("-")[1],
             pickup_phone_number: pickup_phone_number,
-            pickup_notes: order.store_notes,
+            pickup_notes: order.store_notes ? order.store_notes : '',
             pickup_verification: {
                 picture: false,
                 signature: false,
