@@ -37,5 +37,5 @@ test("Get Stock locations", async () => {
         console.error(err.response.data);
         throw (err)
     });
-    console.log(zones);
+    console.log(zones.stock_locations);
 });

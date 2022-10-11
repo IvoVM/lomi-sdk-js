@@ -38,6 +38,16 @@ export class OrderComponent implements OnInit {
     ){
 
     }
+
+    cancelHermex(hmxTripId:any){
+      console.log(hmxTripId)
+      this.ordersProvider.cancelHermexTrip({
+        ...this.order,
+        journeyId: hmxTripId
+      }).subscribe((response:any)=>{
+        console.log(response)
+      })
+    }
     
     evalType(value:any, typeName:string){
       if(typeName == 'array'){

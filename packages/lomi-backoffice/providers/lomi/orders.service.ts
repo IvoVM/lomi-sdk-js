@@ -148,6 +148,11 @@ export class OrdersService {
     return req
   }
 
+  cancelHermexTrip(order:any){
+    const req = this.httpClient.post("https://us-central1-lomi-35ab6.cloudfunctions.net/cancelHmxTrip", order)
+    return req
+  }
+
   createHermexTrip(order: any) {
     const req = this.httpClient.post("https://us-central1-lomi-35ab6.cloudfunctions.net/createHmxTrip",order)
     return req

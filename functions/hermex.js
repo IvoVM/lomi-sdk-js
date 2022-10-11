@@ -28,9 +28,14 @@ async function placeOrder(order){
     return orderPlaceResponse
 }
 
+async function getOrderStatus(orderId){
+    const orderStatusResponse = await axios.get(HMXURL+"/orders/"+orderId)
+    return orderStatusResponse
+}
+
 async function cancelTrip(orderId){
     const changeStatusPayload = {
-        status: 9,
+        statusId: 9,
     }
 
     const orderStatusChangeResponse = await axios.post(HMXURL+"/order/"+orderId+"/changeStatus", changeStatusPayload)
@@ -38,5 +43,7 @@ async function cancelTrip(orderId){
 }
 
 module.exports = {
-    placeOrder
+    placeOrder,
+    getOrderStatus,
+    cancelTrip
 }

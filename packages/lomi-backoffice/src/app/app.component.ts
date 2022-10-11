@@ -33,11 +33,15 @@ export class AppComponent {
       )).subscribe(async (args: [user:any, app:App])=>{
         const [user,app] = args;
         this.userId = user.uid
-        if(app?.userPrivileges){
-          const collectionNames = app.resources.filter(resource=>resource.type == "SPREE_STOCK_LOCATION").map(resource=>resource.id)
-          this.store.dispatch(new fromOrders.Query({
-            collections_names: collectionNames
-          }))
+        console.log("user", user)
+        console.log("app", app)
+        if(app?.userPrivileges && app.userRols && user.userRol){
+          const collectionNames = app.userRols.find((rol:any)=>rol.id === user.userRol)?.userPrivileges
+          if(collectionNames){
+            this.store.dispatch(new fromOrders.Query({
+              collections_names: collectionNames.map((collectionName:any)=>collectionName),
+            }))
+          }
         }
       })
     }

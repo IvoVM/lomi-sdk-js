@@ -37,11 +37,16 @@ const FAILED = 7
 //const spreeUrl = "https://lomi-dev.herokuapp.com/";
 const spreeUrl = "https://lomi.cl/";
 const token = "8b9c307dd89928cc60e8e59d2233dbafc7618f26c52fa5d3";
+const spreeUtils = require('./utils/spree/spree')(spreeUrl, token);
 //End spree environment
 
 //Imported Scheduled functions
 const spreeScheduled = require('./scheduled/spreeScheduled')(spreeUrl, token, admin);
 exports.spreeScheduled = spreeScheduled
+
+const orderSupervisor = require('./scheduled/ordersSupervisor')(spreeUrl, token, admin);
+exports.orderSupervisor = orderSupervisor
+// End Scheduled functions
 
 //Imported API functions
 const sendNotificationByType = require('./https/sendNotificationByType')(admin);
@@ -110,7 +115,7 @@ exports.addCompletedOrder = functions.https.onRequest(
     collectionKey = 'SPREE_ORDERS_' + order.shipment_stock_location_id;
     order.completed_at = new Date(order.completed_at);
     const credentialsRef = admin.firestore().collection(collectionKey).doc(order.number);
-    credentialsRef.set(order);
+    credentialsRef.set(order);    
 
     await sendNoti(order.shipment_stock_location_name, order.number, order.shipment_stock_location_id)
     return response.send('ok');
@@ -215,8 +220,8 @@ exports.createHmxTrip = functions.https.onRequest(async (request, response) => {
 
 exports.cancelHmxTrip = functions.https.onRequest(async (request, response) => {
   cors(request, response, async () => {
-    const hmxOrder = await HmxDispatcher.cancelTrip(request.body);
-    const order = request.body;
+    const hmxOrder = await HmxDispatcher.cancelTrip(request.body.journeyId);
+    const order = request.body
     if(hmxOrder.status === 200){
             // SET DOCUMENT INFORMATION
             const collectionKey = 'SPREE_ORDERS_' + order.shipment_stock_location_id;
@@ -305,9 +310,24 @@ exports.creatUberTrip = functions.https.onRequest(async (request, response) => {
 exports.scheduledFunction = functions.pubsub.schedule('* * * * *').onRun(async (context) => {
   const snapshot = await admin.firestore().collection("deliveringJourneys").get()
   await Promise.all(snapshot.docs.map(async (doc)=>{
-    console.log(doc)
-    await uberDispatcher.auth()
-    const trip = await uberDispatcher.getTrip(doc.data().uberTrip.id)
+    console.log(doc.data(), "doc.data()")
+    let trip;
+    if(doc.data().uberTrip){
+      await uberDispatcher.auth()
+      trip = await uberDispatcher.getTrip(doc.data().uberTrip.id)
+    } else if(doc.data().providerId == 2){
+      trip = (await HmxDispatcher.getOrderStatus(doc.data().id)).data.data
+      console.log(trip, "trip")
+      if(trip.status.id == 8 ){
+        trip.complete = true
+        trip.status = "delivered"
+      } else if(trip.status.id == 9){
+        trip.complete = true
+        trip.status = "canceled"
+      } else{
+        trip.status = trip.status.name
+      }
+    }
     const journeyDoc = admin.firestore().doc("deliveringJourneys/" + doc.id)
     
     if(trip.complete){
@@ -317,11 +337,19 @@ exports.scheduledFunction = functions.pubsub.schedule('* * * * *').onRun(async (
         reason: trip.status == 'returned' ? trip.undeliverable_reason : ''
       })
     } else {
-      await journeyDoc.update({
-        status: trip.status,
-        updatedAt: new Date(),
-        uberTrip: trip
-      })
+      if(doc.data().providerId == 2){
+        await journeyDoc.update({
+          status: trip.status,
+          updatedAt: new Date(),
+          hmxTrip: trip
+        })
+      } else {
+        await journeyDoc.update({
+          status: trip.status,
+          updatedAt: new Date(),
+          uberTrip: trip
+        })
+      }
     }
     
     await admin.firestore().doc("SPREE_ORDERS_" + doc.data().stock_location_id + "/" + doc.data().orderNumber + "/journeys/" + doc.data().id).update({
