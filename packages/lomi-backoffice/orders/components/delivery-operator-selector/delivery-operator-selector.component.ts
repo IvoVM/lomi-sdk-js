@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject} from '@angular/core';
 import {MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA} from '@angular/material/bottom-sheet';
 import { WAITING_AT_DRIVER_STATE } from 'packages/lomi-backoffice/providers/lomi/mocks/states.mock';
+import { storesMock } from 'packages/lomi-backoffice/providers/lomi/mocks/stores.mock';
 import { OrdersService } from 'packages/lomi-backoffice/providers/lomi/orders.service';
 
 @Component({
@@ -88,9 +89,11 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
     order.line_items = order.line_items.map((lineItem:any)=>{
       return {
         quantity: lineItem.quantity,
-        name: lineItem.name
+        name: lineItem.name,
+        price: parseInt(lineItem.price)   
       }
     })
+    order.store_notes = storesMock[order.shipment_stock_location_id].notes ? storesMock[order.shipment_stock_location_id].notes : ''
     this.requestingOperator = true;
     switch(selectedTrip.operator){
       case "Uber": this._orders.createUberTrip(order).subscribe(
