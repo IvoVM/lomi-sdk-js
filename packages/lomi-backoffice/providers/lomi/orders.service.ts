@@ -158,6 +158,16 @@ export class OrdersService {
     return req
   }
 
+  createCabifyTrip(order: any) {
+    const req = this.httpClient.post("https://us-central1-lomi-35ab6.cloudfunctions.net/createCabifyTripEndpoint",order)
+    return req
+  }
+
+  cancelCabifyTrip(order: any) {
+    const req = this.httpClient.post("https://us-central1-lomi-35ab6.cloudfunctions.net/cancelCabifyTripEndpoint",order)
+    return req
+  }
+
   refreshUberTrips(order:any) {
     console.log(order)
     const req = this.httpClient.post("https://us-central1-lomi-35ab6.cloudfunctions.net/refresUberTrip",order)

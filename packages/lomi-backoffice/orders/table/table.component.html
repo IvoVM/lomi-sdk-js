@@ -79,6 +79,6 @@
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-    <tr mat-row *matRowDef="let row; columns: columnsToDisplay" class="{{ (row.completed_at.seconds + secondsToAlert) * 1000 < currentTime ? (row.completed_at.seconds + secondsToWarning) * 1000 < currentTime? 'red-bg' : 'yellow-bg'  : '' }}">
+    <tr mat-row *matRowDef="let row; columns: columnsToDisplay" class="{{ (row.completed_at.seconds + secondsToAlert) * 1000  < currentTime && state != 6 && state != undefined ? (row.completed_at.seconds + secondsToWarning) * 1000 < currentTime? 'red-bg' : 'yellow-bg'  : '' }}">
     </tr>
   </table>

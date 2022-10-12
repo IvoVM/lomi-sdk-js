@@ -54,6 +54,12 @@ exports.sendNotificationByType = sendNotificationByType
 
 const listenToUberStatusWebHook = require('./https/webhooks/uberStatus')(admin);
 exports.listenToUberStatusWebHook = listenToUberStatusWebHook
+
+const createCabifyTripEndpoint = require('./https/requestCabify')(admin);
+exports.createCabifyTripEndpoint = createCabifyTripEndpoint
+
+const cancelCabifyTripEndpoint = require('./https/cancelCabify')(admin);
+exports.cancelCabifyTripEndpoint = cancelCabifyTripEndpoint
 //End Imported API functions
 
 //Imported Handlers
@@ -327,13 +333,21 @@ exports.scheduledFunction = functions.pubsub.schedule('* * * * *').onRun(async (
       } else{
         trip.status = trip.status.name
       }
+    } else if(doc.data().providerId == 3){
+      await cabifyEstimates.authCabify();
+      trip = await cabifyEstimates.getCabifyTrip(doc.data().id)
+      console.log(trip)
+      if(trip.data.journey.endAt){
+        trip.complete = true;
+        trip.status = trip.data.journey.endState == "rider cancel" ? 'canceled' : 'delivered'
+      }
     }
     const journeyDoc = admin.firestore().doc("deliveringJourneys/" + doc.id)
     
     if(trip.complete){
       await journeyDoc.delete()
       admin.firestore().doc("SPREE_ORDERS_" + doc.data().stock_location_id + "/" + doc.data().orderNumber).update({
-        status: trip.status == 'canceled' ? WAITING_AT_DRIVER_STATE : 'returned' ? FAILED : 'delivered' ? FINISHED_STATE : DELIVERING_ORDER_STATE,
+        status: trip.status == 'canceled' ? WAITING_AT_DRIVER_STATE : trip.status == 'returned' ? FAILED : trip.status == 'delivered' ? FINISHED_STATE : DELIVERING_ORDER_STATE,
         reason: trip.status == 'returned' ? trip.undeliverable_reason : ''
       })
     } else {
@@ -343,11 +357,11 @@ exports.scheduledFunction = functions.pubsub.schedule('* * * * *').onRun(async (
           updatedAt: new Date(),
           hmxTrip: trip
         })
-      } else {
+      } else if(doc.data().providerId == 3)  {
         await journeyDoc.update({
           status: trip.status,
           updatedAt: new Date(),
-          uberTrip: trip
+          cabifyTrip: trip
         })
       }
     }

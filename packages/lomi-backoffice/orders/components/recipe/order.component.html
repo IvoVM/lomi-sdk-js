@@ -53,8 +53,9 @@
               <h1>Informacion de despacho</h1>
             </div>
             <div class="section-header">
-              <p>Operador: {{journey.uberTrip ? 'Uber' : 'Hermex'}} </p>
-              <p>Estado: {{journey.status | uberStatus}}</p>
+              <p *ngIf="journey.providerId == 1">Operador: Uber </p>
+              <p *ngIf="journey.providerId == 2">Operador: Hermex </p>
+              <p *ngIf="journey.providerId == 3">Operador: Cabify </p>              <p>Estado: {{journey.status | uberStatus}}</p>
               <iframe *ngIf="false" [src]="journey.uberTrip.tracking_url | safe"> </iframe>
               <button [disabled]="cancelingJourney" style="margin-bottom:1em;margin-top:0.25em" *ngIf="journey.status == 'Order queued sucesfully'" (click)="cancelHermex(journey.id)" mat-raised-button color="accent">Cancelar</button>
               <button [disabled]="cancelingJourney" style="margin-bottom:1em;margin-top:0.25em" (click)="cancelUber(journey.uberTrip.id)" *ngIf="journey.uberTrip && journey.uberTrip.status == 'pending'" mat-raised-button color="accent">Cancelar</button>
@@ -62,6 +63,7 @@
             <div class="section-body">
               <p *ngIf="journey.uberTrip">Monto: ${{journey.uberTrip.fee}}</p>
               <p *ngIf="journey.uberTrip" >Tracking Id: {{journey.uberTrip.id}} </p>
+              <p *ngIf="journey.providerId == 3" >Tracking Id: {{journey.id}} </p>
               <p *ngIf="journey.uberTrip">Tracking Url: <a href="{{journey.uberTrip.tracking_url}}">{{journey.uberTrip.tracking_url}}</a></p>
               <p *ngIf="journey.uberTrip">Hora solicitado: {{journey.uberTrip.created | date:'YYYY-MM-dd HH:mm:ss'}}</p>
             </div>

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { BackofficeState } from 'packages/lomi-backoffice/ngrx';
+import { OrdersService } from 'packages/lomi-backoffice/providers/lomi/orders.service';
 import { Journey } from 'packages/lomi-backoffice/types/orders';
 import { Unsubscribable } from 'rxjs';
 
@@ -26,6 +27,7 @@ export class JourneyComponent implements OnInit {
   constructor(
     private router:Router,
     private store:Store<BackofficeState>,
+    private ordersService:OrdersService
     ) {
       this.journeyId = this.router.url.split('/')[2]
     }
@@ -41,6 +43,12 @@ export class JourneyComponent implements OnInit {
   }
 
   cancelTrip(){}
+  public cancelCabifyJourney(){
+    this.cancelingJourney = true;
+    this.ordersService.cancelCabifyTrip({tripId: this.journey.id}).subscribe((response:any)=>{
+      console.log("response", response)
+    })
+  }
 
   ngOnDestroy(){
     if(this.journeyUnsubscribable){
