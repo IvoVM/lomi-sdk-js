@@ -131,9 +131,9 @@ class UberDispatcher{
                 picture: false,
                 signature: false,
             },
-            manifest_items: manifest_items.map(item => ({...item, price: parseInt(item.price)})),
+            manifest_items: manifest_items.map(item => ({...item, price: parseInt(item.price) * 100})),
             manifest_reference: order.number,
-            manifest_total_value: parseInt(order.total) - parseInt(order.shipment_total),
+            manifest_total_value: (parseInt(order.total) - parseInt(order.shipment_total)) * 100,
             undeliverable_action: "return",
         },{
             headers:{
