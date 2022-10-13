@@ -8,15 +8,19 @@ module.exports = ( spreeUrl, spreeToken ) => {
  
     function getShipments(orderId){
         return new Promise(async (resolve, reject) => {
-            const url = `${spreeUrl}/api/v1/orders/${orderId}?token=${spreeToken}`;
-            const headers = {
-                'Authorization': `Bearer ${spreeToken}`,
-                'Content-Type': 'application/json',
-                
+            try{
+                const url = `${spreeUrl}/api/v1/orders/${orderId}?token=${spreeToken}`;
+                const headers = {
+                    'Authorization': `Bearer ${spreeToken}`,
+                    'Content-Type': 'application/json',
+                    
+                }
+                const response = await axios.get(url, { headers });
+                const shipments = response.data.shipments;
+                resolve(shipments);
+            } catch(e){
+                console.log(e)
             }
-            const response = await axios.get(url, { headers });
-            const shipments = response.data.shipments;
-            resolve(shipments);
         })
     }
 

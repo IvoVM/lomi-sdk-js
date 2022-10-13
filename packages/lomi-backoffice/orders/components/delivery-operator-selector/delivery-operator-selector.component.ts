@@ -25,9 +25,10 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
           const eta_display = cabifyEstimated.eta?.formatted
           const cost_display = cabifyEstimated.priceBase.amount
           const product_type = cabifyEstimated.product.name.es
+          const product_id = cabifyEstimated.product.id
           const deliveryTime_display = Math.round((cabifyEstimated.eta.max + cabifyEstimated.duration) / 60)
           return {
-            duration_display, eta_display, cost_display, product_type, deliveryTime_display
+            duration_display, eta_display, cost_display, product_type, deliveryTime_display, product_id
           }
         })
       },
@@ -81,10 +82,10 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
       })
   }
 
-  selectOperator(){
+  selectOperator(productId:any = null){
     console.log(this.selectedOperator)
     const order = {...this.order}
-    const selectedTrip = this.trips[this.selectedOperator]
+    const selectedTrip = this.trips[this.selectedOperator]    
     order.line_items = order.line_items.map((lineItem:any)=>{
       return {
         quantity: lineItem.quantity,
@@ -108,7 +109,14 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
           console.log(err)
           this.requestingOperator = false;
         }
-      )
+      ); break;
+      case "Cabify": this._orders.createCabifyTrip({...order, productId: selectedTrip.product_id}).subscribe(
+        this.listenForOperator,
+        (err)=>{
+          console.log(err)
+          this.requestingOperator = false;
+        }
+      ); break;
     }
   }
 

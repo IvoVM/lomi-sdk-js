@@ -49,12 +49,12 @@ async function createCabifyTrip(order, productId){
     "stops": order.stops,
     "rider": {
       "id": requesterId,
-      "email":  "marco@lomi.cl",
-      "name": "Marco",
+      "email": order.email,
+      "name": order.name,
       "locale":"es-CL",
       "mobile": {
         "mobileCc": "+56",
-        "mobileNum": "935103087"
+        "mobileNum": order.ship_address_phone
       }
     },
     "requesterId": requesterId,
@@ -70,6 +70,7 @@ async function createCabifyTrip(order, productId){
               'Authorization' : 'Bearer ' + accessToken
           }
         })
+      console.log(createTrip.data)
       return createTrip   
   } catch(e){
     console.log(e)

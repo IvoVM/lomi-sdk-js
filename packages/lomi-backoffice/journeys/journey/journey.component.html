@@ -8,11 +8,15 @@
         <h1>Informacion de despacho</h1>
       </div>
       <div class="section-header">
-        <p>Operador: {{journey.uberTrip ? 'Uber' : 'Hermex'}} </p>
+        <p *ngIf="journey.providerId == 1">Operador: Uber </p>
+        <p *ngIf="journey.providerId == 2">Operador: Hermex </p>
+        <p *ngIf="journey.providerId == 3">Operador: Cabify </p>
+
         <p>Estado: {{journey.status | uberStatus}}</p>
         <iframe *ngIf="false" [src]="journey.uberTrip.tracking_url | safe"> </iframe>
         <button [disabled]="cancelingJourney" style="margin-bottom:1em;margin-top:0.25em" *ngIf="journey.status == 'Order queued sucesfully'" mat-raised-button color="accent">Cancelar</button>
         <button [disabled]="cancelingJourney" style="margin-bottom:1em;margin-top:0.25em" (click)="cancelTrip()" *ngIf="journey.uberTrip && journey.uberTrip.status == 'pending'" mat-raised-button color="accent">Cancelar</button>
+        <button [disabled]="cancelingJourney" style="margin-bottom:1em;margin-top:0.25em" (click)="cancelCabifyJourney()" *ngIf="journey.providerId == 3 && journey.status != 'shipped'" mat-raised-button color="accent">Cancelar</button>
       </div>
       <div class="section-body" *ngIf="journey.uberTrip">
         <p >Monto: ${{journey.uberTrip.fee}}</p>

@@ -6,7 +6,7 @@
                     <div style="width: 100%;">
                         <h3 style="margin: 0;display: flex;align-items: center;"><img style="height: 1.5em;width: auto;margin: 0 1em 0 0;" src="assets/images/{{trip.icon}}">
                             <b>
-                                {{trip.operator.name}}                                     
+                                {{trip.operator.name}}     
                                 <span *ngIf="trip.product_type">
                                     {{trip.product_type}}
                                 </span>
@@ -55,5 +55,5 @@
                 </mat-radio-button>
             </mat-card>
         </div>
-    <button [disabled]="requestingOperator" (click)="selectOperator()" mat-raised-button color="accent">Solicitar Envio</button>
+    <button [disabled]="requestingOperator" (click)="selectOperator(operators[selectedOperator == 1 ? 0 : selectedOperator]?.trips(order)[selectedOperator == 1 ? 1 : 0].product_id)" mat-raised-button color="accent">Solicitar Envio</button>
 </mat-radio-group>
