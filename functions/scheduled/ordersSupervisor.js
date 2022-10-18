@@ -12,7 +12,7 @@ module.exports = (spreeUrl, token, admin) => {
           .firestore()
           .collection('SPREE_ORDERS_' + stockLocation.id);
         const ordersSnapshot = await docsRef
-          .where('state', '!=', 'shipped')
+          .where('state', 'not-in', ['shipped', 'broken', 'Out of time'])
           .limit(30)
           .get();
         console.log('SPREE_ORDERS_' + stockLocation.id, 'Doc Id');
@@ -24,6 +24,20 @@ module.exports = (spreeUrl, token, admin) => {
         ordersSnapshot.forEach((doc) => {
           try {
             spree.getShipments(doc.id).then((shipments) => {
+                console.log(doc.id)
+                if (shipments == 'broken') {
+                    admin
+                    .firestore()
+                    .doc('SPREE_ORDERS_' + stockLocation.id + '/' + doc.id)
+                    .update({
+                      state: 'broken',
+                      status: 6,
+                    }).then(() => {
+                        console.log("Order "+doc.id+" Updated")
+                    })
+                    return
+                }
+
               shipments.forEach((shipment) => {
                 console.log(shipment.number, 'Shipment number');
                 if (shipment.state == 'shipped') {
@@ -34,6 +48,17 @@ module.exports = (spreeUrl, token, admin) => {
                       state: 'shipped',
                       status: 6,
                     });
+                } else if(shipment.state == 'ready'){
+                    console.log(new Date(doc.data().completed_at).getTime())
+                    if(new Date(doc.data().completed_at).getTime() + 1000 * 60 * 60 * 24 * 4 < new Date().getTime()){
+                    admin
+                    .firestore()
+                    .doc('SPREE_ORDERS_' + stockLocation.id + '/' + doc.id)
+                    .update({
+                      state: 'Out of time',
+                      status: 6,
+                    });
+                    }
                 }
                 admin
                   .firestore()

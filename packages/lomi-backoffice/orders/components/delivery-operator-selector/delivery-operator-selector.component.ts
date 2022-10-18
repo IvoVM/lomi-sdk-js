@@ -46,7 +46,7 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
         uberEstimated.eta_display = uberEstimated.pickup_duration + " minutos",
         uberEstimated.cost_display = uberEstimated.fee
         uberEstimated.deliveryTime_display = uberEstimated.duration
-        return uberEstimated ? [uberEstimated] : [{}]
+        return uberEstimated ? [uberEstimated, uberEstimated] : [{}]
       }
     },
     {

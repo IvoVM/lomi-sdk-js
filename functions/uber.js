@@ -1,11 +1,15 @@
+const spreeUrl = "https://lomi.cl/";
+const token = "8b9c307dd89928cc60e8e59d2233dbafc7618f26c52fa5d3";
+
 const axios = require('axios')
+const spreeUtils = require('./utils/spree/spree')(spreeUrl, token);
 
 function encode(data) {
     let str = "";
     str += data.street_address[0]+" "+data.street_address[1];
     str+= ", " + data.city 
     str+= ", " + data.state 
-    str+= ", " + data.zip_code
+    str+= ", " + data.country
     return str
 }
 
@@ -50,9 +54,11 @@ class UberDispatcher{
     }
 
     async createQuote(dropoff_address, pickup_address,order){
+        const stockLocations = (await spreeUtils.getStockLocations()).stock_locations
+        console.log(stockLocations.find(loc=>loc.id==order.shipment_stock_location_id).address1)
         const quote = await axios.post("https://api.uber.com/v1/customers/"+this.customerId+"/delivery_quotes",{
             dropoff_address: encode({
-                street_address: [order.ship_address_address1,order.ship_address_address2],
+                street_address: [order.ship_address_address1, ""],
                 city: order.ship_address_city,
                 state: order.ship_address_state,
                 zip_code: "",
@@ -60,9 +66,17 @@ class UberDispatcher{
             }),
             dropoff_latitude: parseFloat(dropoff_address.split(",")[0]),
             dropoff_longitude: parseFloat(dropoff_address.split(",")[1]),
+            dropoff_notes: order.ship_address_address2,
             pickup_latitude: parseFloat(pickup_address.split(",")[0]),
             pickup_longitude: parseFloat(pickup_address.split(",")[1]),
-            pickup_address: order.shipment_stock_location_name,
+            pickup_address: encode({
+                street_address: [stockLocations.find(loc=>loc.id==order.shipment_stock_location_id).address1, ""],
+                city: order.ship_address_city,
+                state: order.ship_address_state,
+                zip_code: "",
+                country: order.ship_address_country,
+            }),
+            pickup_notes: stockLocations.find(loc=>loc.id==order.shipment_stock_location_id).address2
         },{
             headers:{
                 'Authorization' : 'Bearer ' + this.accessToken.data.access_token
@@ -72,9 +86,10 @@ class UberDispatcher{
     }
 
     async createTrip(dropoff_address, dropoff_name, dropoff_phone_number, pickup_address, pickup_name, pickup_phone_number, manifest_items, order){
+        const stockLocations = (await spreeUtils.getStockLocations()).stock_locations
         console.log({
             dropoff_address: encode({
-                street_address: [order.ship_address_address1,order.ship_address_address2],
+                street_address: [order.ship_address_address1, ""],
                 city: order.ship_address_city,
                 state: order.ship_address_state,
                 zip_code: "",
@@ -82,14 +97,20 @@ class UberDispatcher{
             }),
             dropoff_latitude: parseFloat(dropoff_address.split(",")[0]),
             dropoff_longitude: parseFloat(dropoff_address.split(",")[1]),
-            dropoff_notes: "",
+            dropoff_notes: order.ship_address_address2,
             dropoff_name: order.name,  
             dropoff_phone_number: dropoff_phone_number,
             dropoff_verification: {
                 picture: true,
                 signature: false
             },
-            pickup_address: order.shipment_stock_location_name,   
+            pickup_address: encode({
+                street_address: [stockLocations.find(loc=>loc.id==order.shipment_stock_location_id).address1, ""],
+                city: order.ship_address_city,
+                state: order.ship_address_state,
+                zip_code: "",
+                country: order.ship_address_country,
+            }),   
             pickup_latitude: parseFloat(pickup_address.split(",")[0]),
             pickup_longitude: parseFloat(pickup_address.split(",")[1]),
             pickup_name: order.shipment_stock_location_name.split("-")[1],
@@ -101,12 +122,12 @@ class UberDispatcher{
             },
             manifest_items: manifest_items,
             manifest_reference: order.number,
-            manifest_total_value: parseInt(order.total) - parseInt(order.shipment_total),
+            manifest_total_value: (parseInt(order.total) - parseInt(order.shipment_total)) * 100,
             undeliverable_action: "return",
         })
         const trip = await axios.post("https://api.uber.com/v1/customers/"+this.customerId+"/deliveries",{
             dropoff_address: encode({
-                street_address: [order.ship_address_address1,order.ship_address_address2],
+                street_address: [order.ship_address_address1, ""],
                 city: order.ship_address_city,
                 state: order.ship_address_state,
                 zip_code: "",
@@ -121,12 +142,18 @@ class UberDispatcher{
                 picture: true,
                 signature: false
             },
-            pickup_address: order.shipment_stock_location_name,   
+            pickup_address: encode({
+                street_address: [stockLocations.find(loc=>loc.id==order.shipment_stock_location_id).address1, ""],
+                city: order.ship_address_city,
+                state: order.ship_address_state,
+                zip_code: "",
+                country: order.ship_address_country,
+            }),     
             pickup_latitude: parseFloat(pickup_address.split(",")[0]),
             pickup_longitude: parseFloat(pickup_address.split(",")[1]),
             pickup_name: 'Tienda LOMI' + order.shipment_stock_location_name.split("-")[1],
             pickup_phone_number: pickup_phone_number,
-            pickup_notes: order.store_notes ? order.store_notes : '',
+            pickup_notes: stockLocations.find(loc=>loc.id==order.shipment_stock_location_id).address2,
             pickup_verification: {
                 picture: false,
                 signature: false,

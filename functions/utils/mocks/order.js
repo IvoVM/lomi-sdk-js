@@ -27,7 +27,7 @@ module.exports = {
     number: "R266577403",
     payment_state: "paid",
     picker: null,
-    ship_address_address1: "Balmoral 309, Local 217",
+    ship_address_address1: "Ecuador 9033",
     ship_address_address2: "Local 217",
     ship_address_city: "Santiago",
     ship_address_country: "Chile",

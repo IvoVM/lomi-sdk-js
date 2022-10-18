@@ -36,7 +36,7 @@ test('Create Uber Trip',async ()=>{
         order.line_items.map(item => ({...item, size: "medium"})),
         order
       ).then(res=>res, err=>{
-          console.error(err.response.data)
+          console.error(err)
           throw(err)
       });
     tripId = uberTrip.id
