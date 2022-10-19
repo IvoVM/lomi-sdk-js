@@ -9,6 +9,7 @@ import { switchMap, take } from 'rxjs/operators'
 import { ADDED, Query, QUERY, QUERY_SUCCESS } from '../actions/orders.actions';
 import { snapshotChanges } from '@angular/fire/compat/database';
 import { JourneyQuery } from '../actions/journey.actions';
+import { OrdersService } from 'packages/lomi-backoffice/providers/lomi/orders.service';
 
 @Injectable()
 export class OrderEffects {
@@ -16,7 +17,8 @@ export class OrderEffects {
     query$: Observable<Action> = createEffect(() => this.actions$.pipe(
         ofType(QUERY),
         switchMap((action: Query) => {
-          console.log(action.payload.collections_names)
+          console.log(action.payload, "QUery orders")
+          this.ordersService.filters.stockLocationId = action.payload.stock_location_id as number;
           console.log(action.payload.collections_names ? action.payload.collections_names[0] : action.payload.stock_location_id ? `SPREE_ORDERS_${action.payload.stock_location_id}` : 'SPREE_ORDERS_1')
             const queryDefinition = query(
               collection(
@@ -76,5 +78,5 @@ export class OrderEffects {
             return { type: `[Orders] Order ${action.type}`, payload: action.payload }
         })
     ))
-    constructor(private actions$: Actions, private afs: Firestore, private store:Store<BackofficeState>) {}
+    constructor(private actions$: Actions, private afs: Firestore, private store:Store<BackofficeState>, private ordersService:OrdersService) {}
 }

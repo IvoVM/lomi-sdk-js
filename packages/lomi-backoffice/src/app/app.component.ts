@@ -39,7 +39,11 @@ export class AppComponent {
           const collectionNames = app.userRols.find((rol:any)=>rol.id === user.userRol)?.userPrivileges
           if(collectionNames){
             this.store.dispatch(new fromOrders.Query({
-              collections_names: collectionNames.map((collectionName:any)=>collectionName),
+              collections_names: user.userRol != 1 ? collectionNames.map((collectionName:any)=>collectionName) : ["SPREE_ORDERS_1"]
+            }))
+          } else {
+            this.store.dispatch(new fromOrders.Query({
+              collections_names: ["SPREE_ORDERS_1"]
             }))
           }
         }

@@ -6,6 +6,8 @@ import { Store } from '@ngrx/store';
 import { Query } from 'packages/lomi-backoffice/ngrx/actions/orders.actions';
 import { currentUserSelector } from 'packages/lomi-backoffice/ngrx/reducers/user.reducer';
 import { BackofficeState } from 'packages/lomi-backoffice/ngrx';
+import { Unsubscribable } from 'rxjs';
+import { App } from 'packages/lomi-backoffice/types/app';
 
 export type Filter = {
   name: string;
@@ -19,14 +21,13 @@ export type Filter = {
   styleUrls: ['./filters-side.component.scss'],
 })
 export class FiltersSideComponent implements OnInit {
+
+  private currentUserSelectorUnsubscribe: Unsubscribable | undefined;
+  private backofficeAppUnsubscribe: Unsubscribable | undefined;
+
   public stores = storesMockAsArray
   public filtersForm: any;
   public filters:Filter[] = [
-    {
-      name: 'Estado',
-      type: 'select',
-      options: statesMock,
-    },
     {
       name: 'Fecha Inicio',
       type: 'date',
@@ -81,19 +82,28 @@ export class FiltersSideComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.store.select(currentUserSelector).subscribe((user:any)=>{
+    this.currentUserSelectorUnsubscribe = this.store.select(currentUserSelector).subscribe((user:any)=>{
       if (user.stockLocationId && user.stockLocationId != -1) {
-        let storeByUserStore = Object.values(storesMock).filter((store: any) => store.value == user.stockLocationId).map((s: any) => s.name)
-        const storesFiltered = this.stores.filter((stores: any) => stores == storeByUserStore[0])
-        const filterStoreIndex = this.filters.findIndex((filter: any) => filter.name.toLowerCase() == 'tienda')
-        this.filters[filterStoreIndex].options = storesFiltered
+        const storeFilterIndex = this.filters.findIndex((filter)=>filter.name == 'Tienda')
+        if(storeFilterIndex != -1){
+          this.filters.splice(storeFilterIndex,1)
+        }
       }
+    })
+    
+    this.backofficeAppUnsubscribe = this.store.select('app').subscribe((app:App)=>{
+      this.stores = app.resources.filter((resource:any)=>resource.type == 'SPREE_STOCK_LOCATION')
+      const options = this.filters.find((filter:Filter)=>filter.name == 'Tienda')
+      if(options){
+        options.options = this.stores.map((store:any)=>store.name)
+      }
+      console.log(this.stores,"stores")
     })
 
     this.filtersForm.valueChanges.subscribe((value:any)=>{
       const queryValues:any = {}
       if(value['Tienda']) { 
-        queryValues.stock_location_id = Object.keys(storesMock)[Object.values(storesMock).findIndex((store:any)=>store.name == value['Tienda'])]
+        queryValues.stock_location_id = this.stores.find((store:any)=>store.name == value['Tienda']).stockLocationId
       }
       if(value['Limite de ordenes']) {
         queryValues.per_page = +value['Limite de ordenes']

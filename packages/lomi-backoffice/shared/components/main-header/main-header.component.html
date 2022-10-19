@@ -14,7 +14,7 @@
                 <button (click)="logout()" mat-menu-item><mat-icon>logout</mat-icon>Cerrar Sesión</button>
                 <button  mat-menu-item [routerLink]="['/settings']"><mat-icon>settings</mat-icon>Configuración</button>
               </mat-menu>            
-            <h6 style="font-size: 1rem;margin-right: 3em;">{{ user ? user['userRol']: null }}</h6>
+            <h6 style="font-size: 1rem;margin-right: 3em;">{{ user.userRol != 1 ? user['userRol']: 'Admin' }}</h6>
         </div>
     </mat-toolbar>
 

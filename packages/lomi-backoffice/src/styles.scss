@@ -213,6 +213,7 @@ button[mat-button], button[mat-raised-button], button[mat-stroked-button]{
 }
 
 .status-chip{
+  margin-right: 16px !important;
   background-color: #00CCD9;
   color: white;
   padding: 6px 12px;
@@ -256,7 +257,7 @@ img[name=sign-in-with-google]{
 
 .mat-drawer-content{
   overflow: hidden !important;
-  height: calc(100vh - 65px) !important;
+  height: 100vh !important;
 }
 
 .example-sidenav-content{

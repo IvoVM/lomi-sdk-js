@@ -121,9 +121,9 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
   }
 
   listenForOperator = (order:any) => {
+    this._orders.currentStep++
+    this._bottomSheetRef.dismiss(order)
     if(order.status == WAITING_AT_DRIVER_STATE){
-      this._orders.currentStep++
-      this._bottomSheetRef.dismiss(order)
     } else {
       this.requestingOperator = false
     }

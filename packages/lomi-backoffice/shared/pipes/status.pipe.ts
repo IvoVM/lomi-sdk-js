@@ -7,6 +7,10 @@ import { statesMock } from 'packages/lomi-backoffice/providers/lomi/mocks/states
 export class StatusPipe implements PipeTransform {
 
   transform(value: unknown, ...args: unknown[]): unknown {
+    if(value == 0){
+      return "Por retirar"
+    }
+
     if(typeof value == 'number'){
       return statesMock[value];
     } else if (typeof value == 'string'){

@@ -19,6 +19,32 @@ module.exports = ( spreeUrl, spreeToken ) => {
                     resolve(shipments.data.shipments)
                 }).catch((error) => {
                     if(error.response.status == 404){
+                        console.log(error)
+                        resolve('broken')
+                    } else {
+                        error('Error getting shipments', error.response )
+                    }
+                });
+            } catch(e){
+                console.log(e)
+            }
+        })
+    }
+
+    function getOrder(orderId){
+        return new Promise(async (resolve, reject) => {
+            try{
+                const url = `${spreeUrl}/api/v1/orders/${orderId}?token=${spreeToken}`;
+                const headers = {
+                    'Authorization': `Bearer ${spreeToken}`,
+                    'Content-Type': 'application/json',
+                    
+                }
+                const response = await axios.get(url, { headers }).then(shipments=>{
+                    resolve(shipments.data)
+                }).catch((error) => {
+                    if(error.response.status == 404){
+                        console.log(error)
                         resolve('broken')
                     } else {
                         error('Error getting shipments', error.response )
@@ -80,6 +106,7 @@ module.exports = ( spreeUrl, spreeToken ) => {
         getShipments,
         markShipmentAsReady,
         markShipmentAsShipped,
-        getStockLocations
+        getStockLocations,
+        getOrder
     }
 }

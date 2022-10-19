@@ -35,7 +35,7 @@ order = {
 
 const CabifyDispatcher = require("./cabify")
 const productId = "a5bb14a1509b2a1c4f1bc21b788a86b3"
-let journeyId = "104dbaee-4943-11ed-8e9f-0a6909570912"
+let journeyId = "9717b198-4fd2-11ed-ac43-32eb2ff94af2"
 
 
 test("Estimate cabify trip", async() => {

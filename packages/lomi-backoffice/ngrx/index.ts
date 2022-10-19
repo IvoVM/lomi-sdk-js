@@ -62,12 +62,13 @@ export function debug(reducer: ActionReducer<any>): ActionReducer<any> {
           }
           return false
         }
-        else if(order?.name?.includes('Retiro')){
+        else if(order?.name?.includes('Retiro') || order?.isStorePicking){
           if(order?.status == FAILED){
             return statusId == FAILED
           }
-          if(statusId == STORE_PICKING_STATE){
-            return order.name.includes("Retiro")
+          if(statusId == STORE_PICKING_STATE || !statusId){
+            console.log("order", order)
+            return order.name.includes("Retiro") || order.isStorePicking
           }
           return false
         } 

@@ -9,7 +9,7 @@ export type placedOrder = {
 	item_total: number,
 	lack_of_stock: boolean,
 	miles_latam?: number,
-	name?: string,
+	name: string,
 	payment_state: string,
     scheduled_at?: string,
 	ship_address_address1: string,
@@ -28,6 +28,7 @@ export type placedOrder = {
     status: number,
     return_reason: string,
 	return_resolution: string,
+	isStorePicking: boolean,
 
     stops: Stop[],
 	statusChanges: statusChange[]

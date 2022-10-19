@@ -215,7 +215,7 @@ export class TableComponent implements OnInit, AfterViewInit {
       this.columnsToDisplay.splice(3, 0, 'scheduled_at', 'left_to')
     }
     if (this.state == undefined) {
-      this.columnsToDisplay = ["number", "name", "completed_at", "state"]
+      this.columnsToDisplay = ["number", "name", "completed_at", "state", "shipment_state"]
     }
 
     this.getJourneys()
