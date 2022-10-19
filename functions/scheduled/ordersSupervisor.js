@@ -49,8 +49,8 @@ module.exports = (spreeUrl, token, admin) => {
                       status: 6,
                     });
                 } else if(shipment.state == 'ready'){
-                    console.log(new Date(doc.data().completed_at).getTime())
-                    if(new Date(doc.data().completed_at).getTime() + 1000 * 60 * 60 * 24 * 4 < new Date().getTime()){
+                    console.log(new Date(doc.data().completed_at.seconds*1000), 'Completed at', doc.data().completed_at);
+                    if(new Date(doc.data().completed_at.seconds*1000).getTime() + 1000 * 60 * 60 * 24 * 4 < new Date().getTime()){
                     admin
                     .firestore()
                     .doc('SPREE_ORDERS_' + stockLocation.id + '/' + doc.id)
@@ -70,7 +70,7 @@ module.exports = (spreeUrl, token, admin) => {
               });
             });
           } catch (e) {
-            console.log(e);
+            console.log(e.error);
           }
         });
       });

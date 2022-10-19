@@ -19,6 +19,7 @@ export class Query implements Action {
     per_page?: number,
     orderBy? : string,
     orderBySort?: OrderByDirection,
+    stock_location_id?: number,
 
     //Where clausules
     name?: string

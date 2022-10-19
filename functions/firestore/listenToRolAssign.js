@@ -49,6 +49,9 @@ module.exports = (admin) => {
                 })
             })
             console.log('updateObject', updateObject);
+            await admin.firestore().collection('backoffice-users').doc(change.after.data().id).update({
+                stockLocationId: afterRolDefinition.stockLocationId,
+            });
             await fcmTokens.updateFcmTokens(updateObject);
         }
     });

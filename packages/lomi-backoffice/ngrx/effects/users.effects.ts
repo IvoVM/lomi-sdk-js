@@ -15,6 +15,7 @@ export class UsersEffects {
     query$: Observable<Action> = createEffect(() => this.actions$.pipe(
         ofType(QUERY),
         switchMap((action: Query) => {
+            console.log("wgere", 'stockLocationId', '==', action.payload.stock_location_id ? action.payload.stock_location_id : '')
             const queryDefinition = query(
               collection(this.afs,`backoffice-users`),
               ...(action.payload.name ? [orderBy('name', 'asc'),
@@ -23,6 +24,7 @@ export class UsersEffects {
               ...(action.payload.email ? [orderBy('name', 'asc'),
               where('name', '>=', action.payload.email ? action.payload.email: ''),
               where('name', '<=', (action.payload.email ? action.payload.email : '') + '\uf8ff')] : []),
+              where('stockLocationId', '==', action.payload.stock_location_id ? action.payload.stock_location_id : ''),
             //Limit
             limit(action.payload.per_page ? action.payload.per_page : 25),
             )

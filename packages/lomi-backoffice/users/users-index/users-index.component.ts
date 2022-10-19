@@ -8,8 +8,8 @@ import { Modified, Query, Update } from 'packages/lomi-backoffice/ngrx/actions/u
 import { selectEntities } from 'packages/lomi-backoffice/ngrx/reducers/orders.reducer';
 import { AddUserRolDialogComponent } from 'packages/lomi-backoffice/settings/user-rol/add-user-rol-dialog/add-user-rol-dialog.component';
 import { App } from 'packages/lomi-backoffice/types/app';
-import { IUser, UserPrivelege, UserRol } from 'packages/lomi-backoffice/types/user';
-import { map, Observable } from 'rxjs';
+import { IUser, User, UserPrivelege, UserRol } from 'packages/lomi-backoffice/types/user';
+import { map, Observable, Unsubscribable } from 'rxjs';
 
 @Component({
   selector: 'lomii-users-index',
@@ -28,8 +28,13 @@ export class UsersIndexComponent implements OnInit {
   public users: IUser[] = []
   public privileges: UserPrivelege[] = [];
   public rols:UserRol[] = []
+  public userStockLocationId: number | undefined = 0;
   public columnsToDisplay = ['email',  'rol', 'expandedDetail']
   public expandedElement : IUser | null = null;
+
+  private userUnsubscribe: Unsubscribable | undefined = undefined;
+  private usersUnsubscribe: Unsubscribable | undefined = undefined;
+  private appUnsubscribe: Unsubscribable | undefined = undefined;
 
   getRolName(rol:number){
     const rolName = this.rols.find(rolName=>rolName.id == rol)?.rolName
@@ -45,13 +50,17 @@ export class UsersIndexComponent implements OnInit {
     private router:Router,
     private matDialog: MatDialog,
   ) {
-    this.store.dispatch(new Query({}))
-    this.store.select('app').subscribe((app:App)=>{
+
+    this.appUnsubscribe = this.store.select('app').subscribe((app:App)=>{
       this.rols = app.userRols
       this.privileges = app.userPrivileges
       console.log(this.rols)
     })
-    this.store.select('users').pipe(
+    this.userUnsubscribe = this.store.select('user').subscribe((user:IUser)=>{
+      this.userStockLocationId = user.stockLocationId
+      this.changeStockLocation()
+    })
+    this.usersUnsubscribe = this.store.select('users').pipe(
       map((users:any)=>Object.values(users.entities))
     ).subscribe((users:any)=>{
       this.users = users
@@ -62,6 +71,12 @@ export class UsersIndexComponent implements OnInit {
         this.expandedElement = user;
       }
     })
+  }
+
+  changeStockLocation(){
+    this.store.dispatch(new Query({
+      stock_location_id: this.userStockLocationId
+    }))
   }
 
   elementExpanded = (row:any, info:any) => {
@@ -100,5 +115,17 @@ export class UsersIndexComponent implements OnInit {
 
   ngOnInit(): void {
 
+  }
+
+  ngOnDestroy(){
+    if(this.userUnsubscribe){
+      this.userUnsubscribe.unsubscribe()
+    }
+    if(this.usersUnsubscribe){
+      this.usersUnsubscribe.unsubscribe()
+    }
+    if(this.appUnsubscribe){
+      this.appUnsubscribe.unsubscribe()
+    }
   }
 }

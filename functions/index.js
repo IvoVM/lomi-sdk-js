@@ -271,7 +271,7 @@ exports.creatUberTrip = functions.https.onRequest(async (request, response) => {
           : order.shipment_stock_location_name,
         'Lomi Spa',
         DEBUG_NUMBER,
-        order.line_items.map(item => ({...item, size: "medium"})),
+        order.line_items.map(item => ({price: item.price, size: "medium", quantity: item.quantity})),
         order
       );
       collectionKey = 'SPREE_ORDERS_' + order.shipment_stock_location_id;

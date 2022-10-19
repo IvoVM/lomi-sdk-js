@@ -5,6 +5,7 @@ export type IUser = {
     email: string;
     loading?:    boolean;
     error?:      string;
+    stockLocationId?: number;
 }
 
 export type UserRol = {

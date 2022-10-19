@@ -15,14 +15,21 @@ module.exports = ( spreeUrl, spreeToken ) => {
                     'Content-Type': 'application/json',
                     
                 }
-                const response = await axios.get(url, { headers });
-                const shipments = response.data.shipments;
-                resolve(shipments);
+                const response = await axios.get(url, { headers }).then(shipments=>{
+                    resolve(shipments.data.shipments)
+                }).catch((error) => {
+                    if(error.response.status == 404){
+                        resolve('broken')
+                    } else {
+                        error('Error getting shipments', error.response )
+                    }
+                });
             } catch(e){
                 console.log(e)
             }
         })
     }
+
 
     function markShipmentAsReady(shipmentId){
         return new Promise(async (resolve, reject) => {
