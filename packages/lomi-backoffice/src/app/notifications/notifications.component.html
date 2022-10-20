@@ -8,9 +8,19 @@
 
 
 <mat-drawer-container class="example-container" autosize>
-    <mat-drawer #drawer class="actions-sidenav" mode="side" style="width:300px" position="end">
+    <mat-drawer #drawer class="actions-sidenav" mode="side" style="width:300px; background-color: #fafafadd;" position="end">
+        <div style="padding: 1em;" *ngIf="notificationsList.length > 0">
+            <ng-container *ngFor="let n of notificationsList">
+                <div class="notification-body shadow" style="margin-bottom: 2em; position: relative;">
+                    <button (click)="deleteNotification(n.id)" style="position: absolute; right: 0; top: 0em;" mat-icon-button color="accent">
+                        <mat-icon>close</mat-icon>
+                      </button>
+                    <h2 style="color: #424962; margin-bottom: 0;">{{n.title}}</h2>
+                    <h3 style="color: #7E7E7E; margin-bottom: 0;">{{n.body}}</h3>
+                </div>
+            </ng-container>
+        </div>
     </mat-drawer>
-
 
     <div>
         <div class="clicklable hoverable" style="position:absolute;top:1.35em;right:1.5em;z-index: 10000000;" (click)="drawer.toggle()">
