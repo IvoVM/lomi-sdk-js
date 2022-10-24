@@ -83,7 +83,7 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
   }
 
   selectOperator(productId:any = null){
-    console.log(this.selectedOperator)
+    console.log(this.selectedOperator, productId)
     debugger
     const order = {...this.order}
     const selectedTrip = this.trips[this.selectedOperator]    

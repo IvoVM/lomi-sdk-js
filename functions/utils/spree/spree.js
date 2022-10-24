@@ -19,8 +19,8 @@ module.exports = ( spreeUrl, spreeToken, spreeDebugUrl ) => {
                 const response = await axios.get(url, { headers }).then(shipments=>{
                     resolve(shipments.data.shipments)
                 }).catch((error) => {
+                    console.log(error)
                     if(error.response.status == 404){
-                        console.log(error)
                         resolve('broken')
                     } else {
                         error('Error getting shipments', error.response )

@@ -55,5 +55,5 @@
                 </mat-radio-button>
             </mat-card>
         </div>
-    <button [disabled]="requestingOperator" (click)="selectOperator(operators[selectedOperator == 1 ? 0 : selectedOperator]?.trips(order)[selectedOperator == 1 ? 1 : 0].product_id)" mat-raised-button color="accent">Solicitar Envio</button>
+    <button [disabled]="requestingOperator" (click)="selectOperator()" mat-raised-button color="accent">Solicitar Envio</button>
 </mat-radio-group>

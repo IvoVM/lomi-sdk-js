@@ -280,6 +280,7 @@ exports.creatUberTrip = functions.https.onRequest(async (request, response) => {
     try {
       const order = request.body;
       const selectedUberDispatcher = order.DEBUG ? uberDebugDispatcher : uberDispatcher
+      console.log(selectedUberDispatcher.accessToken, selectedUberDispatcher.customerId, selectedUberDispatcher.clientId)
       await selectedUberDispatcher.auth()
       const uberTrip = await selectedUberDispatcher.createTrip(
         order.stops

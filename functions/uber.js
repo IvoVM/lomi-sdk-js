@@ -113,7 +113,7 @@ class UberDispatcher{
             }),   
             pickup_latitude: parseFloat(pickup_address.split(",")[0]),
             pickup_longitude: parseFloat(pickup_address.split(",")[1]),
-            pickup_name: order.shipment_stock_location_name.split("-")[1],
+            pickup_name: order.shipment_stock_location_name,
             pickup_phone_number: pickup_phone_number,
             pickup_notes: "",
             pickup_verification: {
@@ -167,7 +167,7 @@ class UberDispatcher{
                 'Authorization' : 'Bearer ' + this.accessToken.data.access_token,
                 "Content-Type": "application / json",
             }
-        })
+        }).catch(err => console.log(err.error))
         return trip.data
     }
 
