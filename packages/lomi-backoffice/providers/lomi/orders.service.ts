@@ -3,7 +3,7 @@ import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { collectionData, Firestore } from '@angular/fire/firestore';
 import { ActivatedRoute, UrlSegment } from '@angular/router';
 import { collection, doc, updateDoc } from 'firebase/firestore';
-import { Observable } from 'rxjs';
+import { Observable, take } from 'rxjs';
 import { query, orderBy, limit } from 'firebase/firestore';
 import { HttpClient } from '@angular/common/http';
 import { storesMock } from './mocks/stores.mock';
@@ -12,6 +12,7 @@ import { Store } from '@ngrx/store';
 import { BackofficeState } from 'packages/lomi-backoffice/ngrx';
 import * as OrderActions from '../../ngrx/actions/orders.actions'
 import { ChangeStockLocation } from 'packages/lomi-backoffice/ngrx/actions/app.actions';
+import { App } from 'packages/lomi-backoffice/types/app';
 
 @Injectable({
   providedIn: 'root',
@@ -81,11 +82,13 @@ export class OrdersService {
   }
 
   updateOrder(orderId: string, updateRecord: any, stock_location_id = this.filters.stockLocationId) {
+    console.log('SPREE_ORDERS_' + stock_location_id + '/' + orderId);
     const document = doc(
       this.firestore,
-      'SPREE_ORDERS_' + stock_location_id + '/' + orderId
+      'SPREE_ORDERS_' + this.filters.stockLocationId + '/' + orderId
     );
     updateDoc(document, updateRecord);
+
   }
 
   getOrdersData() {

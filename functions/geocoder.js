@@ -27,13 +27,13 @@ async function getOrderStops(order){
     return order.stops
   }
   const endAddressGeocode = await geocoder.geocode(order.ship_address_address1 + ", " + order.ship_address_city, ", " +order.ship_address_country);
-  const startAddressGeocode =  await(geocoder.geocode(order.shipment_stock_location_name))
+  const startAddressGeocode =  await(geocoder.geocode(order.shipment_stock_location_name  + ", " + order.ship_address_city, ", " +order.ship_address_country))
   console.log(startAddressGeocode, order.shipment_stock_location_name)
   const stops = [
       {...stop},
       {...stop}
   ]
-  stops[0].loc = order.shipment_stock_location_name.includes("Sewell") ? [-34.1741044,-70.689768] : [startAddressGeocode[0].latitude, startAddressGeocode[0].longitude]
+  //stops[0].loc = order.shipment_stock_location_name.includes("Sewell") ? [-34.1741044,-70.689768] : [startAddressGeocode[0].latitude, startAddressGeocode[0].longitude]
   stops[1].loc = [endAddressGeocode[0].latitude, endAddressGeocode[0].longitude]
   order.stops = stops
   return stops

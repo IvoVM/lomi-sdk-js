@@ -2,7 +2,8 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 
 const cabifyEstimates = require('./cabify');
-const uberDispatcher = require('./uber');
+const uberDispatcher = require('./uber')("ydQvqFF87tXeoLqlzGeFCT5LDLLzXrKl","M8AEI2Qf023-NlvXDIaZu6PUZTBRoS95c8Atdm1N", "2648bc3d-7ebe-4154-a42e-c2dfe94a0075");
+const uberDebugDispatcher = require('./uber')("knJa-FrOl2QHzkcnoG3gnWsj0VqXbVme","uze9hsr1-89pgi-7zRohC0f3RIJDBReMtI5caWJn", "ba030355-7cc4-4922-98a1-0c706aced46e");
 const HmxDispatcher = require('./hermex');
 
 const cors = require('cors')({ origin: true });
@@ -38,14 +39,15 @@ const FAILED = 7
 //const spreeUrl = "https://lomi-dev.herokuapp.com/";
 const spreeUrl = "https://lomi.cl/";
 const token = "8b9c307dd89928cc60e8e59d2233dbafc7618f26c52fa5d3";
-const spreeUtils = require('./utils/spree/spree')(spreeUrl, token);
+const spreeDebugUrl = "https://lomi-dev.herokuapp.com/";
+const spreeUtils = require('./utils/spree/spree')(spreeUrl, token, spreeDebugUrl);
 //End spree environment
 
 //Imported Scheduled functions
 const spreeScheduled = require('./scheduled/spreeScheduled')(spreeUrl, token, admin);
 exports.spreeScheduled = spreeScheduled
 
-const orderSupervisor = require('./scheduled/ordersSupervisor')(spreeUrl, token, admin);
+const orderSupervisor = require('./scheduled/ordersSupervisor')(spreeUrl, token, admin, spreeDebugUrl);
 exports.orderSupervisor = orderSupervisor
 // End Scheduled functions
 
@@ -124,13 +126,19 @@ exports.addCompletedOrder = functions.https.onRequest(
     order.status = 2;
     const credentialsRef = admin.firestore().collection(collectionKey).doc(order.number);
     await credentialsRef.set(order);    
-
-    const orderExpanded = await spreeUtils.getOrder(order.number);
+    let orderExpanded = await spreeUtils.getOrder(order.number).catch(e => console.log(e));
+    if(orderExpanded == 'broken'){
+      orderExpanded = await spreeUtils.getDebugOrder(order.number);
+      orderExpanded.debug = true;
+    } else {
+      orderExpanded.debug = false;
+    }
     if(orderExpanded != 'broken'){
-      const isRetiroEnTienda = orderExpanded.ship_address.firstname.includes('Retiro') && orderExpanded.ship_address.company == "LOMI";
+      const isRetiroEnTienda = orderExpanded.ship_address.firstname.includes('Retiro') || orderExpanded.ship_address.company == "LOMI";
       credentialsRef.update({
         isStorePicking: isRetiroEnTienda,
         status: isRetiroEnTienda ? 0 : 2,
+        DEBUG: orderExpanded.debug
       })
     }
 
@@ -160,13 +168,17 @@ exports.evaluateCabify = functions.https.onRequest(
 
 exports.evaluateUber = functions.https.onRequest(async (request, response) => {
   cors(request, response, async () => {
+    const stockLocations = (await spreeUtils.getStockLocations()).stock_locations
     const order = request.body;
+    const address1 = stockLocations.find(loc=>loc.id==order.shipment_stock_location_id).address1
+    order.shipment_stock_location_name = address1
     const stops = await Geocoder.getOrderStops(order);
-    await uberDispatcher.auth();
-    const uberEstimated = await uberDispatcher.createQuote(
+    const selectedUberDispatcher = order.DEBUG ? uberDebugDispatcher : uberDispatcher
+    await selectedUberDispatcher.auth();
+    const uberEstimated = await selectedUberDispatcher.createQuote(
       order.ship_address_address1 +
         ', ' +
-        order.ship_address_city +
+        order.ship_address_state +
         ', ' +
         order.ship_address_country,
       order.shipment_stock_location_name,
@@ -187,11 +199,12 @@ exports.evaluateUber = functions.https.onRequest(async (request, response) => {
 exports.cancelUberTrip = functions.https.onRequest(async (request, response) => {
   cors(request, response, async () => {
     try{
-      await uberDispatcher.auth();
+      const selectedUberDispatcher = order.DEBUG ? uberDebugDispatcher : uberDispatcher
+      await selectedUberDispatcher.auth();
       const tripId = request.body.tripId;
-      const trip = await uberDispatcher.getTrip(tripId);
+      const trip = await selectedUberDispatcher.getTrip(tripId);
       if(trip){
-        const cancelTrip = await uberDispatcher.cancelTrip(tripId);
+        const cancelTrip = await selectedUberDispatcher.cancelTrip(tripId);
         return response.status(200).send(cancelTrip);
       }else{
         return response.status(200).send("No trip found");
@@ -266,8 +279,9 @@ exports.creatUberTrip = functions.https.onRequest(async (request, response) => {
   cors(request, response, async () => {
     try {
       const order = request.body;
-      await uberDispatcher.auth();
-      const uberTrip = await uberDispatcher.createTrip(
+      const selectedUberDispatcher = order.DEBUG ? uberDebugDispatcher : uberDispatcher
+      await selectedUberDispatcher.auth()
+      const uberTrip = await selectedUberDispatcher.createTrip(
         order.stops
           ? order.stops[1].loc.join(',')
           : order.ship_address_address1 +
@@ -282,7 +296,7 @@ exports.creatUberTrip = functions.https.onRequest(async (request, response) => {
           : order.shipment_stock_location_name,
         'Lomi Spa',
         DEBUG_NUMBER,
-        order.line_items.map(item => ({price: item.price, size: "medium", quantity: item.quantity})),
+        order.line_items.map(item => ({price: item.price, size: "medium", quantity: item.quantity, name: item.name})),
         order
       );
       collectionKey = 'SPREE_ORDERS_' + order.shipment_stock_location_id;
@@ -330,8 +344,9 @@ exports.scheduledFunction = functions.pubsub.schedule('* * * * *').onRun(async (
     console.log(doc.data(), "doc.data()")
     let trip;
     if(doc.data().uberTrip){
-      await uberDispatcher.auth()
-      trip = await uberDispatcher.getTrip(doc.data().uberTrip.id)
+      const selectedUberDispatcher = order.DEBUG ? uberDebugDispatcher : uberDispatcher
+      await selectedUberDispatcher.auth()
+      trip = await selectedUberDispatcher.getTrip(doc.data().uberTrip.id)
     } else if(doc.data().providerId == 2){
       trip = (await HmxDispatcher.getOrderStatus(doc.data().id)).data.data
       console.log(trip, "trip")

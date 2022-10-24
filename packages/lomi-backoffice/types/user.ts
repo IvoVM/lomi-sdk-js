@@ -12,7 +12,7 @@ export type UserRol = {
     id: number;
     rolName: string;
     description?: string;
-    userPrivileges: number[];
+    userPrivileges: string[];
     stockLocationId?: number;
 }
 

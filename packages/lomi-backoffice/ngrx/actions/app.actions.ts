@@ -14,6 +14,8 @@ export const UPDATE_SUCCESS = '[App] Update Success';
 
 export const CHANGE_STOCK_LOCATION = '[App] Change Stock Location';
 
+export const TOGGLE_DEBUG_MODE = '[App] Toggle Debug Mode';
+
 export const ADD_USER_RESOURCE = '[App] Add User Resource';
 export const USER_RESOURCE_ADDED = '[App] User Resource Added';
 export const REMOVE_USER_RESOURCE = '[App] Remove User Resource';
@@ -23,6 +25,11 @@ export const ADD_USER_ROL = '[App] Add User Rol';
 export const USER_ROL_ADDED = '[App] User Rol Added';
 export const REMOVE_USER_ROL = '[App] Remove User Rol';
 export const USER_ROL_REMOVED = '[App] User Rol Removed';
+
+export class ToggleDebugMode{
+    readonly type = TOGGLE_DEBUG_MODE;
+    constructor(public payload: boolean){}
+}
 
 export class AddUserResource{
     readonly type = ADD_USER_RESOURCE;

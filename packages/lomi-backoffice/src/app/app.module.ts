@@ -32,6 +32,7 @@ import { UserService } from './providers/user.service';
 import { NotificationsService } from './providers/notifications.service';
 import { JourneysModule } from 'packages/lomi-backoffice/journeys/journeys.module';
 import { NotificationsComponent } from './notifications/notifications.component';
+import { OrdersService } from 'packages/lomi-backoffice/providers/lomi/orders.service';
 
 @NgModule({
   declarations: [AppComponent, MainHeaderComponent, NotificationsComponent],
@@ -65,7 +66,7 @@ import { NotificationsComponent } from './notifications/notifications.component'
     AngularFireMessagingModule,
   ],
   exports: [],
-  providers: [JourneysService, UserService, NotificationsService],
+  providers: [JourneysService, UserService, NotificationsService, OrdersService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -1,7 +1,7 @@
 const functions = require('firebase-functions');
 
-module.exports = (spreeUrl, token, admin) => {
-  const spree = require('../utils/spree/spree')(spreeUrl, token, admin);
+module.exports = (spreeUrl, token, admin, spreeDebugUrl) => {
+  const spree = require('../utils/spree/spree')(spreeUrl, token, admin, spreeDebugUrl);
 
   const ordersSupervisor = functions.pubsub
     .schedule('* * * * *')
@@ -23,7 +23,7 @@ module.exports = (spreeUrl, token, admin) => {
 
         ordersSnapshot.forEach((doc) => {
           try {
-            spree.getShipments(doc.id).then((shipments) => {
+            spree.getShipments(doc.id, doc.data().DEBUG).then((shipments) => {
                 console.log(doc.id)
                 if (shipments == 'broken') {
                     admin

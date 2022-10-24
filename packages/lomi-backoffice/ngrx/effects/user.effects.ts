@@ -46,6 +46,7 @@ getUser$: Observable<Action> = createEffect(() => this.actions$.pipe(
                         const userDoc = doc(this.afs,`backoffice-users/${user.uid}`)
                         docSnapshots(userDoc).pipe(take(1)).subscribe(async (doc) => {
                             if(!doc.exists()){
+                                debugger
                                 await setDoc(userDoc,{
                                     id: user.uid,
                                     uid: user.uid,

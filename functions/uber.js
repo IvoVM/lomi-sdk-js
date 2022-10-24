@@ -151,7 +151,7 @@ class UberDispatcher{
             }),     
             pickup_latitude: parseFloat(pickup_address.split(",")[0]),
             pickup_longitude: parseFloat(pickup_address.split(",")[1]),
-            pickup_name: 'Tienda LOMI' + order.shipment_stock_location_name.split("-")[1],
+            pickup_name: 'Tienda LOMI' + order.shipment_stock_location_name,
             pickup_phone_number: pickup_phone_number,
             pickup_notes: stockLocations.find(loc=>loc.id==order.shipment_stock_location_id).address2,
             pickup_verification: {
@@ -174,6 +174,6 @@ class UberDispatcher{
    
 }
 
-const uberDispatcher = new UberDispatcher("knJa-FrOl2QHzkcnoG3gnWsj0VqXbVme","uze9hsr1-89pgi-7zRohC0f3RIJDBReMtI5caWJn", "ba030355-7cc4-4922-98a1-0c706aced46e")
+const uberDispatcher = new UberDispatcher("ydQvqFF87tXeoLqlzGeFCT5LDLLzXrKl","M8AEI2Qf023-NlvXDIaZu6PUZTBRoS95c8Atdm1N", "2648bc3d-7ebe-4154-a42e-c2dfe94a0075")
 //const uberDispatcher = new UberDispatcher("ydQvqFF87tXeoLqlzGeFCT5LDLLzXrKl","M8AEI2Qf023-NlvXDIaZu6PUZTBRoS95c8Atdm1N", "ba030355-7cc4-4922-98a1-0c706aced46e")
-module.exports = uberDispatcher
+module.exports = (clientId, clientSecret, customerId) => new UberDispatcher(clientId, clientSecret, customerId)

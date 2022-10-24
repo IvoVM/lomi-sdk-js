@@ -18,7 +18,9 @@ export class OrderEffects {
         ofType(QUERY),
         switchMap((action: Query) => {
           console.log(action.payload, "QUery orders")
-          this.ordersService.filters.stockLocationId = action.payload.stock_location_id as number;
+          if(action.payload.stock_location_id){
+            this.ordersService.filters.stockLocationId = action.payload.stock_location_id as number;
+          }
           console.log(action.payload.collections_names ? action.payload.collections_names[0] : action.payload.stock_location_id ? `SPREE_ORDERS_${action.payload.stock_location_id}` : 'SPREE_ORDERS_1')
             const queryDefinition = query(
               collection(

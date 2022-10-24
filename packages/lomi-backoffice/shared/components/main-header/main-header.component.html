@@ -6,6 +6,7 @@
         <span class="spacer">
             <h2 class="hoverable" class="{{router.url.split('/')[router.url.split('/').length - 1] === route.route ? 'primary-color' : 'accent-color'}}" *ngFor="let route of routes" [routerLink]="['/'+route.route]">{{route.name}}</h2>
         </span>
+        <span *ngIf="user.userRol == 1" ><mat-slide-toggle color="primary" class="primary-color">Debug mode </mat-slide-toggle><mat-icon style="margin-right:1em">bug_report</mat-icon></span>
         <div style="display: flex;align-items: center;justify-content: center;">
             <button [matMenuTriggerFor]="menu" mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
                 <mat-icon class="material-symbols-outlined">account_circle_outline</mat-icon>

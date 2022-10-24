@@ -28,6 +28,12 @@ export const storesMock:any = {
         value: 27,
         county: "Viña del Mar",
         notes: "Tienda LOMI - Local 3"
+    },
+    "39": {
+        name: "Tienda los Angeles",
+        value: 39,
+        county: "Los Angeles",
+        notes: ""
     }
 }
 

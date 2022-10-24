@@ -46,7 +46,7 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
         uberEstimated.eta_display = uberEstimated.pickup_duration + " minutos",
         uberEstimated.cost_display = uberEstimated.fee
         uberEstimated.deliveryTime_display = uberEstimated.duration
-        return uberEstimated ? [uberEstimated, uberEstimated] : [{}]
+        return uberEstimated ? [uberEstimated] : [{}]
       }
     },
     {
@@ -56,7 +56,7 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
        const hermexEstimated = order.cabifyEstimated || order.uberEstimated ? 
           order.uberEstimated?
           {
-            duration_display: order.uberEstimated.duration
+            duration_display: order.uberEstimated.duration,
           } :
           {
             duration_display: Math.round(order.cabifyEstimated[0].duration / 60)
@@ -84,6 +84,7 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
 
   selectOperator(productId:any = null){
     console.log(this.selectedOperator)
+    debugger
     const order = {...this.order}
     const selectedTrip = this.trips[this.selectedOperator]    
     order.line_items = order.line_items.map((lineItem:any)=>{
@@ -93,10 +94,10 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
         price: parseInt(lineItem.price)   
       }
     })
-    order.store_notes = storesMock[order.shipment_stock_location_id].notes ? storesMock[order.shipment_stock_location_id].notes : ''
+    //order.store_notes = storesMock[order.shipment_stock_location_id].notes ? storesMock[order.shipment_stock_location_id].notes : ''
     this.requestingOperator = true;
     switch(selectedTrip.operator){
-      case "Uber": this._orders.createUberTrip(order).subscribe(
+      case "Uber": this._orders.createUberTrip({...order}).subscribe(
         this.listenForOperator,
         (err)=>{
           console.log(err)

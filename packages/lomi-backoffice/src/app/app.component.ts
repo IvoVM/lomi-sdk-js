@@ -36,8 +36,13 @@ export class AppComponent {
         console.log("user", user)
         console.log("app", app)
         if(app?.userPrivileges && app.userRols && user.userRol){
-          const collectionNames = app.userRols.find((rol:any)=>rol.id === user.userRol)?.userPrivileges
+
+          const collectionNames:any = app.userRols.find((rol:any)=>rol.id === user.userRol)?.userPrivileges
+          
           if(collectionNames){
+            if(!app.selectedStockLocationId){
+              this.orders.updateStockLocation(collectionNames[0].split("_")[2])
+            }
             this.store.dispatch(new fromOrders.Query({
               collections_names: user.userRol != 1 ? collectionNames.map((collectionName:any)=>collectionName) : ["SPREE_ORDERS_1"]
             }))

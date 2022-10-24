@@ -1,18 +1,26 @@
 const spreeUrl = "https://lomi.cl/";
+const spreeDebugUrl = "https://lomi-dev.herokuapp.com/";
 const token = "8b9c307dd89928cc60e8e59d2233dbafc7618f26c52fa5d3";
-const orderNumber = "R449906432";
+const orderNumber = "R097683121";
 
 const admin = require('firebase-admin');
 admin.initializeApp()
 
-const spree = require('./spree')(spreeUrl, token, admin);
+const spree = require('./spree')(spreeUrl, token, spreeDebugUrl);
 
 test("get Order", async () => {
-    const order = await spree.getOrder(orderNumber).then(res => res, err => {
+    let order = await spree.getOrder(orderNumber).then(res => res, err => {
         console.error(err.response.data);
+        if(err.response.status == 404){
+            console.log("Debug ordert")
+        }
         throw (err)
     });
-    console.log(order);
+    if(order == "broken"){
+        order = await spree.getDebugOrder(orderNumber).then(res => res, err => {})
+        order.DEBUG = true;
+    }
+    console.log(order)
 })
 
 test("get Shipments", async () => {

@@ -4,17 +4,18 @@ const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestor
 
 
 
-module.exports = ( spreeUrl, spreeToken ) => {
+module.exports = ( spreeUrl, spreeToken, spreeDebugUrl ) => {
  
-    function getShipments(orderId){
+    function getShipments(orderId, DEBUG = false){
         return new Promise(async (resolve, reject) => {
             try{
-                const url = `${spreeUrl}/api/v1/orders/${orderId}?token=${spreeToken}`;
+                const url = `${DEBUG ? spreeDebugUrl : spreeUrl}/api/v1/orders/${orderId}?token=${spreeToken}`;
                 const headers = {
                     'Authorization': `Bearer ${spreeToken}`,
                     'Content-Type': 'application/json',
                     
                 }
+                console.log("searching for order", orderId, "IS_DEBUG=", DEBUG)
                 const response = await axios.get(url, { headers }).then(shipments=>{
                     resolve(shipments.data.shipments)
                 }).catch((error) => {
@@ -31,10 +32,14 @@ module.exports = ( spreeUrl, spreeToken ) => {
         })
     }
 
-    function getOrder(orderId){
+    function getDebugOrder(orderId){
+        return this.getOrder(orderId, spreeDebugUrl)
+    }
+
+    function getOrder(orderId, spreeOrderUrl = spreeUrl){
         return new Promise(async (resolve, reject) => {
             try{
-                const url = `${spreeUrl}/api/v1/orders/${orderId}?token=${spreeToken}`;
+                const url = `${spreeOrderUrl}/api/v1/orders/${orderId}?token=${spreeToken}`;
                 const headers = {
                     'Authorization': `Bearer ${spreeToken}`,
                     'Content-Type': 'application/json',
@@ -43,8 +48,8 @@ module.exports = ( spreeUrl, spreeToken ) => {
                 const response = await axios.get(url, { headers }).then(shipments=>{
                     resolve(shipments.data)
                 }).catch((error) => {
+                    console.log(error)
                     if(error.response.status == 404){
-                        console.log(error)
                         resolve('broken')
                     } else {
                         error('Error getting shipments', error.response )
@@ -107,6 +112,7 @@ module.exports = ( spreeUrl, spreeToken ) => {
         markShipmentAsReady,
         markShipmentAsShipped,
         getStockLocations,
-        getOrder
+        getOrder,
+        getDebugOrder
     }
 }
