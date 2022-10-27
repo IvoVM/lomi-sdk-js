@@ -24,7 +24,8 @@ module.exports = (spreeUrl, token, admin, spreeDebugUrl) => {
         ordersSnapshot.forEach((doc) => {
           try {
             spree.getShipments(doc.id, doc.data().DEBUG).then((shipments) => {
-                console.log(doc.id)
+                console.log(doc.id)              
+
                 if (shipments == 'broken') {
                     admin
                     .firestore()
@@ -48,6 +49,10 @@ module.exports = (spreeUrl, token, admin, spreeDebugUrl) => {
                       state: 'shipped',
                       status: 6,
                     });
+                } else if(doc.data().status == 6){
+                  spree.markShipmentAsShipped(shipment.number).then(()=>{
+                    console.log("Shipment "+shipment.number+" marked as shipped")
+                  })
                 } else if(shipment.state == 'ready'){
                     console.log(new Date(doc.data().completed_at.seconds*1000), 'Completed at', doc.data().completed_at);
                     if(new Date(doc.data().completed_at.seconds*1000).getTime() + 1000 * 60 * 60 * 24 * 4 < new Date().getTime()){
@@ -59,7 +64,11 @@ module.exports = (spreeUrl, token, admin, spreeDebugUrl) => {
                       status: 6,
                     });
                     }
-                }
+                  }else if(doc.data().status >= 4){
+                    spree.markShipmentAsReady(shipment.number).then(()=>{
+                      console.log("Shipment "+shipment.number+" marked as ready")
+                    })
+                  }
                 admin
                   .firestore()
                   .doc('SPREE_ORDERS_' + stockLocation.id + '/' + doc.id)

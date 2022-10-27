@@ -6,7 +6,7 @@
                     <div style="width: 100%;">
                         <h3 style="margin: 0;display: flex;align-items: center;"><img style="height: 1.5em;width: auto;margin: 0 1em 0 0;" src="assets/images/{{trip.icon}}">
                             <b>
-                                {{trip.operator.name}}     
+                                {{trip.operator_name}}     
                                 <span *ngIf="trip.product_type">
                                     {{trip.product_type}}
                                 </span>
@@ -36,7 +36,7 @@
                                     </span>
                                 </div>
                             </div>
-                            <div *ngIf="!trip.duration_display">
+                            <div *ngIf="!trip.duration_display && !(trip.kind == 'error')">
                                 <div style="display: flex;flex-direction: column;">
                                     <span>
                                         <b>No hay viajes disponible</b>
@@ -46,7 +46,7 @@
                             <div *ngIf="trip && trip.kind === 'error'">
                                 <div style="display: flex;flex-direction: column;">
                                     <span>
-                                        <b>{{trip.message}}</b>
+                                        <b>{{trip.error}}</b>
                                     </span>
                                 </div>
                             </div>

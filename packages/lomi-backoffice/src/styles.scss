@@ -215,16 +215,17 @@ button[mat-button], button[mat-raised-button], button[mat-stroked-button]{
 .status-chip{
   margin-right: 16px !important;
   background-color: #00CCD9;
-  color: white;
+  color: white !important;
   padding: 6px 12px;
   border-radius: 35px;
   font-size: 0.8em;
-  &-completed{
+  &-completed, &-delivered{
     background-color: var(--primary-color);
+    color: white !important;
   }
   &-canceled, &-returned{
     background-color: #FF961B !important;
-    color: white;
+    color: white !important;
   }
   &-2{
     background-color: #F48C12;
@@ -347,7 +348,7 @@ img[name=sign-in-with-google]{
   .section-header{
     p{
       margin: 6px 0;
-      color: black !important;
+      color: black;
       font-size: 1.3em;
     }
     padding: 6px 12px;

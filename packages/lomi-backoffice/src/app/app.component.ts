@@ -38,8 +38,11 @@ export class AppComponent {
         if(app?.userPrivileges && app.userRols && user.userRol){
 
           const collectionNames:any = app.userRols.find((rol:any)=>rol.id === user.userRol)?.userPrivileges
-          
-          if(collectionNames){
+          if(localStorage.getItem("stockLocationId")){
+            this.stockLocationId = localStorage.getItem("stockLocationId")
+            this.orders.updateStockLocation(this.stockLocationId)
+            this.store.dispatch(new fromOrders.Query({collections_names: ["SPREE_ORDERS_"+ this.stockLocationId]}))
+          } else if(collectionNames){
             if(!app.selectedStockLocationId){
               this.orders.updateStockLocation(collectionNames[0].split("_")[2])
             }

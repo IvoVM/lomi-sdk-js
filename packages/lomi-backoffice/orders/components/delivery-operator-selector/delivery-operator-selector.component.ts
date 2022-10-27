@@ -20,7 +20,15 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
         if(!order.cabifyEstimated){
           return [{}]
         }
-        return order.cabifyEstimated.map((cabifyEstimated:any)=>{
+        if(order.cabifyEstimated.errors){
+          return [{
+            operator_name: "Cabify",
+            kind:"error",
+            error: order.cabifyEstimated.errors[0].friendly_message
+          }]
+        }
+        console.log(order.cabifyEstimated.data.estimates)
+        return order.cabifyEstimated.data.estimates.map((cabifyEstimated:any)=>{
           const duration_display = Math.round(cabifyEstimated.duration / 60)
           const eta_display = cabifyEstimated.eta?.formatted
           const cost_display = cabifyEstimated.priceBase.amount
@@ -34,7 +42,7 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
       },
     },
     {
-      name: "Uber",
+      name: "Uber Moto",
       icon: "uber.png",
       trips : (order:any)=>{
         if(!order.uberEstimated){
@@ -42,9 +50,27 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
         }
 
         const uberEstimated = {...order.uberEstimated}
+        uberEstimated.operator_name = "Uber Moto"
         uberEstimated.duration_display = uberEstimated.duration - uberEstimated.pickup_duration,
         uberEstimated.eta_display = uberEstimated.pickup_duration + " minutos",
-        uberEstimated.cost_display = uberEstimated.fee
+        uberEstimated.cost_display = uberEstimated.fee / 100
+        uberEstimated.deliveryTime_display = uberEstimated.duration
+        return uberEstimated ? [uberEstimated] : [{}]
+      }
+    },
+    {
+      name: "Uber Auto",
+      icon: "uber.png",
+      trips : (order:any)=>{
+        if(!order.uberFourWheelsEstimated){
+          return [{}]
+        }
+
+        const uberEstimated = {...order.uberFourWheelsEstimated}
+        uberEstimated.operator_name = "Uber Auto"
+        uberEstimated.duration_display = uberEstimated.duration - uberEstimated.pickup_duration,
+        uberEstimated.eta_display = uberEstimated.pickup_duration + " minutos",
+        uberEstimated.cost_display = uberEstimated.fee / 100
         uberEstimated.deliveryTime_display = uberEstimated.duration
         return uberEstimated ? [uberEstimated] : [{}]
       }
@@ -59,7 +85,7 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
             duration_display: order.uberEstimated.duration,
           } :
           {
-            duration_display: Math.round(order.cabifyEstimated[0].duration / 60)
+            duration_display: order.cabifyEstimated[0] ? (Math.round(order.cabifyEstimated[0].duration / 60)) : 0
           }
         : {
           duration_display: 0,
@@ -84,7 +110,6 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
 
   selectOperator(productId:any = null){
     console.log(this.selectedOperator, productId)
-    debugger
     const order = {...this.order}
     const selectedTrip = this.trips[this.selectedOperator]    
     order.line_items = order.line_items.map((lineItem:any)=>{
@@ -97,7 +122,14 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
     //order.store_notes = storesMock[order.shipment_stock_location_id].notes ? storesMock[order.shipment_stock_location_id].notes : ''
     this.requestingOperator = true;
     switch(selectedTrip.operator){
-      case "Uber": this._orders.createUberTrip({...order}).subscribe(
+      case "Uber Moto": this._orders.createUberTrip({...order}).subscribe(
+        this.listenForOperator,
+        (err)=>{
+          console.log(err)
+          this.requestingOperator = false;
+        }
+        ); break;
+      case "Uber Auto": this._orders.createFourWheelsUberTrip({...order}).subscribe(
         this.listenForOperator,
         (err)=>{
           console.log(err)

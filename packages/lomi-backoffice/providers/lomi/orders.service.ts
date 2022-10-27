@@ -65,11 +65,17 @@ export class OrdersService {
     activatedRoute: ActivatedRoute,
     private firestore: Firestore,
     private httpClient: HttpClient,
-    private ngrxStore: Store<BackofficeState>
+    private ngrxStore: Store<BackofficeState>,
   ) {
     this.ngrxStore.select('orders').subscribe((orders)=>{
       this.loadingOrders = orders.loading
     })
+    const saveStockLocationId = localStorage.getItem('stockLocationId')
+    if (saveStockLocationId){
+      this.filters.stockLocationId = parseInt(saveStockLocationId)
+    } else {
+      this.filters.stockLocationId = 1
+    }
   }
 
   updateStockLocation(stockLocationId: number) {
@@ -134,13 +140,23 @@ export class OrdersService {
 
   setUberEstimated(order:any){
     const req = this.httpClient.post("https://us-central1-lomi-35ab6.cloudfunctions.net/evaluateUber",order)
+    const reqFourWheels = this.httpClient.post("https://us-central1-lomi-35ab6.cloudfunctions.net/evaluateFourWheelsUber",order)
     req.subscribe((res)=>{
+      console.log(res)
+    })
+
+    reqFourWheels.subscribe((res)=>{
       console.log(res)
     })
   }
 
   createUberTrip(order: any) {
     const req = this.httpClient.post("https://us-central1-lomi-35ab6.cloudfunctions.net/creatUberTrip",order)
+    return req
+  }
+
+  createFourWheelsUberTrip(order: any) {
+    const req = this.httpClient.post("https://us-central1-lomi-35ab6.cloudfunctions.net/creatFourWheelsUberTrip",order)
     return req
   }
 

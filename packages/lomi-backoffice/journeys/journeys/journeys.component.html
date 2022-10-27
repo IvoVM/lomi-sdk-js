@@ -2,7 +2,7 @@
     <mat-tab-group>
         <mat-tab label="Viajes en curso">
             <lomii-firebase-table
-                [valuesToShow] = "['id','status', 'providerId']"
+                [valuesToShow] = "['orderNumber', 'id','status', 'providerId']"
                 [dataSource] = "journeysToShow"
                 [linkToRecordId] = "true"
             >

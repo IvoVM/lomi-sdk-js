@@ -72,7 +72,7 @@ export function debug(reducer: ActionReducer<any>): ActionReducer<any> {
           }
           return false
         } 
-        else if(order?.scheduled_at && !order?.status) {
+        else if(order?.scheduled_at && (!order?.status || order?.status <= 2)) {
           const scheduledTime = new Date(order.scheduled_at).getTime()
           const currentTime = new Date().getTime()
           if(scheduledTime > currentTime){

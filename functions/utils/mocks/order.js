@@ -1,4 +1,5 @@
 module.exports = {
+    DEBUG: false,
     cabifyEstimated: null,
     channel: "Web",
     completed_at: {

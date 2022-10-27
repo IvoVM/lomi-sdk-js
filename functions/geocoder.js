@@ -6,6 +6,11 @@ const options = {
 };
 const geocoder = NodeGeocoder(options);
 
+async function geocodeAddress(address){
+  const geocode = await geocoder.geocode(address);
+  return geocode
+}
+
 async function getOrderStops(order){
   const stop = {
     "addr": "",
@@ -26,19 +31,31 @@ async function getOrderStops(order){
   if(order.stops){
     return order.stops
   }
-  const endAddressGeocode = await geocoder.geocode(order.ship_address_address1 + ", " + order.ship_address_city, ", " +order.ship_address_country);
-  const startAddressGeocode =  await(geocoder.geocode(order.shipment_stock_location_name  + ", " + order.ship_address_city, ", " +order.ship_address_country))
-  console.log(startAddressGeocode, order.shipment_stock_location_name)
+  const addressForGeocodingStart = order.shipment_stock_location_name  + ", " + order.ship_address_city + ", " +order.ship_address_country
+  const endAddressForGeoCoding = order.ship_address_address1 + ", " + order.ship_address_county + ", " +order.ship_address_city + ", " +order.ship_address_country
+  console.log(addressForGeocodingStart, endAddressForGeoCoding)
+  const endAddressGeocode = await geocoder.geocode(endAddressForGeoCoding);
+  const startAddressGeocode =  await(geocoder.geocode(addressForGeocodingStart))
+  console.log(startAddressGeocode, endAddressGeocode, order.shipment_stock_location_name)
   const stops = [
       {...stop},
       {...stop}
   ]
-  //stops[0].loc = order.shipment_stock_location_name.includes("Sewell") ? [-34.1741044,-70.689768] : [startAddressGeocode[0].latitude, startAddressGeocode[0].longitude]
-  stops[1].loc = [endAddressGeocode[0].latitude, endAddressGeocode[0].longitude]
+  try{
+    stops[0].addr = order.ship_address_address1
+    stops[1].addr = order.shipment_stock_location_name
+    stops[0].city = order.ship_address_city
+    stops[1].city = order.ship_address_city
+    stops[0].loc = [startAddressGeocode[0].latitude, startAddressGeocode[0].longitude]
+    stops[1].loc = [endAddressGeocode[0].latitude, endAddressGeocode[0].longitude]
+  } catch(e){
+    console.log(e)
+  }
   order.stops = stops
   return stops
 }
 
 module.exports = {
-    getOrderStops
+    getOrderStops,
+    geocodeAddress
 }

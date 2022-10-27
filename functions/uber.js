@@ -99,7 +99,7 @@ class UberDispatcher{
             dropoff_longitude: parseFloat(dropoff_address.split(",")[1]),
             dropoff_notes: order.ship_address_address2,
             dropoff_name: order.name,  
-            dropoff_phone_number: dropoff_phone_number,
+            dropoff_phone_number: pickup_phone_number,
             dropoff_verification: {
                 picture: true,
                 signature: false
@@ -137,7 +137,7 @@ class UberDispatcher{
             dropoff_longitude: parseFloat(dropoff_address.split(",")[1]),
             dropoff_notes: order.special_instructions ? order.special_instructions : '',
             dropoff_name: order.name,
-            dropoff_phone_number: dropoff_phone_number,
+            dropoff_phone_number: pickup_phone_number,
             dropoff_verification: {
                 picture: true,
                 signature: false
@@ -167,8 +167,13 @@ class UberDispatcher{
                 'Authorization' : 'Bearer ' + this.accessToken.data.access_token,
                 "Content-Type": "application / json",
             }
-        }).catch(err => console.log(err.error))
-        return trip.data
+        }).catch(err => {
+            console.log(err.response.data)
+            return {
+                error: err.response.data
+            };
+        })
+        return trip.error ? trip.error : trip.data
     }
 
    

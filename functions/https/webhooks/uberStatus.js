@@ -9,22 +9,23 @@ module.exports = (admin) => {
             const statusJson = req.body;
             const db = admin.firestore();
             console.log(req.body)
-            return res.status(200).send('Event received')
-            const journeyDoc = admin.firestore().doc("deliveringJourneys/" + doc.id)
-    
+            const orderId = req.body.deliver_id;
+            const status = req.body.status;
+            const journeyDoc = admin.firestore().doc("deliveringJourneys/" + orderId)
+            const newStatus = status
             console.log(newStatus, "newStatus")
-            console.log(statusJson, "statusJson")
-        
+            
             if(newStatus == 'delivered'){
               await journeyDoc.delete()
             } else {
               await journeyDoc.update({
-                status: trip.status,
+                status: status,
                 updatedAt: new Date(),
               })
             }
-    
+            
             res.send(newStatus);
+            return res.status(200).send('Event received')
         })
 
     });

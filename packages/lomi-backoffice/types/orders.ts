@@ -89,7 +89,7 @@ export type Journey = {
 	status?: any,
 	id?:	string,
 	uberTrip?: any;
-
+	uberFourWheelsTrip?: any;
 }
 
 export type Picker = {

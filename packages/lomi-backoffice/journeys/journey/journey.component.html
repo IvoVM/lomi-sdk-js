@@ -3,6 +3,7 @@
 >
 
 <div>
+    <a [routerLink]="'/orders/'+journey.orderNumber"><h1>{{journey.orderNumber}}</h1></a>
     <div class="display-info-card">
       <div class="title">
         <h1>Informacion de despacho</h1>
@@ -21,8 +22,17 @@
       <div class="section-body" *ngIf="journey.uberTrip">
         <p >Monto: ${{journey.uberTrip.fee}}</p>
         <p>Tracking Id: {{journey.uberTrip.id}} </p>
-        <p *ngIf="journey.uberTrip">Tracking Url: <a href="{{journey.uberTrip.tracking_url}}">{{journey.uberTrip.tracking_url}}</a></p>
+        <p *ngIf="journey.uberTrip">Tracking Url: <a target="_blank" href="{{journey.uberTrip.tracking_url}}">{{journey.uberTrip.tracking_url}}</a></p>
+        <p *ngIf="journey.uberTrip">Direct Url: <a target="_blank" href="{{journey.uberTrip.tracking_url.replace('https://www.ubereats.com/cl/orders/', 'https://direct.uber.com/track?organizationUuid=e14a6d71-ce27-4489-837a-7c7fd365e614&orderUuid=')}}">{{journey.uberTrip.tracking_url.replace('https://www.ubereats.com/cl/orders/', 'https://direct.uber.com/track?organizationUuid=e14a6d71-ce27-4489-837a-7c7fd365e614&orderUuid=')}}</a></p>
         <p *ngIf="journey.uberTrip">Hora solicitado: {{journey.uberTrip.created | date:'YYYY-MM-dd HH:mm:ss'}}</p>
+      </div>
+
+      <div class="section-body" *ngIf="journey.uberFourWheelsTrip">
+        <p >Monto: ${{journey.uberFourWheelsTrip.fee}}</p>
+        <p>Tracking Id: {{journey.uberFourWheelsTrip.id}} </p>
+        <p *ngIf="journey.uberFourWheelsTrip">Tracking Url: <a target="_blank" href="{{journey.uberFourWheelsTrip.tracking_url}}">{{journey.uberFourWheelsTrip.tracking_url}}</a></p>
+        <p *ngIf="journey.uberFourWheelsTrip">Direct Url: <a target="_blank" href="{{journey.uberFourWheelsTrip.tracking_url.replace('https://www.ubereats.com/cl/orders/', 'https://direct.uber.com/track?organizationUuid=e14a6d71-ce27-4489-837a-7c7fd365e614&orderUuid=')}}">{{journey.uberFourWheelsTrip.tracking_url.replace('https://www.ubereats.com/cl/orders/', 'https://direct.uber.com/track?organizationUuid=e14a6d71-ce27-4489-837a-7c7fd365e614&orderUuid=')}}</a></p>
+        <p *ngIf="journey.uberFourWheelsTrip">Hora solicitado: {{journey.uberFourWheelsTrip.created | date:'YYYY-MM-dd HH:mm:ss'}}</p>
       </div>
     </div>
 
@@ -39,6 +49,21 @@
         <p>Marca del vehicula: {{journey.uberTrip.courier.vehicle_make}} </p>
       </div>
     </div>
+
+    <div class="display-info-card" *ngIf="journey.uberFourWheelsTrip && journey.uberFourWheelsTrip.courier">
+      <div class="title">
+        <h1>Informacion del repartidor</h1>
+      </div>
+      <div class="section-header">
+        <p>Nombre : {{journey.uberFourWheelsTrip.courier.name }} </p>
+        <p>Numero de telefono: {{journey.uberFourWheelsTrip.courier.phone_number}}</p>
+      </div>
+      <div class="section-body">
+        <p>Color del vehiculo: ${{journey.uberFourWheelsTrip.courier.vehicle_color}}</p>
+        <p>Marca del vehicula: {{journey.uberFourWheelsTrip.courier.vehicle_make}} </p>
+      </div>
+    </div>
+
 
   </div>
 

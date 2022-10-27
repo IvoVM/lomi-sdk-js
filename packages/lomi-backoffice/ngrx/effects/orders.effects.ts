@@ -20,12 +20,13 @@ export class OrderEffects {
           console.log(action.payload, "QUery orders")
           if(action.payload.stock_location_id){
             this.ordersService.filters.stockLocationId = action.payload.stock_location_id as number;
+            localStorage.setItem('stockLocationId', action.payload.stock_location_id.toString())
           }
-          console.log(action.payload.collections_names ? action.payload.collections_names[0] : action.payload.stock_location_id ? `SPREE_ORDERS_${action.payload.stock_location_id}` : 'SPREE_ORDERS_1')
+          console.log(action.payload.collections_names ? action.payload.collections_names[0] : action.payload.stock_location_id ? `SPREE_ORDERS_${action.payload.stock_location_id}` : this.ordersService.filters.stockLocationId)
             const queryDefinition = query(
               collection(
                 this.afs,
-                (action.payload.collections_names ? action.payload.collections_names[0] : action.payload.stock_location_id ? `SPREE_ORDERS_${action.payload.stock_location_id}` : 'SPREE_ORDERS_1'),),
+                (action.payload.collections_names ? action.payload.collections_names[0] : action.payload.stock_location_id ? `SPREE_ORDERS_${action.payload.stock_location_id}` : 'SPREE_ORDERS_'+this.ordersService.filters.stockLocationId),),
               ...(action.payload.name ? [
                 orderBy('name', 'asc'),
               where('name', '>=', action.payload.name ? action.payload.name : ''),

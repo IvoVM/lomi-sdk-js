@@ -27,7 +27,7 @@ async function authCabify(){
 
 async function estimateCabify(order){
     console.log(accessToken)
-    estimateQuery.variables.estimateInput.stops = order.stops
+    estimateQuery.variables.estimateInput.stops = [...order.stops].reverse()
     estimateQuery.variables.estimateInput.requesterId = requesterId
     const shipEstimate = await axios.post(
     "https://cabify.com/api/v3/graphql",
@@ -46,7 +46,7 @@ async function estimateCabify(order){
 
 async function createCabifyTrip(order, productId){
   createJourneyMutation.variables.bookingInput = {
-    "stops": order.stops,
+    "stops": [order.stops[1], order.stops[0]],
     "rider": {
       "id": requesterId,
       "email": order.email,
@@ -54,7 +54,7 @@ async function createCabifyTrip(order, productId){
       "locale":"es-CL",
       "mobile": {
         "mobileCc": "+56",
-        "mobileNum": order.ship_address_phone
+        "mobileNum": order.shipment_stock_location_phone
       }
     },
     "requesterId": requesterId,

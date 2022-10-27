@@ -55,17 +55,26 @@
             <div class="section-header">
               <p *ngIf="journey.providerId == 1">Operador: Uber </p>
               <p *ngIf="journey.providerId == 2">Operador: Hermex </p>
-              <p *ngIf="journey.providerId == 3">Operador: Cabify </p>              <p>Estado: {{journey.status | uberStatus}}</p>
+              <p *ngIf="journey.providerId == 3">Operador: Cabify </p>              <p class="status-chip-{{journey.status}} status-chip">Estado: {{journey.status | uberStatus}}</p>
               <iframe *ngIf="false" [src]="journey.uberTrip.tracking_url | safe"> </iframe>
               <button [disabled]="cancelingJourney" style="margin-bottom:1em;margin-top:0.25em" *ngIf="journey.status == 'Order queued sucesfully'" (click)="cancelHermex(journey.id)" mat-raised-button color="accent">Cancelar</button>
               <button [disabled]="cancelingJourney" style="margin-bottom:1em;margin-top:0.25em" (click)="cancelUber(journey.uberTrip.id)" *ngIf="journey.uberTrip && journey.uberTrip.status == 'pending'" mat-raised-button color="accent">Cancelar</button>
+              <button [disabled]="cancelingJourney" style="margin-bottom:1em;margin-top:0.25em" (click)="cancelUber(journey.uberTrip.id)" *ngIf="journey.uberFourWheelsTrip && journey.uberFourWheelsTrip.status == 'pending'" mat-raised-button color="accent">Cancelar</button>
             </div>
-            <div class="section-body">
-              <p *ngIf="journey.uberTrip">Monto: ${{journey.uberTrip.fee}}</p>
-              <p *ngIf="journey.uberTrip" >Tracking Id: {{journey.uberTrip.id}} </p>
-              <p *ngIf="journey.providerId == 3" >Tracking Id: {{journey.id}} </p>
-              <p *ngIf="journey.uberTrip">Tracking Url: <a href="{{journey.uberTrip.tracking_url}}">{{journey.uberTrip.tracking_url}}</a></p>
+            <div class="section-body" *ngIf="journey.uberTrip">
+              <p *ngIf="journey.uberTrip.fee" >Monto: ${{journey.uberTrip.fee / 100}}</p>
+              <p>Tracking Id: {{journey.uberTrip.id}} </p>
+              <p *ngIf="journey.uberTrip">Tracking Url: <a target="_blank" href="{{journey.uberTrip.tracking_url}}">{{journey.uberTrip.tracking_url}}</a></p>
+              <p *ngIf="journey.uberTrip">Direct Url: <a target="_blank" href="{{journey.uberTrip.tracking_url.replace('https://www.ubereats.com/cl/orders/', 'https://direct.uber.com/track?organizationUuid=e14a6d71-ce27-4489-837a-7c7fd365e614&orderUuid=')}}">{{journey.uberTrip.tracking_url.replace('https://www.ubereats.com/cl/orders/', 'https://direct.uber.com/track?organizationUuid=e14a6d71-ce27-4489-837a-7c7fd365e614&orderUuid=')}}</a></p>
               <p *ngIf="journey.uberTrip">Hora solicitado: {{journey.uberTrip.created | date:'YYYY-MM-dd HH:mm:ss'}}</p>
+            </div>
+      
+            <div class="section-body" *ngIf="journey.uberFourWheelsTrip">
+              <p >Monto: ${{journey.uberFourWheelsTrip.fee / 100}}</p>
+              <p>Tracking Id: {{journey.uberFourWheelsTrip.id}} </p>
+              <p *ngIf="journey.uberFourWheelsTrip">Tracking Url: <a target="_blank" href="{{journey.uberFourWheelsTrip.tracking_url}}">{{journey.uberFourWheelsTrip.tracking_url}}</a></p>
+              <p *ngIf="journey.uberFourWheelsTrip">Direct Url: <a target="_blank" href="{{journey.uberFourWheelsTrip.tracking_url.replace('https://www.ubereats.com/cl/orders/', 'https://direct.uber.com/track?organizationUuid=e14a6d71-ce27-4489-837a-7c7fd365e614&orderUuid=')}}">{{journey.uberFourWheelsTrip.tracking_url.replace('https://www.ubereats.com/cl/orders/', 'https://direct.uber.com/track?organizationUuid=e14a6d71-ce27-4489-837a-7c7fd365e614&orderUuid=')}}</a></p>
+              <p *ngIf="journey.uberFourWheelsTrip">Hora solicitado: {{journey.uberFourWheelsTrip.created | date:'YYYY-MM-dd HH:mm:ss'}}</p>
             </div>
 
             <div class="title">
@@ -75,6 +84,7 @@
               <div class="section-body" *ngIf="!journey.uberTrip.courier">
                 <p><b>Sin informacion del repartidor </b></p>
               </div>
+              <img>
               <div class="section-header" *ngIf="journey.uberTrip.courier">
                 <p>Nombre : {{journey.uberTrip.courier.name }} </p>
                 <p>Numero de telefono: {{journey.uberTrip.courier.phone_number}}</p>
@@ -82,6 +92,19 @@
               <div class="section-body" *ngIf="journey.uberTrip.courier">
                 <p>Color del vehiculo: {{journey.uberTrip.courier.vehicle_color}}</p>
                 <p>Marca del vehicula: {{journey.uberTrip.courier.vehicle_make}} </p>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="journey.uberFourWheelsTrip">
+              <div class="section-body" *ngIf="!journey.uberFourWheelsTrip.courier">
+                <p><b>Sin informacion del repartidor </b></p>
+              </div>
+              <div class="section-header" *ngIf="journey.uberFourWheelsTrip.courier">
+                <p>Nombre : {{journey.uberFourWheelsTrip.courier.name }} </p>
+                <p>Numero de telefono: {{journey.uberFourWheelsTrip.courier.phone_number}}</p>
+              </div>
+              <div class="section-body" *ngIf="journey.uberFourWheelsTrip.courier">
+                <p>Color del vehiculo: {{journey.uberFourWheelsTrip.courier.vehicle_color}}</p>
+                <p>Marca del vehicula: {{journey.uberFourWheelsTrip.courier.vehicle_make}} </p>
               </div>
             </ng-container>
           </div>
