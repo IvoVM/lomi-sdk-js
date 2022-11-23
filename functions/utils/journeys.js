@@ -13,6 +13,7 @@ module.exports = (admin) => {
             providerId: providerId,
             status: "pending",
             createdAt: new Date(),
+            stock_location_id: order.shipment_stock_location_id
         })
         return journeyRef.set({
             id: journeyId,
@@ -21,6 +22,7 @@ module.exports = (admin) => {
             status: "pending",
             createdAt: new Date(),
             updatedAt: new Date(),
+            stock_location_id: order.shipment_stock_location_id,
             ...additionalData
         })
     }
