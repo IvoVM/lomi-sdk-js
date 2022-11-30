@@ -51,7 +51,10 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { ConfirmModalComponent } from './components/modals/confirm-modal/confirm-modal.component';
 import { HalfCardComponent } from './half-card/half-card.component';
 import { FirebaseTableComponent } from './firebase-table/firebase-table.component';
-import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { AgmCoreModule, GoogleMapsAPIWrapper } from '@agm/core';
+import { AgmDirectionModule } from 'agm-direction';
+import { EditAddressComponent } from './modals/edit-address/edit-address.component';
 
 @NgModule({
   declarations: [
@@ -66,6 +69,7 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
     ConfirmModalComponent,
     HalfCardComponent,
     FirebaseTableComponent,
+    EditAddressComponent,
   ],
   imports: [
     CommonModule,
@@ -103,10 +107,15 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
     MatProgressBarModule,
     MatToolbarModule,
     MatPaginatorModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    AgmCoreModule.forRoot({
+      apiKey: environment.gMapsKey,
+    }),
+    AgmDirectionModule,
   ],
   exports: [
     MatCardModule,
+    AgmCoreModule,
     MatGridListModule,
     RoutingModule,
     MatInputModule,
@@ -143,8 +152,9 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
     MatPaginatorModule,
     HalfCardComponent,
     FirebaseTableComponent,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    AgmDirectionModule,
   ],
-  providers: [ScreenTrackingService, UserTrackingService],
+  providers: [ScreenTrackingService, UserTrackingService, GoogleMapsAPIWrapper],
 })
 export class SharedModule {}

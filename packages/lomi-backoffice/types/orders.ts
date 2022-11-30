@@ -23,6 +23,7 @@ export type placedOrder = {
 	shipment_stock_location_id: number,
 	shipment_stock_location_name: string
 	shipment_total: number,
+	shipment_number: string,
 	special_instructions: string,
 	total: number,
     status: number,
@@ -87,6 +88,7 @@ export type Journey = {
     line_items?: LineItem[]
 	orderNumber?: string,
 	status?: any,
+	stock_location_id?: number,
 	id?:	string,
 	uberTrip?: any;
 	uberFourWheelsTrip?: any;

@@ -1,4 +1,18 @@
-const uberDispatcher = require("./uber")
+const uberDispatcher = require('./uber')(
+  'ydQvqFF87tXeoLqlzGeFCT5LDLLzXrKl',
+  'M8AEI2Qf023-NlvXDIaZu6PUZTBRoS95c8Atdm1N',
+  '2648bc3d-7ebe-4154-a42e-c2dfe94a0075'
+);
+const uberDebugDispatcher = require('./uber')(
+  'knJa-FrOl2QHzkcnoG3gnWsj0VqXbVme',
+  'uze9hsr1-89pgi-7zRohC0f3RIJDBReMtI5caWJn',
+  'ba030355-7cc4-4922-98a1-0c706aced46e'
+);
+const uberFourWheelsDispatcher = require('./uber')(
+  '12DtgZG9GdP01Pwj4F5I60O5PU-jH-lE',
+  'U4BjK7MnhLIAfixrkePc8A89VrKWHS7mccX2fitt',
+  '3bc20eef-481a-4942-94f1-ecb5a15ddd6e',
+);
 const order = require("./utils/mocks/order")
 
 let tripId = null;
@@ -16,8 +30,12 @@ test('Create Uber Quote',async ()=>{
         order.shipment_stock_location_name,
         order
       );
+    if(uberEstimated.kind && uberEstimated.kind == 'error'){
+      console.log(uberEstimated.message)
+      return
+    }
     quoteId = uberEstimated.id
-    console.log(uberEstimated)
+    console.log(uberEstimated, quoteId)
 })
 
 test('Create Uber Trip',async ()=>{

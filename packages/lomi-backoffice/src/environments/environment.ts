@@ -14,6 +14,9 @@ export const environment = {
     measurementId: "G-QJ5VF5TCWZ"
     
   },
+  spreeStoreHost: 'https://lomi.cl',
+  functionsHost: 'https://us-central1-lomi-35ab6.cloudfunctions.net',
+  gMapsKey: "AIzaSyD_YVEOH2VN42gPX4344yG8sOI6mJsiaIM",
   production: false,
 };
 

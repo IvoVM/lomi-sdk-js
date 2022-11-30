@@ -197,6 +197,30 @@ exports.addCompletedOrder = functions.https.onRequest(
   }
 );
 
+exports.geocodeOrder = functions.https.onRequest(
+  async(request, response) => {
+    cors(request, response, async () => {
+      const order = request.body
+      
+      const stockLocations = (await spreeUtils.getStockLocations()).stock_locations;
+      const orderStockLocation = stockLocations.find(
+        (loc) => loc.id == order.shipment_stock_location_id
+      );
+      order.shipment_stock_location_name = orderStockLocation.address1;
+
+      const stops = await Geocoder.getOrderStops(order, true)
+      const collectionKey = 'SPREE_ORDERS_' + order.shipment_stock_location_id;
+      const ref = await admin
+        .firestore()
+        .doc(collectionKey + '/' + order.number)
+        .update({
+          stops,
+        });
+      return response.status(200).send({...order, stops: stops});
+    })
+  }
+)
+
 exports.evaluateCabify = functions.https.onRequest(
   async (request, response) => {
     cors(request, response, async () => {

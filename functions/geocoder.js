@@ -11,7 +11,7 @@ async function geocodeAddress(address){
   return geocode
 }
 
-async function getOrderStops(order){
+async function getOrderStops(order, forceRecalculate = false){
   const stop = {
     "addr": "",
     "city": "",
@@ -28,11 +28,11 @@ async function getOrderStops(order){
     "num": ""
   }
 
-  if(order.stops){
+  if(order.stops && !forceRecalculate){
     return order.stops
   }
-  const addressForGeocodingStart = order.shipment_stock_location_name  + ", " + order.ship_address_city + ", " +order.ship_address_country
-  const endAddressForGeoCoding = order.ship_address_address1 + ", " + order.ship_address_county + ", " +order.ship_address_city + ", " +order.ship_address_country
+  const addressForGeocodingStart = order.shipment_stock_location_name  + ", " + order.ship_address_county + "," + order.ship_address_state + ", " +order.ship_address_country
+  const endAddressForGeoCoding = order.ship_address_address1 + ", " + order.ship_address_county + ", " +order.ship_address_state + ", " +order.ship_address_country
   console.log(addressForGeocodingStart, endAddressForGeoCoding)
   const endAddressGeocode = await geocoder.geocode(endAddressForGeoCoding);
   const startAddressGeocode =  await(geocoder.geocode(addressForGeocodingStart))

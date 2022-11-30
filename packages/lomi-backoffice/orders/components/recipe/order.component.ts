@@ -1,5 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { collectionData, Firestore } from '@angular/fire/firestore';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { collection } from 'firebase/firestore';
@@ -8,6 +9,10 @@ import { ON_PICKING_STATE, WAITING_AT_DRIVER_STATE } from 'packages/lomi-backoff
 import { Order } from 'packages/lomi-backoffice/types/orders';
 import { take, Unsubscribable } from 'rxjs';
 import { OrdersService } from '../../../providers/lomi/orders.service';
+import { DeliveryOperatorSelectorComponent } from '../delivery-operator-selector/delivery-operator-selector.component';
+import {GoogleMapsAPIWrapper} from '@agm/core';
+import { MatDialog } from '@angular/material/dialog';
+import { EditAddressComponent } from 'packages/lomi-backoffice/shared/modals/edit-address/edit-address.component';
 
 
 @Component({
@@ -18,9 +23,14 @@ import { OrdersService } from '../../../providers/lomi/orders.service';
 export class OrderComponent implements OnInit {
 
   
-  title = 'My first AGM project';
-  lat = 51.678418;
-  lng = 7.809007;
+  markerOptions = {
+    origin: {
+      icon: 'path-to-icon'
+    },
+    destination: {
+      icon: 'path-to-icon'
+    },
+  }
   
   public order:Order | undefined;
   public cancelingJourney = false;
@@ -31,12 +41,26 @@ export class OrderComponent implements OnInit {
     public activatedRoute:ActivatedRoute,
     public ordersProvider:OrdersService,
     public store:Store<BackofficeState>,
+    private _bottomSheet: MatBottomSheet,
     private router: Router,
+    public dialog: MatDialog,
 
     //BAD PRACTICE SHOULD BE SYNCED IN JOURNEYS STORE
     public afs: Firestore,
     ){
 
+    }
+
+    createTrip(order: any) {
+      this._bottomSheet.open(DeliveryOperatorSelectorComponent, {
+        data: order
+      })
+    }
+
+    editAddress(){
+      this.dialog.open(EditAddressComponent, {
+        data: this.order
+      })
     }
 
     cancelHermex(hmxTripId:any){

@@ -1,13 +1,37 @@
 <mat-drawer-container *ngIf="order" class="example-container" autosize style="height: 100%">
   
-    <div *ngIf="order" class="example-sidenav-content p" style="padding-bottom: 10em;">
-      
-      <div class="half-card" style="padding:2em">
+  
+  <div *ngIf="order" class="example-sidenav-content p" style="padding-bottom: 10em;">
+    
+    <div class="half-card" style="padding:2em">
         <div class="display-info-card">
           <div class="title">
             <h1>Dirección de envio</h1>
+            <button (click)="createTrip(order)" style="margin:1em 0;" mat-raised-button color="accent">Solicitar Envio de productos                     <mat-icon style="transform: scale(0.9);">local_shipping</mat-icon>            </button>
+            <button (click)="editAddress()" style="margin:1em 8px;" mat-raised-button color="accent">Editar dirección <mat-icon style="transform: scale(0.9);">pin_drop</mat-icon></button>
+            <agm-map *ngIf="order.stops" style="width: 100%;height:20em" [latitude]="order.stops[0].loc[0]" [longitude]="order.stops[0].loc[1]" [zoom]="13">
+              <agm-marker [latitude]="order.stops[0].loc[0]" [longitude]="order.stops[0].loc[1]"></agm-marker>
+              <agm-marker [latitude]="order.stops[1].loc[0]" [longitude]="order.stops[1].loc[1]"></agm-marker>
+              <agm-direction 
+              [markerOptions]="markerOptions"
+              [origin]="{
+                lat : order.stops[0].loc[0],
+                lng : order.stops[0].loc[1]
+              }" 
+              [destination]="
+              {
+                lat : order.stops[1].loc[0],
+                lng : order.stops[1].loc[1]
+              }
+              "
+            ></agm-direction>
+            </agm-map>
           </div>
           <div class="section-body" style="padding: 0px;">
+            <div class="section-separator">
+              <p class="title-grid">Numero de envio:</p>
+              <p class="info-grid">{{order.shipment_number ? order.shipment_number: 'Sin envio asociado'}}</p>
+            </div>
             <div class="section-separator">
               <p class="title-grid">Nombre Completo:</p>
               <p class="info-grid">{{order.name ? order.name: 'No name'}}</p>

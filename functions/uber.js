@@ -56,32 +56,40 @@ class UberDispatcher{
     async createQuote(dropoff_address, pickup_address,order){
         const stockLocations = (await spreeUtils.getStockLocations()).stock_locations
         console.log(stockLocations.find(loc=>loc.id==order.shipment_stock_location_id).address1)
-        const quote = await axios.post("https://api.uber.com/v1/customers/"+this.customerId+"/delivery_quotes",{
-            dropoff_address: encode({
-                street_address: [order.ship_address_address1, ""],
-                city: order.ship_address_city,
-                state: order.ship_address_state,
-                zip_code: "",
-                country: order.ship_address_country,
-            }),
-            dropoff_latitude: parseFloat(dropoff_address.split(",")[0]),
-            dropoff_longitude: parseFloat(dropoff_address.split(",")[1]),
-            dropoff_notes: order.ship_address_address2,
-            pickup_latitude: parseFloat(pickup_address.split(",")[0]),
-            pickup_longitude: parseFloat(pickup_address.split(",")[1]),
-            pickup_address: encode({
-                street_address: [stockLocations.find(loc=>loc.id==order.shipment_stock_location_id).address1, ""],
-                city: order.ship_address_city,
-                state: order.ship_address_state,
-                zip_code: "",
-                country: order.ship_address_country,
-            }),
-            pickup_notes: stockLocations.find(loc=>loc.id==order.shipment_stock_location_id).address2
-        },{
-            headers:{
-                'Authorization' : 'Bearer ' + this.accessToken.data.access_token
-            }
-        })
+        try{
+            const quote = await axios.post("https://api.uber.com/v1/customers/"+this.customerId+"/delivery_quotes",{
+                dropoff_address: encode({
+                    street_address: [order.ship_address_address1, ""],
+                    city: order.ship_address_city,
+                    state: order.ship_address_state,
+                    zip_code: "",
+                    country: order.ship_address_country,
+                }),
+                dropoff_latitude: parseFloat(dropoff_address.split(",")[0]),
+                dropoff_longitude: parseFloat(dropoff_address.split(",")[1]),
+                dropoff_notes: order.ship_address_address2,
+                pickup_latitude: parseFloat(pickup_address.split(",")[0]),
+                pickup_longitude: parseFloat(pickup_address.split(",")[1]),
+                pickup_address: encode({
+                    street_address: [stockLocations.find(loc=>loc.id==order.shipment_stock_location_id).address1, ""],
+                    city: order.ship_address_city,
+                    state: order.ship_address_state,
+                    zip_code: "",
+                    country: order.ship_address_country,
+                }),
+                pickup_notes: stockLocations.find(loc=>loc.id==order.shipment_stock_location_id).address2
+            },{
+                headers:{
+                    'Authorization' : 'Bearer ' + this.accessToken.data.access_token
+                }
+            }).catch((error)=>{
+                console.log(error.response.data)
+                throw error
+            })
+        } catch(e){
+            console.log(e.response)
+            return e.response.data
+        }
         return quote.data
     }
 

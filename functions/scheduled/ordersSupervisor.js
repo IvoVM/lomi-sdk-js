@@ -1,4 +1,4 @@
-const functions = require('firebase-functions');
+inconst functions = require('firebase-functions');
 
 module.exports = (spreeUrl, token, admin, spreeDebugUrl) => {
   const spree = require('../utils/spree/spree')(spreeUrl, token, admin, spreeDebugUrl);

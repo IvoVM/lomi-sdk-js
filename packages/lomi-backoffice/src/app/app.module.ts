@@ -33,6 +33,7 @@ import { NotificationsService } from './providers/notifications.service';
 import { JourneysModule } from 'packages/lomi-backoffice/journeys/journeys.module';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { OrdersService } from 'packages/lomi-backoffice/providers/lomi/orders.service';
+import { GoogleMapsAPIWrapper } from '@agm/core';
 
 @NgModule({
   declarations: [AppComponent, MainHeaderComponent, NotificationsComponent],
@@ -66,7 +67,7 @@ import { OrdersService } from 'packages/lomi-backoffice/providers/lomi/orders.se
     AngularFireMessagingModule,
   ],
   exports: [],
-  providers: [JourneysService, UserService, NotificationsService, OrdersService],
+  providers: [JourneysService, UserService, NotificationsService, OrdersService, GoogleMapsAPIWrapper],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

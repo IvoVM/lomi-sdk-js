@@ -21,7 +21,10 @@ export class JourneysComponent implements OnInit {
 
   ngOnInit(): void {
     this.journeysUnsubscribable = this.store.select('journeys').subscribe((journeys:any)=>{
-      this.journeysToShow = Object.values(journeys.entities)
+      const stockLocationID = localStorage.getItem("stockLocationId")
+      if(stockLocationID){
+        this.journeysToShow = Object.values(journeys.entities).filter((journey:any)=> journey.stock_location_id == stockLocationID) as Journey[]
+      }
     })
   }
 
