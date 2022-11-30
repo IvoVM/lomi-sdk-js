@@ -46,7 +46,7 @@
                             <div *ngIf="trip && trip.kind === 'error'">
                                 <div style="display: flex;flex-direction: column;">
                                     <span>
-                                        <b>{{trip.error}}</b>
+                                        <b *ngIf="trip.code == 'address_undeliverable'">La zona a repartir no se encuentra disponible</b>
                                     </span>
                                 </div>
                             </div>

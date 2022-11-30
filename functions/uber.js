@@ -86,11 +86,11 @@ class UberDispatcher{
                 console.log(error.response.data)
                 throw error
             })
+            return quote.data
         } catch(e){
             console.log(e.response)
             return e.response.data
         }
-        return quote.data
     }
 
     async createTrip(dropoff_address, dropoff_name, dropoff_phone_number, pickup_address, pickup_name, pickup_phone_number, manifest_items, order){

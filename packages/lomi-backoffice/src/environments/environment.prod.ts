@@ -9,5 +9,8 @@ export const environment = {
     messagingSenderId: '394847830425',
     measurementId: 'G-E3L40DPW9M',
   },
+  spreeStoreHost: 'https://lomi.cl',
+  functionsHost: 'https://us-central1-lomi-35ab6.cloudfunctions.net',
+  gMapsKey: "AIzaSyD_YVEOH2VN42gPX4344yG8sOI6mJsiaIM",
   production: true,
 };
