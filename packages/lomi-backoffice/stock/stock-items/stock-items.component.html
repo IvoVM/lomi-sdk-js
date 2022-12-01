@@ -1,0 +1,47 @@
+<lomii-half-card [title]="'Stock'">
+    <mat-form-field>
+        <mat-label>Buscar producto</mat-label>
+        <input (keyup)="searchProduct($event)" [(ngModel)]="search" matInput>
+     </mat-form-field>
+    <mat-tab-group>
+        <mat-tab label="Productos">
+            <mat-accordion class="example-headers-align" multi>
+                <mat-expansion-panel *ngFor="let item of items | async" class = "{{ !item.variant.is_available ? 'unavailable' : 'available' }}">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      {{item.variant.name}}
+                    </mat-panel-title>
+                    <mat-panel-description style="
+                        width: 50%;
+                        display: flex;
+                        justify-content: flex-end;
+                    ">
+                    <div style="
+                        width: 100%;
+                        display: flex;
+                        justify-content: space-between;
+                    ">
+                    <div>
+                        ${{item.variant.price}}
+                    </div>
+
+                    <div>
+
+                        {{item.variant.total_on_hand}} {{item.variant.option_values[0].option_type_presentation}}
+                    </div>
+                    
+                    </div>
+                    </mat-panel-description>
+                  </mat-expansion-panel-header>
+              
+                  <mat-slide-toggle 
+                  [checked]="!item.variant.is_available">
+                    Deshabilitar
+                </mat-slide-toggle>
+              
+              
+                </mat-expansion-panel>
+              </mat-accordion>
+        </mat-tab>
+    </mat-tab-group>    
+</lomii-half-card>

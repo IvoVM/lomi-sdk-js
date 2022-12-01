@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { User } from '@sentry/angular';
 import { BackofficeState } from 'packages/lomi-backoffice/ngrx';
 import { Logout } from 'packages/lomi-backoffice/ngrx/actions/user.actions';
 import { currentUserSelector } from 'packages/lomi-backoffice/ngrx/reducers/user.reducer';
@@ -65,6 +64,10 @@ export class MainHeaderComponent implements OnInit {
           {
             route: "journeys",
             name: "Viajes de ultima milla",
+          },
+          {
+            route: "stock",
+            name: "Stock"
           }
         ]
       }

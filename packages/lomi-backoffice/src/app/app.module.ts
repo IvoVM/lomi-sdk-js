@@ -34,6 +34,7 @@ import { JourneysModule } from 'packages/lomi-backoffice/journeys/journeys.modul
 import { NotificationsComponent } from './notifications/notifications.component';
 import { OrdersService } from 'packages/lomi-backoffice/providers/lomi/orders.service';
 import { GoogleMapsAPIWrapper } from '@agm/core';
+import { StockModule } from 'packages/lomi-backoffice/stock/stock.module';
 
 @NgModule({
   declarations: [AppComponent, MainHeaderComponent, NotificationsComponent],
@@ -62,6 +63,7 @@ import { GoogleMapsAPIWrapper } from '@agm/core';
     PickresModule,
     SharedModule,
     UsersModule,
+    StockModule,
     SettingsModule,
     JourneysModule,
     AngularFireMessagingModule,

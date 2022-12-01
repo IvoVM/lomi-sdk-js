@@ -11,6 +11,7 @@ import { UserWithoutRolComponent } from 'packages/lomi-backoffice/users/user-wit
 import { JourneysComponent } from 'packages/lomi-backoffice/journeys/journeys/journeys.component';
 import { JourneyComponent } from 'packages/lomi-backoffice/journeys/journey/journey.component';
 import { UserRolComponent } from 'packages/lomi-backoffice/settings/user-rol/user-rol.component';
+import { StockItemsComponent } from 'packages/lomi-backoffice/stock/stock-items/stock-items.component';
 
 const routes: Routes = [
   {path: 'auth', component: AuthComponent},
@@ -28,6 +29,7 @@ const routes: Routes = [
       {path: 'journeys', component: JourneysComponent},
       {path: 'journeys/:id', component: JourneyComponent},
       {path:'userRol/:rol', component: UserRolComponent},
+      {path: 'stock', component: StockItemsComponent},
       {path : '', redirectTo: '/orders', pathMatch: "full" },
     ]
   }

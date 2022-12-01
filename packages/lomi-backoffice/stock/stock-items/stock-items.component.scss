@@ -1,0 +1,15 @@
+.unavailable{
+    background-color: gray;
+    color: white;
+    .mat-expansion-panel-header-title, .mat-expansion-panel-header-description{
+        color: white !important;
+    }
+}
+
+.available{
+    background-color: #00b169;
+    color: white;
+    .mat-expansion-panel-header-title, .mat-expansion-panel-header-description{
+        color: white !important;
+    }
+}
