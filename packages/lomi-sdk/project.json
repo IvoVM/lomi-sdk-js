@@ -1,0 +1,42 @@
+{
+  "root": "packages/lomi-sdk",
+  "sourceRoot": "packages/lomi-sdk/src",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "outputPath": "dist/packages/lomi-sdk",
+        "main": "packages/lomi-sdk/src/index.ts",
+        "tsConfig": "packages/lomi-sdk/tsconfig.lib.json",
+        "assets": [
+          "packages/lomi-sdk/*.md"
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "packages/lomi-sdk/**/*.ts"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": [
+        "coverage/packages/lomi-sdk"
+      ],
+      "options": {
+        "jestConfig": "packages/lomi-sdk/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}
