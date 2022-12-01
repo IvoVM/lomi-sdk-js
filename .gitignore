@@ -48,5 +48,4 @@ packages/lomi-material/*
 packages/lomi-docs/*
 packages/lomi-material-e2e/*
 packages/lomi-docs-e2e/*
-packages/lomi-sdk/*
 dist
