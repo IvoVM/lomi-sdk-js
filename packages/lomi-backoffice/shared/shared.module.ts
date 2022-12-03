@@ -55,6 +55,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { AgmCoreModule, GoogleMapsAPIWrapper } from '@agm/core';
 import { AgmDirectionModule } from 'agm-direction';
 import { EditAddressComponent } from './modals/edit-address/edit-address.component';
+import { PersistentNotificationComponent } from './components/persistent-notification/persistent-notification.component';
 
 @NgModule({
   declarations: [
@@ -70,6 +71,7 @@ import { EditAddressComponent } from './modals/edit-address/edit-address.compone
     HalfCardComponent,
     FirebaseTableComponent,
     EditAddressComponent,
+    PersistentNotificationComponent,
   ],
   imports: [
     CommonModule,
@@ -154,6 +156,7 @@ import { EditAddressComponent } from './modals/edit-address/edit-address.compone
     FirebaseTableComponent,
     MatAutocompleteModule,
     AgmDirectionModule,
+    PersistentNotificationComponent
   ],
   providers: [ScreenTrackingService, UserTrackingService, GoogleMapsAPIWrapper],
 })

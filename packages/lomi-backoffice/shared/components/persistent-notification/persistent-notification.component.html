@@ -1,0 +1,14 @@
+<div *ngIf="!closed" class="persistent-notification bg">
+    <div class="title">
+        <mat-icon (click)="stopAudio()" >close</mat-icon>
+        <mat-icon *ngIf="!audio.volume" (click)="unmuteAudio()">volume_mute</mat-icon>
+        <mat-icon *ngIf="audio.volume" (click)="muteAudio()">volume_up</mat-icon>
+        El repartidor esta cercano a tienda
+    </div>
+    <div class="description">
+        Orden numero : R4321515
+    </div>
+    <div class="action" style="margin-right: 4em;">
+        Ir a la orden >
+    </div>
+</div>

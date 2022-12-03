@@ -9,9 +9,15 @@
             <h1>Dirección de envio</h1>
             <button (click)="createTrip(order)" style="margin:1em 0;" mat-raised-button color="accent">Solicitar Envio de productos                     <mat-icon style="transform: scale(0.9);">local_shipping</mat-icon>            </button>
             <button (click)="editAddress()" style="margin:1em 8px;" mat-raised-button color="accent">Editar dirección <mat-icon style="transform: scale(0.9);">pin_drop</mat-icon></button>
+            <button (click)="completeOrder(order)" style="margin:1em 8px;" mat-raised-button color="accent" *ngIf="user.userRol == 1 && order.status != 6">Marcar pedido como enviado<mat-icon style="margin-left:0.4em;transform: scale(0.9);">verified</mat-icon></button>
+            <button (click)="returnOrder(order)" style="margin:1em 8px;" mat-raised-button color="accent" *ngIf="user.userRol == 1 && order.status == 6">Devolver a cola<mat-icon style="margin-left:0.4em;transform: scale(0.9);">keyboard_return</mat-icon></button>
+
             <agm-map *ngIf="order.stops" style="width: 100%;height:20em" [latitude]="order.stops[0].loc[0]" [longitude]="order.stops[0].loc[1]" [zoom]="13">
               <agm-marker [latitude]="order.stops[0].loc[0]" [longitude]="order.stops[0].loc[1]"></agm-marker>
               <agm-marker [latitude]="order.stops[1].loc[0]" [longitude]="order.stops[1].loc[1]"></agm-marker>
+              <ng-container *ngFor="let journey of order.journeys">
+                <agm-marker  *ngIf="journey.cabifyTrip"  [latitude]="journey.cabifyTrip.data.journey.state.loc[0]" [longitude]="journey.cabifyTrip.data.journey.state.loc[1]" [iconUrl]="'assets/images/location-pin-purple.png'"></agm-marker>
+              </ng-container>
               <agm-direction 
               [markerOptions]="markerOptions"
               [origin]="{
@@ -82,8 +88,8 @@
               <p *ngIf="journey.providerId == 3">Operador: Cabify </p>              <p class="status-chip-{{journey.status}} status-chip">Estado: {{journey.status | uberStatus}}</p>
               <iframe *ngIf="false" [src]="journey.uberTrip.tracking_url | safe"> </iframe>
               <button [disabled]="cancelingJourney" style="margin-bottom:1em;margin-top:0.25em" *ngIf="journey.status == 'Order queued sucesfully'" (click)="cancelHermex(journey.id)" mat-raised-button color="accent">Cancelar</button>
-              <button [disabled]="cancelingJourney" style="margin-bottom:1em;margin-top:0.25em" (click)="cancelUber(journey.uberTrip.id)" *ngIf="journey.uberTrip && journey.uberTrip.status == 'pending'" mat-raised-button color="accent">Cancelar</button>
-              <button [disabled]="cancelingJourney" style="margin-bottom:1em;margin-top:0.25em" (click)="cancelUber(journey.uberTrip.id)" *ngIf="journey.uberFourWheelsTrip && journey.uberFourWheelsTrip.status == 'pending'" mat-raised-button color="accent">Cancelar</button>
+              <button [disabled]="cancelingJourney" style="margin-bottom:1em;margin-top:0.25em" (click)="cancelUber(journey.uberTrip.id)" *ngIf="journey.uberTrip" mat-raised-button color="accent">Cancelar</button>
+              <button [disabled]="cancelingJourney" style="margin-bottom:1em;margin-top:0.25em" (click)="cancelFourWheelsUber(journey.uberTrip.id)" *ngIf="journey.uberFourWheelsTrip" mat-raised-button color="accent">Cancelar</button>
             </div>
             <div class="section-body" *ngIf="journey.uberTrip">
               <p *ngIf="journey.uberTrip.fee" >Monto: ${{journey.uberTrip.fee / 100}}</p>
@@ -101,9 +107,31 @@
               <p *ngIf="journey.uberFourWheelsTrip">Hora solicitado: {{journey.uberFourWheelsTrip.created | date:'YYYY-MM-dd HH:mm:ss'}}</p>
             </div>
 
+            <div class="section-body" *ngIf="journey.cabifyTrip">
+              <p>Tracking Id: {{journey.cabifyTrip.data.journey.id}} </p>
+              <p *ngIf="journey.cabifyTrip">Tracking Url: <a target="_blank" href="https://cabify.com/{{journey.cabifyTrip.data.journey.publicUrl}}">https://cabify.com/{{journey.cabifyTrip.data.journey.publicUrl}}</a></p>
+              <p *ngIf="journey.cabifyTrip">Hora solicitado: {{journey.cabifyTrip.data.journey.startAt | date:'YYYY-MM-dd HH:mm:ss'}}</p>
+            </div>
+
             <div class="title">
               <h1>Informacion del repartidor</h1>
             </div>
+            <ng-container *ngIf="journey.cabifyTrip">
+              <div class="section-header" *ngIf="journey.cabifyTrip && journey.cabifyTrip.data.journey.state?.driver">
+                <div style="display: flex;align-items: center;flex-direction: row;">
+                  <div style="margin-right: 2em;">
+                    <img style="height: 6em;width: auto;border-radius: 50%;" *ngIf="journey.cabifyTrip.data.journey.state.driver.avatarUrl" [src]="journey.cabifyTrip.data.journey.state.driver.avatarUrl">
+                  </div>
+                  <div>
+                    <p>Nombre : {{journey.cabifyTrip.data.journey.state.driver.name }} </p>
+                    <p>Numero de telefono: {{journey.cabifyTrip.data.journey.state.driver.phoneNumber }}</p>
+                    <p>Patente Vehiculo: {{journey.cabifyTrip.data.journey.state.vehicle.plate }}</p>
+                    <p>Modelo Vehiculo: {{journey.cabifyTrip.data.journey.state.vehicle.name }}</p>
+
+                  </div>
+                </div>
+              </div>
+            </ng-container>
             <ng-container *ngIf="journey.uberTrip">
               <div class="section-body" *ngIf="!journey.uberTrip.courier">
                 <p><b>Sin informacion del repartidor </b></p>
@@ -111,7 +139,7 @@
               <img>
               <div class="section-header" *ngIf="journey.uberTrip.courier">
                 <p>Nombre : {{journey.uberTrip.courier.name }} </p>
-                <p>Numero de telefono: {{journey.uberTrip.courier.phone_number}}</p>
+                <p>Numero de telefono: {{journey.uberTrip.courier.phone_number }}</p>
               </div>
               <div class="section-body" *ngIf="journey.uberTrip.courier">
                 <p>Color del vehiculo: {{journey.uberTrip.courier.vehicle_color}}</p>

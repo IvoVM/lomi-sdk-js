@@ -19,6 +19,7 @@ module.exports = (admin) => {
             console.log(stockLocations)
             order.shipment_stock_location_name = orderStockLocation.address1;
             order.shipment_stock_location_phone = orderStockLocation.phone;
+            order.shipment_stock_location_city = orderStockLocation.city;
             await cabify.authCabify();
             const cabifyResponse = await cabify.createCabifyTrip(order, req.body.productId);
             await journeysUtils.createJourney(cabifyResponse.data.data.createJourney.id, 3 , {

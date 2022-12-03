@@ -178,6 +178,7 @@ export class OrdersService {
   }
 
   createCabifyTrip(order: any) {
+    order.stops = order.stops.reverse()
     const req = this.httpClient.post("https://us-central1-lomi-35ab6.cloudfunctions.net/createCabifyTripEndpoint",order)
     return req
   }

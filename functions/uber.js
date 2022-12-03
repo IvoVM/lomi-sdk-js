@@ -123,7 +123,7 @@ class UberDispatcher{
             pickup_longitude: parseFloat(pickup_address.split(",")[1]),
             pickup_name: order.shipment_stock_location_name,
             pickup_phone_number: pickup_phone_number,
-            pickup_notes: "",
+            pickup_notes: stockLocations.find(loc=>loc.id==order.shipment_stock_location_id).address2,
             pickup_verification: {
                 picture: false,
                 signature: false,

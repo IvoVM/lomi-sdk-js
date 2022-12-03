@@ -34,6 +34,8 @@ export class OrderComponent implements OnInit {
   
   public order:Order | undefined;
   public cancelingJourney = false;
+  public user:any;
+  private userSubscription:Unsubscribable | undefined;
 
   public storeUnsubscribe:Unsubscribable | null = null;
   
@@ -49,6 +51,24 @@ export class OrderComponent implements OnInit {
     public afs: Firestore,
     ){
 
+    }
+
+    returnOrder(order:any){
+      this.ordersProvider.updateOrder(order.number,{
+        status: 2,
+        deliveredAt: new Date()
+      }, order.shipment_stock_location_id
+      )
+      return;
+    }
+
+    completeOrder(order:any){
+      this.ordersProvider.updateOrder(order.number,{
+        status: 6,
+        deliveredAt: new Date()
+      }, order.shipment_stock_location_id
+      )
+      return;
     }
 
     createTrip(order: any) {
@@ -120,7 +140,14 @@ export class OrderComponent implements OnInit {
       })
     }
 
+    ngOnDestroy(){
+      this.userSubscription?.unsubscribe()
+    }
+
     ngOnInit(): void {
+      this.userSubscription = this.store.select("user").subscribe((user)=>{
+        this.user = user
+      })
       this.activatedRoute.params.subscribe(async (params:any)=>{
         const orderNumber = params.number
         this.storeUnsubscribe?.unsubscribe ? this.storeUnsubscribe.unsubscribe() : null

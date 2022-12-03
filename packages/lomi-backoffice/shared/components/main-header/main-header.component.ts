@@ -14,6 +14,9 @@ import { IUser } from 'packages/lomi-backoffice/types/user';
 })
 export class MainHeaderComponent implements OnInit {
 
+  public journeys:any = []
+  public cabifyNear = false;
+
   public user:IUser = {
     uid: "",
     email:'',
@@ -65,10 +68,6 @@ export class MainHeaderComponent implements OnInit {
             route: "journeys",
             name: "Viajes de ultima milla",
           },
-          {
-            route: "stock",
-            name: "Stock"
-          }
         ]
       }
     })
@@ -78,5 +77,12 @@ export class MainHeaderComponent implements OnInit {
     this.store.dispatch(new Logout())
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    setTimeout(()=>{
+      this.cabifyNear = true
+    }, 5000)
+    this.store.select("journeys").subscribe((journeys)=>{
+      this.journeys = journeys.entities
+    })
+  }
 }

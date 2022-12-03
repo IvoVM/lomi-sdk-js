@@ -86,6 +86,9 @@ exports.createCabifyTripEndpoint = createCabifyTripEndpoint;
 
 const cancelCabifyTripEndpoint = require('./https/cancelCabify')(admin);
 exports.cancelCabifyTripEndpoint = cancelCabifyTripEndpoint;
+
+const listenToSlackEvents = require('./https/webhooks/slackEvents')(admin);
+exports.listenToSlackEvents = listenToSlackEvents
 //End Imported API functions
 
 //Imported Handlers
@@ -207,6 +210,7 @@ exports.geocodeOrder = functions.https.onRequest(
         (loc) => loc.id == order.shipment_stock_location_id
       );
       order.shipment_stock_location_name = orderStockLocation.address1;
+      order.shipment_stock_location_city = orderStockLocation.city;
 
       const stops = await Geocoder.getOrderStops(order, true)
       const collectionKey = 'SPREE_ORDERS_' + order.shipment_stock_location_id;
@@ -231,6 +235,7 @@ exports.evaluateCabify = functions.https.onRequest(
       );
       order.shipment_stock_location_name = orderStockLocation.address1;
       order.shipment_stock_location_phone = orderStockLocation.phone;
+      order.shipment_stock_location_city = orderStockLocation.city;
 
       const stops = await Geocoder.getOrderStops(order);
       const cabifyEstimated = await cabifyEstimates.setCabifyEstimates(order);
@@ -253,10 +258,12 @@ exports.evaluateFourWheelsUber = functions.https.onRequest(async (request, respo
     const stockLocations = (await spreeUtils.getStockLocations())
       .stock_locations;
     const order = request.body;
-    const address1 = stockLocations.find(
+    const orderStockLocation = stockLocations.find(
       (loc) => loc.id == order.shipment_stock_location_id
-    ).address1;
-    order.shipment_stock_location_name = address1;
+    );
+    order.shipment_stock_location_name = orderStockLocation.address1;
+    order.shipment_stock_location_city = orderStockLocation.city;
+
     const stops = await Geocoder.getOrderStops(order);
     console.log(stops);
     let selectedUberDispatcher = uberFourWheelsDispatcher;
@@ -292,10 +299,12 @@ exports.evaluateUber = functions.https.onRequest(async (request, response) => {
       const stockLocations = (await spreeUtils.getStockLocations())
         .stock_locations;
       const order = request.body;
-      const address1 = stockLocations.find(
+      const orderStockLocation = stockLocations.find(
         (loc) => loc.id == order.shipment_stock_location_id
-      ).address1;
-      order.shipment_stock_location_name = address1;
+      );
+      order.shipment_stock_location_name = orderStockLocation.address1;
+      order.shipment_stock_location_city = orderStockLocation.city;
+
       const stops = await Geocoder.getOrderStops(order);
       console.log(stops);
       let selectedUberDispatcher = uberDispatcher;
@@ -467,6 +476,7 @@ exports.creatUberTrip = functions.https.onRequest(async (request, response) => {
       console.log(stockLocations)
       order.shipment_stock_location_name = orderStockLocation.address1;
       order.shipment_stock_location_phone = orderStockLocation.phone;
+      order.shipment_stock_location_city = orderStockLocation.city;
       const selectedUberDispatcher = order.DEBUG
         ? uberDebugDispatcher
         : uberDispatcher;
@@ -552,6 +562,7 @@ exports.creatFourWheelsUberTrip = functions.https.onRequest(async (request, resp
       console.log(stockLocations)
       order.shipment_stock_location_name = orderStockLocation.address1;
       order.shipment_stock_location_phone = orderStockLocation.phone;
+      order.shipment_stock_location_city = orderStockLocation.city;
       const selectedUberDispatcher = order.DEBUG
         ? uberDebugDispatcher
         : uberFourWheelsDispatcher;
@@ -607,7 +618,7 @@ exports.creatFourWheelsUberTrip = functions.https.onRequest(async (request, resp
             uberFourWheelsTrip: uberTrip,
             providerId: 1,
           };
-          await ref.collection('journeys').doc().set(journey);
+          await ref.collection('journeys').doc(uberTrip.id).set(journey);
           await admin
             .firestore()
             .doc('deliveringJourneys/' + uberTrip.id)
@@ -710,7 +721,7 @@ exports.scheduledFunction = functions.pubsub
             });
           } else if (doc.data().providerId == 3) {
             await journeyDoc.update({
-              status: trip.status,
+              status: trip.data.journey.state.name ? trip.data.journey.state.name : 'no status',
               updatedAt: new Date(),
               cabifyTrip: trip,
             });
@@ -776,7 +787,7 @@ exports.scheduledFunction = functions.pubsub
                 doc.data().id
             )
             .update({
-              status: trip.status,
+              status: trip.data.journey.state.name,
               updatedAt: new Date(),
               cabifyTrip: trip,
             });

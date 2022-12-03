@@ -35,7 +35,7 @@ order = {
 
 const CabifyDispatcher = require("./cabify")
 const productId = "a5bb14a1509b2a1c4f1bc21b788a86b3"
-let journeyId = "9717b198-4fd2-11ed-ac43-32eb2ff94af2"
+let journeyId = "44f12314-718c-11ed-b7e3-1ebd6b1bb38f"
 
 
 test("Estimate cabify trip", async() => {
@@ -62,5 +62,5 @@ test('Cancel cabify trip', async() => {
 test('Get cabify trip', async() => {
     await CabifyDispatcher.authCabify()
     const cabifyTrip = await CabifyDispatcher.getCabifyTrip(journeyId);
-    console.log(cabifyTrip)
+    console.log(cabifyTrip.data.journey.state)
 })
