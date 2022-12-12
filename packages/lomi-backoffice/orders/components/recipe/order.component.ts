@@ -102,6 +102,17 @@ export class OrderComponent implements OnInit {
       return typeof value == typeName
     }
 
+    cancelCabify(journeyId:any){
+      this.cancelingJourney = true;
+      this.ordersProvider.cancelCabifyTrip({
+        tripId: journeyId,
+        ...this.order
+      }).subscribe((response:any)=>{
+        this.cancelingJourney = false;
+        console.log(response)
+      })
+    }
+
     cancelUber(tripId:string){
       this.cancelingJourney = true;
       this.ordersProvider.cancelUberTrip(tripId, this.order?.DEBUG).subscribe((response:any)=>{

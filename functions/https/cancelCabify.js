@@ -10,9 +10,13 @@ module.exports = (admin) => {
             const order = req.body;
             await cabify.authCabify();
             const cabifyResponse = await cabify.cancelCabifyTrip(order.tripId);
-            console.log((cabifyResponse))
-            await journeysUtils.cancelJourney(cabifyResponse.data.riderCancel.journeyId, order);
-            res.send(cabifyResponse);
+            if(cabifyResponse.errors){
+                res.send(cabifyResponse);
+                return
+            } else{
+                await journeysUtils.cancelJourney(cabifyResponse.data.riderCancel.journeyId, order);
+                res.send(cabifyResponse);
+            }
         })
 
     });

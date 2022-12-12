@@ -11,6 +11,8 @@ const uberStatus:any = {
     "rejected": "Rechazado",
     "returned": "Devuelto a tienda",
     "delivered": "Entregado",
+    "rider cancel": "Cancelado",
+    "hire": "Buscando un repartidor",
 }
 
 @Pipe({ 

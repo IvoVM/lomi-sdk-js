@@ -23,7 +23,11 @@ module.exports = (admin) => {
             await cabify.authCabify();
             const cabifyResponse = await cabify.createCabifyTrip(order, req.body.productId);
             await journeysUtils.createJourney(cabifyResponse.data.data.createJourney.id, 3 , {
-                cabifyTrip : cabifyResponse.data.data.createJourney,
+                cabifyTrip : {
+                  data: {
+                    journey: cabifyResponse.data.data.createJourney,
+                  }
+                }
             }, order);
             res.send(cabifyResponse.data);
         })

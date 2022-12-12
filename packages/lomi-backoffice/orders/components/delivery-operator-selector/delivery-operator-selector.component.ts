@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject} from '@angular/core';
 import {MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA} from '@angular/material/bottom-sheet';
-import { WAITING_AT_DRIVER_STATE } from 'packages/lomi-backoffice/providers/lomi/mocks/states.mock';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { WAITING_AT_DRIVER_STATE, DELIVERING_ORDER_STATE } from 'packages/lomi-backoffice/providers/lomi/mocks/states.mock';
 import { storesMock } from 'packages/lomi-backoffice/providers/lomi/mocks/stores.mock';
 import { OrdersService } from 'packages/lomi-backoffice/providers/lomi/orders.service';
 
@@ -101,6 +102,7 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
     private _bottomSheetRef: MatBottomSheetRef<DeliveryOperatorSelectorComponent>,
     @Inject(MAT_BOTTOM_SHEET_DATA) public order: any,
     private _orders: OrdersService,
+    private snackBar : MatSnackBar
     ) {
       this.trips = []
       this.operators.forEach((operator:any)=>{
@@ -133,6 +135,7 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
         this.listenForOperator,
         (err)=>{
           console.log(err)
+          this.snackBar.open("No se pudo solicitar el viaje, intente nuevamente");
           this.requestingOperator = false;
         }
         ); break;
@@ -140,6 +143,7 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
         this.listenForOperator,
         (err)=>{
           console.log(err)
+          this.snackBar.open("No se pudo solicitar el viaje, intente nuevamente");
           this.requestingOperator = false;
         }
       ); break;
@@ -147,6 +151,7 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
         this.listenForOperator,
         (err)=>{
           console.log(err)
+          this.snackBar.open("No se pudo solicitar el viaje, intente nuevamente");
           this.requestingOperator = false;
         }
       ); break;
@@ -154,8 +159,9 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
   }
 
   listenForOperator = (order:any) => {
-    this._orders.currentStep++
+    this._orders.currentStep = DELIVERING_ORDER_STATE
     this._bottomSheetRef.dismiss(order)
+    this.snackBar.open("Viaje solicitado con exito");
     if(order.status == WAITING_AT_DRIVER_STATE){
     } else {
       this.requestingOperator = false

@@ -13,6 +13,7 @@ import { BackofficeState } from 'packages/lomi-backoffice/ngrx';
 import * as OrderActions from '../../ngrx/actions/orders.actions'
 import { ChangeStockLocation } from 'packages/lomi-backoffice/ngrx/actions/app.actions';
 import { App } from 'packages/lomi-backoffice/types/app';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root',
@@ -66,6 +67,7 @@ export class OrdersService {
     private firestore: Firestore,
     private httpClient: HttpClient,
     private ngrxStore: Store<BackofficeState>,
+    private snackBar: MatSnackBar
   ) {
     this.ngrxStore.select('orders').subscribe((orders)=>{
       this.loadingOrders = orders.loading

@@ -223,7 +223,7 @@ button[mat-button], button[mat-raised-button], button[mat-stroked-button]{
     background-color: var(--primary-color);
     color: white !important;
   }
-  &-canceled, &-returned{
+  &-canceled, &-returned, &-ridercancel{
     background-color: #FF961B !important;
     color: white !important;
   }

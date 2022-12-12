@@ -13,7 +13,8 @@ module.exports = (admin) => {
             providerId: providerId,
             status: "pending",
             createdAt: new Date(),
-            stock_location_id: order.shipment_stock_location_id
+            stock_location_id: order.shipment_stock_location_id,
+            ...additionalData
         })
         return journeyRef.set({
             id: journeyId,
