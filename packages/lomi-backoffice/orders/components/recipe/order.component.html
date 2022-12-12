@@ -87,9 +87,10 @@
               <p *ngIf="journey.providerId == 2">Operador: Hermex </p>
               <p *ngIf="journey.providerId == 3">Operador: Cabify </p>              <p class="status-chip-{{journey.status}} status-chip">Estado: {{journey.status | uberStatus}}</p>
               <iframe *ngIf="false" [src]="journey.uberTrip.tracking_url | safe"> </iframe>
+              <button [disabled]="cancelingJourney" style="margin-bottom:1em;margin-top:0.25em" *ngIf="journey.cabifyTrip" (click)="cancelHermex(journey.id)" mat-raised-button color="accent">Cancelar</button>
               <button [disabled]="cancelingJourney" style="margin-bottom:1em;margin-top:0.25em" *ngIf="journey.status == 'Order queued sucesfully'" (click)="cancelHermex(journey.id)" mat-raised-button color="accent">Cancelar</button>
               <button [disabled]="cancelingJourney" style="margin-bottom:1em;margin-top:0.25em" (click)="cancelUber(journey.uberTrip.id)" *ngIf="journey.uberTrip" mat-raised-button color="accent">Cancelar</button>
-              <button [disabled]="cancelingJourney" style="margin-bottom:1em;margin-top:0.25em" (click)="cancelFourWheelsUber(journey.uberTrip.id)" *ngIf="journey.uberFourWheelsTrip" mat-raised-button color="accent">Cancelar</button>
+              <button [disabled]="cancelingJourney" style="margin-bottom:1em;margin-top:0.25em" (click)="cancelFourWheelsUber(journey.uberFourWheelsTrip.id)" *ngIf="journey.uberFourWheelsTrip" mat-raised-button color="accent">Cancelar</button>
             </div>
             <div class="section-body" *ngIf="journey.uberTrip">
               <p *ngIf="journey.uberTrip.fee" >Monto: ${{journey.uberTrip.fee / 100}}</p>

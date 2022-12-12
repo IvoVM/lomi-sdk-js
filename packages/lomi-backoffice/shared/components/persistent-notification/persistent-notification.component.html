@@ -1,4 +1,4 @@
-<div *ngIf="!closed" class="persistent-notification bg">
+<div *ngIf="!closed" class="persistent-notification bg shadow">
     <div class="title">
         <mat-icon (click)="stopAudio()" >close</mat-icon>
         <mat-icon *ngIf="!audio.volume" (click)="unmuteAudio()">volume_mute</mat-icon>
@@ -6,7 +6,7 @@
         El repartidor esta cercano a tienda
     </div>
     <div class="description">
-        Orden numero : R4321515
+        Orden numero : {{journey.orderNumber}}
     </div>
     <div class="action" style="margin-right: 4em;">
         Ir a la orden >

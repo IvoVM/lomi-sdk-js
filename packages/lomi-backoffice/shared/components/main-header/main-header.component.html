@@ -18,9 +18,11 @@
             <h6 style="font-size: 1rem;margin-right: 3em;">{{ user.userRol != 1 ? user['userRol']: 'Admin' }}</h6>
         </div>
     </mat-toolbar>
-    <!--
-        <div *ngFor="let journey of journeys">
-            <lomii-persistent-notification *ngIf="journey.cabifyTrip && (journey.cabifyTrip.data.journey.state.loc[0] - )"></lomii-persistent-notification>
+        <div>
+            <!--
+            <ng-container *ngFor="let journey of journeys">
+                <lomii-persistent-notification [journey]="journey" *ngIf="journey.uberFourWheelsTrip || journey.cabifyTrip || journey.uberTrip"></lomii-persistent-notification>
+            </ng-container>
+            -->
         </div>
-    -->
 </div>  

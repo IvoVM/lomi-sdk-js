@@ -13,6 +13,7 @@ import { DeliveryOperatorSelectorComponent } from '../delivery-operator-selector
 import {GoogleMapsAPIWrapper} from '@agm/core';
 import { MatDialog } from '@angular/material/dialog';
 import { EditAddressComponent } from 'packages/lomi-backoffice/shared/modals/edit-address/edit-address.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 @Component({
@@ -46,6 +47,7 @@ export class OrderComponent implements OnInit {
     private _bottomSheet: MatBottomSheet,
     private router: Router,
     public dialog: MatDialog,
+    private _snackBar: MatSnackBar,
 
     //BAD PRACTICE SHOULD BE SYNCED IN JOURNEYS STORE
     public afs: Firestore,
@@ -102,7 +104,21 @@ export class OrderComponent implements OnInit {
 
     cancelUber(tripId:string){
       this.cancelingJourney = true;
-      this.ordersProvider.cancelUberTrip(tripId).subscribe((response:any)=>{
+      this.ordersProvider.cancelUberTrip(tripId, this.order?.DEBUG).subscribe((response:any)=>{
+        
+        if(response.kind == 'error'){
+          this.cancelingJourney = false;
+          this._snackBar.open(response.message, 'Cerrar', {
+            panelClass: ['red-snackbar']
+          })
+          return;
+        } else {
+          this.cancelingJourney = false;
+          this._snackBar.open('Viaje cancelado', 'Cerrar', {
+            panelClass: ['green-snackbar']
+          })
+        }
+
         if(this.order){
           this.ordersProvider.updateOrder(this.order.number, {
             status: WAITING_AT_DRIVER_STATE
@@ -122,7 +138,20 @@ export class OrderComponent implements OnInit {
 
     cancelFourWheelsUber(tripId:string){
       this.cancelingJourney = true;
-      this.ordersProvider.cancelUberTrip(tripId).subscribe((response:any)=>{
+      this.ordersProvider.cancelUberFourWheelsTrip(tripId, this.order?.DEBUG).subscribe((response:any)=>{
+        if(response.kind == 'error'){
+          this.cancelingJourney = false;
+          this._snackBar.open(response.message, 'Cerrar', {
+            panelClass: ['red-snackbar']
+          })
+          return;
+        } else {
+          this.cancelingJourney = false;
+          this._snackBar.open('Viaje cancelado', 'Cerrar',{
+            panelClass: ['green-snackbar']
+          })
+        }
+        
         if(this.order){
           this.ordersProvider.updateOrder(this.order.number, {
             status: WAITING_AT_DRIVER_STATE
@@ -152,7 +181,11 @@ export class OrderComponent implements OnInit {
         const orderNumber = params.number
         this.storeUnsubscribe?.unsubscribe ? this.storeUnsubscribe.unsubscribe() : null
         this.storeUnsubscribe = this.store.select("orders").subscribe((state)=>{
-          this.order = Object.values(state.entities).find((order:any)=>order.number == orderNumber)
+          const order = Object.values(state.entities).find((order:any)=>order.number == orderNumber)
+          this.order = order ? order : this.order
+
+
+
           if(this.order){
             const orderJourneysCollection = collection(this.afs,`SPREE_ORDERS_${this.order?.shipment_stock_location_id}/${this.order.number}/journeys`)
             const orderJourneysObservable = collectionData(orderJourneysCollection)
@@ -160,6 +193,11 @@ export class OrderComponent implements OnInit {
               if(this.order && journeys.length){
                 this.order.journeys = journeys
               }
+            })
+          } else {
+            this.ordersProvider.getOrder(orderNumber).then((order:any)=>{
+              this.order = order.data()
+              this.ngOnInit()
             })
           }
           console.log(this.order)

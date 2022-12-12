@@ -36,6 +36,10 @@ export class MainHeaderComponent implements OnInit {
     {
       route: "users",
       name: "Usuarios",
+    },
+    {
+      route: "stock",
+      name: "Stock"
     }
   ]
 
@@ -82,7 +86,8 @@ export class MainHeaderComponent implements OnInit {
       this.cabifyNear = true
     }, 5000)
     this.store.select("journeys").subscribe((journeys)=>{
-      this.journeys = journeys.entities
+      this.journeys = Object.values(journeys.entities)
+      console.log(this.journeys)
     })
   }
 }

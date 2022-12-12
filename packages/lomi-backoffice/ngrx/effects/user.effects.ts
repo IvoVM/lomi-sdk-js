@@ -66,6 +66,9 @@ getUser$: Observable<Action> = createEffect(() => this.actions$.pipe(
                     if (userDocSnapshot?.exists()) {
                        /// User logged in
                        const user = userDocSnapshot.data() as IUser;
+                       if( user.stockLocationId && user.stockLocationId > 0){
+                           localStorage.setItem('stockLocationId', user.stockLocationId.toString())
+                       }
                        if(!user.userRol){
                             this.router.navigateByUrl("user-without-rol")
                        }

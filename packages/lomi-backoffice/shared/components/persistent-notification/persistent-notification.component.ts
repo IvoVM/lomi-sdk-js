@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'lomii-persistent-notification',
@@ -6,6 +6,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./persistent-notification.component.scss'],
 })
 export class PersistentNotificationComponent implements OnInit {  
+
+  @Input() journey: any;
+
   public audio:HTMLAudioElement = new Audio();
   public interval:any;
   public closed = false;

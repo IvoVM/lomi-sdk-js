@@ -9,10 +9,12 @@ module.exports = (admin) => {
             const statusJson = req.body;
             const db = admin.firestore();
             console.log(req.body)
-            const orderId = req.body.deliver_id;
-            const status = req.body.status;
+            const orderId = req.body.delivery_id;
+            const status = req.body.data.status;
             const journeyDoc = admin.firestore().doc("deliveringJourneys/" + orderId)
             const newStatus = status
+            const journey = await journeyDoc.get()
+            const orderJourneyDoc = admin.firestore().doc("SPREE_ORDERS_"+ journey.stock_location_id + "/" + orderId + "/journeys/" + journey.id)
             console.log(newStatus, "newStatus")
             
             if(newStatus == 'delivered'){
@@ -21,9 +23,18 @@ module.exports = (admin) => {
               await journeyDoc.update({
                 status: status,
                 updatedAt: new Date(),
+                [ journey.uberTrip ? 'uberTrip' : 'uberFourWheelsTrip'] : req.body.data
+              })
+              await orderJourneyDoc.update({
+                status: status,
+                updatedAt: new Date(),
+                [ journey.uberTrip ? 'uberTrip' : 'uberFourWheelsTrip'] : req.body.data
               })
             }
             
+            
+
+
             res.send(newStatus);
             return res.status(200).send('Event received')
         })

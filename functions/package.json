@@ -17,9 +17,12 @@
   "dependencies": {
     "@agm/core": "^3.0.0-beta.0",
     "@googlemaps/polyline-codec": "^1.0.28",
+    "@slack/bolt": "^3.12.2",
     "@slack/events-api": "^3.0.1",
+    "@slack/interactive-messages": "^2.0.2",
     "@slack/web-api": "^6.8.0",
     "axios": "^0.26.1",
+    "dotenv": "^16.0.3",
     "firebase-admin": "^10.0.2",
     "firebase-functions": "^4.1.0",
     "node-geocoder": "^4.2.0",

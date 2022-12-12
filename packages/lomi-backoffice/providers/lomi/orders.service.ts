@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { collectionData, Firestore } from '@angular/fire/firestore';
 import { ActivatedRoute, UrlSegment } from '@angular/router';
-import { collection, doc, updateDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { Observable, take } from 'rxjs';
 import { query, orderBy, limit } from 'firebase/firestore';
 import { HttpClient } from '@angular/common/http';
@@ -97,6 +97,15 @@ export class OrdersService {
 
   }
 
+  getOrder(orderId: string) {
+    const stockLocation = localStorage.getItem('stockLocationId');
+    const orderDoc = doc(
+      this.firestore,
+      'SPREE_ORDERS_' + stockLocation + '/' + orderId
+    );
+    return getDoc(orderDoc);
+  }
+
   getOrdersData() {
     this.loadingOrders = true;
     if (this.orders$?.unsubscribe) {
@@ -160,7 +169,14 @@ export class OrdersService {
     return req
   }
 
-  cancelUberTrip(tripId:string){
+  cancelUberFourWheelsTrip(tripId:string, DEBUG = false){
+    const req = this.httpClient.post("https://us-central1-lomi-35ab6.cloudfunctions.net/cancelFourWheelsUberTrip",{
+      tripId: tripId
+    })
+    return req
+  }
+
+  cancelUberTrip(tripId:string, DEBUG = false){
     const req = this.httpClient.post("https://us-central1-lomi-35ab6.cloudfunctions.net/cancelUberTrip",{
       tripId: tripId
     })

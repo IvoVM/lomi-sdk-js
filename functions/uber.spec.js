@@ -15,7 +15,7 @@ const uberFourWheelsDispatcher = require('./uber')(
 );
 const order = require("./utils/mocks/order")
 
-let tripId = null;
+let tripId = "del_gEs8O-h_QNK2o4LCG6rBSA";
 let quoteId = null;
 
 

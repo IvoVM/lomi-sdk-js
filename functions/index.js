@@ -210,6 +210,7 @@ exports.geocodeOrder = functions.https.onRequest(
         (loc) => loc.id == order.shipment_stock_location_id
       );
       order.shipment_stock_location_name = orderStockLocation.address1;
+      order.shipment_stock_location_phone = orderStockLocation.phone;
       order.shipment_stock_location_city = orderStockLocation.city;
 
       const stops = await Geocoder.getOrderStops(order, true)
@@ -304,6 +305,7 @@ exports.evaluateUber = functions.https.onRequest(async (request, response) => {
       );
       order.shipment_stock_location_name = orderStockLocation.address1;
       order.shipment_stock_location_city = orderStockLocation.city;
+      order.shipment_stock_location_phone = orderStockLocation.phone;
 
       const stops = await Geocoder.getOrderStops(order);
       console.log(stops);
@@ -340,22 +342,19 @@ exports.evaluateUber = functions.https.onRequest(async (request, response) => {
 exports.cancelFourWheelsUberTrip = functions.https.onRequest(
   async (request, response) => {
     cors(request, response, async () => {
-      try {
-        const selectedUberDispatcher = order.DEBUG
+        const selectedUberDispatcher = request.body.DEBUG
           ? uberDebugDispatcher
           : uberFourWheelsDispatcher;
         await selectedUberDispatcher.auth();
         const tripId = request.body.tripId;
         const trip = await selectedUberDispatcher.getTrip(tripId);
+        console.log("canceling", tripId)
         if (trip) {
           const cancelTrip = await selectedUberDispatcher.cancelTrip(tripId);
           return response.status(200).send(cancelTrip);
         } else {
           return response.status(200).send('No trip found');
         }
-      } catch (e) {
-        return response.status(500).send(e);
-      }
     });
   }
 );
@@ -364,7 +363,7 @@ exports.cancelUberTrip = functions.https.onRequest(
   async (request, response) => {
     cors(request, response, async () => {
       try {
-        const selectedUberDispatcher = order.DEBUG
+        const selectedUberDispatcher = request.body.DEBUG
           ? uberDebugDispatcher
           : uberDispatcher;
         await selectedUberDispatcher.auth();

@@ -42,15 +42,24 @@ class UberDispatcher{
 
     async cancelTrip(delivery_id){
         console.log(this.customerId,delivery_id, this.accessToken.data.access_token)
-        const cancel = await axios.post("https://api.uber.com/v1/customers/"+this.customerId+"/deliveries/"+delivery_id+"/cancel",{
-            "delivery_id": delivery_id,
-            "customer_id": this.customerId
-        } ,{
-            headers:{
-                'Authorization' : 'Bearer ' + this.accessToken.data.access_token
-            }
-        })
-        return cancel.data
+        try{
+
+            const cancel = await axios.post("https://api.uber.com/v1/customers/"+this.customerId+"/deliveries/"+delivery_id+"/cancel",{
+                "delivery_id": delivery_id,
+                "customer_id": this.customerId
+            } ,{
+                headers:{
+                    'Authorization' : 'Bearer ' + this.accessToken.data.access_token
+                }
+            }).catch(error => {
+                console.log(error.response.data)
+                throw error
+            })
+            return cancel.data
+        } catch(e){
+            console.log(e.response)
+            return e.response.data
+        }
     }
 
     async createQuote(dropoff_address, pickup_address,order){

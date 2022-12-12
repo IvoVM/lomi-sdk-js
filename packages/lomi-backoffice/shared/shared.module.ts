@@ -56,6 +56,7 @@ import { AgmCoreModule, GoogleMapsAPIWrapper } from '@agm/core';
 import { AgmDirectionModule } from 'agm-direction';
 import { EditAddressComponent } from './modals/edit-address/edit-address.component';
 import { PersistentNotificationComponent } from './components/persistent-notification/persistent-notification.component';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -114,6 +115,7 @@ import { PersistentNotificationComponent } from './components/persistent-notific
       apiKey: environment.gMapsKey,
     }),
     AgmDirectionModule,
+    MatSnackBarModule
   ],
   exports: [
     MatCardModule,
@@ -156,7 +158,8 @@ import { PersistentNotificationComponent } from './components/persistent-notific
     FirebaseTableComponent,
     MatAutocompleteModule,
     AgmDirectionModule,
-    PersistentNotificationComponent
+    PersistentNotificationComponent,
+    MatSnackBarModule
   ],
   providers: [ScreenTrackingService, UserTrackingService, GoogleMapsAPIWrapper],
 })

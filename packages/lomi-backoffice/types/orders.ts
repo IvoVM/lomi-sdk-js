@@ -36,6 +36,8 @@ export type placedOrder = {
 	line_items: LineItem[]
 	reintegratedItems: LineItem[]
 	journeys?: Journey[]
+
+	DEBUG: boolean
 } 
 
 export type Stop = {
