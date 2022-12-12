@@ -84,6 +84,7 @@ export class NotificationsComponent implements OnInit {
          body: doc.data()['notification'].body
         })
       })
+      this.notificationsList.reverse()
     })
   }
 

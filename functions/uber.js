@@ -3,6 +3,7 @@ const token = "8b9c307dd89928cc60e8e59d2233dbafc7618f26c52fa5d3";
 
 const axios = require('axios')
 const spreeUtils = require('./utils/spree/spree')(spreeUrl, token);
+const { normalizePhone } = require('./utils/functions');
 
 function encode(data) {
     let str = "";
@@ -116,7 +117,7 @@ class UberDispatcher{
             dropoff_longitude: parseFloat(dropoff_address.split(",")[1]),
             dropoff_notes: order.ship_address_address2,
             dropoff_name: order.name,  
-            dropoff_phone_number: pickup_phone_number,
+            dropoff_phone_number: order.ship_address_phone ? normalizePhone(order.ship_address_phone) : pickup_phone_number,
             dropoff_verification: {
                 picture: true,
                 signature: false
