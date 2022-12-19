@@ -7,7 +7,7 @@ import { Observable, take } from 'rxjs';
 import { query, orderBy, limit } from 'firebase/firestore';
 import { HttpClient } from '@angular/common/http';
 import { storesMock } from './mocks/stores.mock';
-import { statesMock } from './mocks/states.mock';
+import { ON_PICKING_STATE, PENDING_STATE, statesMock } from './mocks/states.mock';
 import { Store } from '@ngrx/store';
 import { BackofficeState } from 'packages/lomi-backoffice/ngrx';
 import * as OrderActions from '../../ngrx/actions/orders.actions'
@@ -230,5 +230,9 @@ export class OrdersService {
         return 'Confirmado';
     }
     return state;
+  }
+
+  showItems(orderId: string) {
+    window.open('https://lomi.cl/admin/orders/' + orderId + '/invoice', "_blank")
   }
 }

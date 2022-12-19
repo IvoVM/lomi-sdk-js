@@ -1,7 +1,37 @@
 <div class="example-sidenav-content">
-    <h1>Ajustes</h1>
+    <h1 style="margin-top:0.5em;">Ajustes</h1>
     <div class="half-card shadow">
         <mat-tab-group style="width: 100%;">
+            <mat-tab label="Tienda">
+                <ng-template mat-tab-label>
+                    <span>Tienda</span>
+                </ng-template>
+                <div class="half-card">
+                    <div class="display-info-card" *ngFor="let store of stores">
+                        <div class="title">
+                            <h1>{{store.name}}</h1>
+                        </div>
+                        <div class="section-header">
+                            <button style="margin-bottom:1em;margin-top:0.25em"  mat-raised-button color="accent" (click)="editStore(store)">Editar tienda</button>
+                            <p>Correo : {{store.email}}</p>
+                            <p>Dirección : {{store.address}}</p>
+                            <p>Info : {{store.address2}}</p>
+                            <p>Notas : {{store.notes}}</p>
+
+
+                        </div>
+                        <div class="section-body">
+                            <p>Telefono : <span class="accent-color">{{store.phone}}</span></p>
+                        </div>
+                        <div class="section-body">
+                            <p>Pais : <span class="accent-color">{{store.country}}</span></p>
+                            <p>Sector : <span class="accent-color">{{store.city}}</span></p>
+                            <p>Region : <span class="accent-color">{{store.state}}</span></p>
+
+                        </div>
+                    </div>
+                </div>
+            </mat-tab>
             <mat-tab label="Usuario">
                 <ng-template mat-tab-label>
                     <span>Usuario</span>

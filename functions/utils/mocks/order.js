@@ -45,23 +45,43 @@ module.exports = {
     status: 4,
     stops: [
         {
-            addr: "",
-            city: "",
-            contact: {mobileCc: '', mobileNum: '', name: ''},
-            country: "Chile",
-            loc: [-33.4058168, -70.56987389999999],
-            name: "",
-            num: ""
+            "addr": "Ecuador 9033, La Florida",
+            "city": "Santiago",
+            "contact": {
+                "mobileCc": "+56",
+                "mobileNum": "935103087",
+                "name": "Marco"
+            },
+            "country": "CL",
+            "loc": [
+                -33.5362497,-70.5843013
+            ],
+            "name": "Casa Marco, La Florida",
+    
         },
         {
-            addr: "",
-            city: "",
-            contact: {mobileCc: '', mobileNum: '', name: ''},
-            country: "Chile",
-            loc: [-33.4058168, -70.569873899999999],
-            name: "",
-            num: ""
-        },
+            "addr": "Balmoral 309 Tienda 217, Las Condes 7550000, Región Metropolitana",
+            "city": "Santiago",
+            "contact": {
+                "mobileCc": "+56",
+                "mobileNum": "935103087",
+                "name": "Marco"
+            },
+            "country": "CL",
+            "loc": [
+                -33.4059401,-70.5720341
+            ],
+            "name": "Tienda lomi",
+        }
     ],
-    total: "23960.0"
+    total: "23960.0",
+
+    //Added in request
+    shipment_stock_location_name: "Balmoral 309",
+    shipment_stock_location_phone: "+56942143971",
+    shipment_stock_location_city: "Las Condes",
+    shipment_stock_location_note: "Piso -2",
+
+    //Cabify Logistics
+    parcel_ids: [ "f32a2fdf-d763-43de-8be4-4e19822a1bb4" ]
 }

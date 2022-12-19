@@ -16,7 +16,7 @@
               <agm-marker [latitude]="order.stops[0].loc[0]" [longitude]="order.stops[0].loc[1]"></agm-marker>
               <agm-marker [latitude]="order.stops[1].loc[0]" [longitude]="order.stops[1].loc[1]"></agm-marker>
               <ng-container *ngFor="let journey of order.journeys">
-                <agm-marker  *ngIf="journey.cabifyTrip"  [latitude]="journey.cabifyTrip.data.journey.state.loc[0]" [longitude]="journey.cabifyTrip.data.journey.state.loc[1]" [iconUrl]="'assets/images/location-pin-purple.png'"></agm-marker>
+                <agm-marker  *ngIf="journey.cabifyTrip"  [latitude]="journey.cabifyTrip.data.journey?.state?.loc[0]" [longitude]="journey.cabifyTrip.data.journey.state.loc[1]" [iconUrl]="'assets/images/location-pin-purple.png'"></agm-marker>
               </ng-container>
               <agm-direction 
               [markerOptions]="markerOptions"
@@ -85,7 +85,8 @@
             <div class="section-header">
               <p *ngIf="journey.providerId == 1">Operador: Uber </p>
               <p *ngIf="journey.providerId == 2">Operador: Hermex </p>
-              <p *ngIf="journey.providerId == 3">Operador: Cabify </p>              <p class="status-chip-{{journey.status.replace(' ', '')}} status-chip">Estado: {{journey.status | uberStatus}}</p>
+              <p *ngIf="journey.providerId == 3">Operador: Cabify </p>              
+              <p class="status-chip-{{journey.state ? journey.state.replace(' ', '') : journey.status.replace(' ', '')}} status-chip">Estado: {{journey.state ? journey.state : journey.status | uberStatus}}</p>
               <iframe *ngIf="false" [src]="journey.uberTrip.tracking_url | safe"> </iframe>
               <button [disabled]="cancelingJourney" style="margin-bottom:1em;margin-top:0.25em" *ngIf="journey.cabifyTrip && !journey.cabifyTrip.complete && !(journey.status == 'canceled')" (click)="cancelCabify(journey.id)" mat-raised-button color="accent">Cancelar</button>
               <button [disabled]="cancelingJourney" style="margin-bottom:1em;margin-top:0.25em" *ngIf="journey.status == 'Order queued sucesfully'" (click)="cancelHermex(journey.id)" mat-raised-button color="accent">Cancelar</button>
@@ -174,6 +175,7 @@
         <div class="display-info-card">
           <div class="title">
             <h1>Line Items</h1>
+            <button (click)="ordersProvider.showItems(order.number)" style="margin:1em 8px;" mat-raised-button color="accent">Imprimir comanda <mat-icon style="transform: scale(0.9);">print</mat-icon></button>
           </div>
           <div class="section-body">
             <lomii-line-item *ngFor="let lineItem of order.line_items" [lineItem]="lineItem"></lomii-line-item>

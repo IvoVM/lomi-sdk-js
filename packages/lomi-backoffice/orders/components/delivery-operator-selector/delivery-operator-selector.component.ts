@@ -1,9 +1,8 @@
 import { Component, OnInit, Inject} from '@angular/core';
 import {MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA} from '@angular/material/bottom-sheet';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { WAITING_AT_DRIVER_STATE, DELIVERING_ORDER_STATE } from 'packages/lomi-backoffice/providers/lomi/mocks/states.mock';
-import { storesMock } from 'packages/lomi-backoffice/providers/lomi/mocks/stores.mock';
-import { OrdersService } from 'packages/lomi-backoffice/providers/lomi/orders.service';
+import { WAITING_AT_DRIVER_STATE, DELIVERING_ORDER_STATE } from '../../../providers/lomi/mocks/states.mock';
+import { OrdersService } from '../../../providers/lomi/orders.service';
 
 @Component({
   selector: 'lomii-delivery-operator-selector',
@@ -76,6 +75,7 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
         return uberEstimated ? [uberEstimated] : [{}]
       }
     },
+    /**
     {
       name: "Hermex",
       icon: "hermex.png",
@@ -93,7 +93,7 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
         }
         return [hermexEstimated]
       }
-    }
+    } */
   ]
   public selectedOperator:any = ""
 
@@ -105,9 +105,15 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
     private snackBar : MatSnackBar
     ) {
       this.trips = []
+      const permitedStockLocations = ["1", "24", "25", "27", "28"]
       this.operators.forEach((operator:any)=>{
         this.trips = this.trips.concat(...operator.trips(order).map((trip:any)=>({...trip, operator: operator.name, icon: operator.icon})))
       })
+      const stockLocationId = localStorage.getItem("stockLocationId")
+      console.log(stockLocationId)
+      if(stockLocationId && !permitedStockLocations.includes(stockLocationId)){
+        this.trips = this.trips.slice(1,3)
+      }
   }
 
   selectOperator(productId:any = null){
@@ -163,6 +169,7 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
     this._bottomSheetRef.dismiss(order)
     this.snackBar.open("Viaje solicitado con exito");
     if(order.status == WAITING_AT_DRIVER_STATE){
+      //this._orders.currentStep = WAITING_AT_DRIVER_STATE
     } else {
       this.requestingOperator = false
     }

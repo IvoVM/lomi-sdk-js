@@ -14,6 +14,7 @@ import {GoogleMapsAPIWrapper} from '@agm/core';
 import { MatDialog } from '@angular/material/dialog';
 import { EditAddressComponent } from 'packages/lomi-backoffice/shared/modals/edit-address/edit-address.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ProductsService } from 'packages/lomi-backoffice/providers/lomi/products.service';
 
 
 @Component({
@@ -48,6 +49,7 @@ export class OrderComponent implements OnInit {
     private router: Router,
     public dialog: MatDialog,
     private _snackBar: MatSnackBar,
+    private productsService: ProductsService,
 
     //BAD PRACTICE SHOULD BE SYNCED IN JOURNEYS STORE
     public afs: Firestore,

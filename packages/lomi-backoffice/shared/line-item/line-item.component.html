@@ -2,13 +2,18 @@
 <mat-card class="line-item" style="width: 97%">
     <div class="flex" style="display: flex;justify-content: space-between;align-items: center;width: 100%;">
         <div class="body">
-            <h4 style="margin-bottom:0">{{lineItem.name}}</h4>
+            <h4 style="margin-bottom:0">{{lineItem.variant ? lineItem.variant.name : lineItem.name}}</h4>
             <h5 *ngIf="lineItem.sku" style="margin-top:0;opacity: 0.6;">SKU: <b>{{lineItem.sku}}</b></h5>
             <h5 style="margin:0">Valor unidad: <b>${{lineItem.price}}</b></h5>
             <h5 style="margin:0">Total : <b>${{totalItem}}</b></h5>
+            <ng-container *ngIf="lineItem.variant">
+                <h5 style="margin:0">VariantId: <b>{{lineItem.variant.option_values[0].name}}</b></h5>
+                <a target="_blank" href="https://lomi.cl/admin/products/{{lineItem.variant.slug}}/variants"><h5 style="margin:0">VariantId: <b>{{lineItem.variant_id}}</b></h5></a>
+
+            </ng-container>
         </div>
         <div class="img-container">
-            <img style="width: 5em;margin: 0;" mat-card-image src="{{lineItem.img_url}}" alt="Photo of a Shiba Inu">
+            <img style="width: 5em;margin: 0;" mat-card-image src="{{lineItem.variant?.images.length ? lineItem.variant.images[0].mini_url : lineItem.img_url}}">
         </div>
     </div>
 

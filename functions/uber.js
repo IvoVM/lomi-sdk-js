@@ -155,7 +155,7 @@ class UberDispatcher{
             dropoff_longitude: parseFloat(dropoff_address.split(",")[1]),
             dropoff_notes: order.special_instructions ? order.special_instructions : '',
             dropoff_name: order.name,
-            dropoff_phone_number: pickup_phone_number,
+            dropoff_phone_number: order.ship_address_phone ? normalizePhone(order.ship_address_phone) : pickup_phone_number,
             dropoff_verification: {
                 picture: true,
                 signature: false

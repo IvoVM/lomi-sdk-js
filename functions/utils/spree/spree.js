@@ -20,10 +20,36 @@ module.exports = ( spreeUrl, spreeToken, spreeDebugUrl ) => {
                     resolve(shipments.data.shipments)
                 }).catch((error) => {
                     console.log(error)
-                    if(error.response.status == 404){
+                    if(error.response?.status == 404){
                         resolve('broken')
                     } else {
                         error('Error getting shipments', error.response )
+                    }
+                });
+            } catch(e){
+                console.log(e)
+            }
+        })
+    }
+
+    async function getJourneys(shipmentId, DEBUG = false){
+        return new Promise(async (resolve, reject) => {
+            try{
+                const url = `${DEBUG ? spreeDebugUrl : spreeUrl}/api/v2/storefront/shipments/${shipmentId}/journeys`;
+                const headers = {
+                    'Authorization': `Bearer ${spreeToken}`,
+                    'Content-Type': 'application/json',
+                    
+                }
+                console.log("searching for journeys")
+                const response = await axios.get(url, { headers }).then(journey=>{
+                    resolve(journey.data.journeys)
+                }).catch((error) => {
+                    console.log(error)
+                    if(error.response?.status == 404){
+                        resolve('broken')
+                    } else {
+                        error('Error getting Journeys', error.response )
                     }
                 });
             } catch(e){
@@ -93,6 +119,20 @@ module.exports = ( spreeUrl, spreeToken, spreeDebugUrl ) => {
         })
     }
 
+    function getStockLocationById(stockLocationId){
+        return new Promise(async (resolve, reject) => {
+            const url = `${spreeUrl}/api/v1/stock_locations?token=${spreeToken}`;
+            const headers = {
+                'Authorization': `Bearer ${spreeToken}`,
+                'Content-Type': 'application/json',
+                
+            }
+            const response = await axios.get(url, { headers });
+            const zones = response.data;
+            resolve(zones);
+        })
+    }
+
     function getStockLocations(){
         return new Promise(async (resolve, reject) => {
             const url = `${spreeUrl}/api/v1/stock_locations?token=${spreeToken}`;
@@ -113,6 +153,7 @@ module.exports = ( spreeUrl, spreeToken, spreeDebugUrl ) => {
         markShipmentAsShipped,
         getStockLocations,
         getOrder,
-        getDebugOrder
+        getDebugOrder,
+        getJourneys
     }
 }

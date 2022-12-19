@@ -1,47 +1,42 @@
-const stops = [
-    {
-        "addr": "Ecuador 9033, La Florida",
-        "city": "Santiago",
-        "contact": {
-            "mobileCc": "+56",
-            "mobileNum": "935103087",
-            "name": "Marco"
-        },
-        "country": "CL",
-        "loc": [
-            -33.5362497,-70.5843013
-        ],
-        "name": "Casa Marco, La Florida",
 
-    },
-    {
-        "addr": "Balmoral 309 Tienda 217, Las Condes 7550000, Región Metropolitana",
-        "city": "Santiago",
-        "contact": {
-            "mobileCc": "+56",
-            "mobileNum": "935103087",
-            "name": "Marco"
-        },
-        "country": "CL",
-        "loc": [
-            -33.4059401,-70.5720341
-        ],
-        "name": "Tienda lomi",
-    }
-]
-order = {
-    stops: stops
-}
-
+const order = require('./utils/mocks/order');
 const CabifyDispatcher = require("./cabify")
 const productId = "a5bb14a1509b2a1c4f1bc21b788a86b3"
 let journeyId = "44f12314-718c-11ed-b7e3-1ebd6b1bb38f"
-
+let userEmail = "marco@lomi.cl"
+const parcelIds = ["f32a2fdf-d763-43de-8be4-4e19822a1bb4"]
 
 test("Estimate cabify trip", async() => {
     await CabifyDispatcher.authCabify()
     const cabifyEstimated = await CabifyDispatcher.estimateCabify(order);
-    console.log(cabifyEstimated.data.estimates)
+    console.log(cabifyEstimated)
+
+
+    //                   RESPONSE
+    /**
+     *  
+     *  {
+            price_total: { amount: 6732, currency: 'CLP' },
+            eta_to_pick_up: 360,
+            eta_to_delivery: 3180
+        }
+     */
+    /** {
+      parcels: [
+        {
+          id: 'f32a2fdf-d763-43de-8be4-4e19822a1bb4',
+          client_id: '2507c012819d9837fa3b15ca88c0ada1',
+          deliver_from: '1970-01-01T00:00:00Z',
+          deliver_to: '1970-01-01T00:00:00Z',
+          dimensions: [Object],
+          dropoff_info: [Object],
+          external_id: 'R266577403',
+          pickup_info: [Object],
+          state: 'ready',
+          weight: [Object]
+        }
+      ]
+    } */
 })
 
 test('Create cabify trip', async () => {
@@ -57,6 +52,12 @@ test('Create cabify trip', async () => {
 test('Cancel cabify trip', async() => {
     const cabifyTrip = await CabifyDispatcher.cancelCabifyTrip(journeyId);
     console.log(cabifyTrip)
+})
+
+test('Get Cabify user', async() => {
+    await CabifyDispatcher.authCabify()
+    const cabifyUser = await CabifyDispatcher.getUser(userEmail);
+    console.log(cabifyUser)
 })
 
 test('Get cabify trip', async() => {

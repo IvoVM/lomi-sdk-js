@@ -54,6 +54,24 @@ module.exports = (spreeUrl, token, admin, spreeDebugUrl) => {
                     console.log("Shipment "+shipment.number+" marked as shipped")
                   })
                 } else if(shipment.state == 'ready'){
+                    spree.getJourneys(shipment.id).then((journeys) => {
+                      journeys.forEach((journey) => {
+                        console.log(journey.id, stockLocation.id, doc.id, 'Journeys')
+                        admin
+                          .firestore()
+                          .doc('SPREE_ORDERS_' + stockLocation.id + '/' + doc.id)
+                          .update({
+                              status: journey.state.includes(["drop off"]) ? 6 : 5
+                          })
+                        
+                        admin
+                          .firestore()
+                          .doc('SPREE_ORDERS_' + stockLocation.id + '/' + doc.id)
+                          .collection('journeys')
+                          .doc(journey.id.toString())
+                          .set(journey);
+                      });
+                    })
                     console.log(new Date(doc.data().completed_at.seconds*1000), 'Completed at', doc.data().completed_at);
                     if(new Date(doc.data().completed_at.seconds*1000).getTime() + 1000 * 60 * 60 * 24 * 4 < new Date().getTime()){
                     admin
@@ -74,6 +92,7 @@ module.exports = (spreeUrl, token, admin, spreeDebugUrl) => {
                   .doc('SPREE_ORDERS_' + stockLocation.id + '/' + doc.id)
                   .update({
                     shipment_number: shipment.number,
+                    shipment_id: shipment.id,
                     shipment_state: shipment.state,
                   });
               });

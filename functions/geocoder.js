@@ -45,9 +45,18 @@ async function getOrderStops(order, forceRecalculate = false){
     stops[0].addr = order.shipment_stock_location_name
     stops[0].city = order.ship_address_city
     stops[0].loc = [startAddressGeocode[0].latitude, startAddressGeocode[0].longitude]
+    stops[0].contact.name = "Tienda Lomi - "+ order.shipment_stock_location_name + order.shipment_stock_location_notes
+    stops[0].contact.mobileCc = "+56"
+    stops[0].contact.mobileNum = order.shipment_stock_location_phone.replace("+56", "")
+    stops[0].instr = order.shipment_stock_location_notes
+    
     stops[1].addr = order.ship_address_address1
     stops[1].city = order.ship_address_city
     stops[1].loc = [endAddressGeocode[0].latitude, endAddressGeocode[0].longitude]
+    stops[1].contact.name = order.name
+    stops[1].contact.mobileCc = "+56"
+    stops[1].contact.mobileNum = order.ship_address_phone.replace("+56", "")
+    stops[1].instr = order.ship_address_note
   } catch(e){
     console.log(e)
   }

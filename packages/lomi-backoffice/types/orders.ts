@@ -95,6 +95,7 @@ export type Journey = {
 	uberTrip?: any;
 	uberFourWheelsTrip?: any;
 	cabifyTrip?: any;
+	state?: string,
 }
 
 export type Picker = {

@@ -174,7 +174,7 @@ exports.addCompletedOrder = functions.https.onRequest(
     let orderExpanded = await spreeUtils
       .getOrder(order.number)
       .catch((e) => console.log(e));
-    if (orderExpanded == 'broken') {
+    if (orderExpanded == '  broken') {
       orderExpanded = await spreeUtils.getDebugOrder(order.number);
       orderExpanded.debug = true;
     } else {
@@ -187,6 +187,7 @@ exports.addCompletedOrder = functions.https.onRequest(
       credentialsRef.update({
         isStorePicking: isRetiroEnTienda,
         status: isRetiroEnTienda ? 0 : 2,
+        line_items : orderExpanded.line_items,
         DEBUG: orderExpanded.debug,
       });
     }
@@ -212,6 +213,7 @@ exports.geocodeOrder = functions.https.onRequest(
       order.shipment_stock_location_name = orderStockLocation.address1;
       order.shipment_stock_location_phone = orderStockLocation.phone;
       order.shipment_stock_location_city = orderStockLocation.city;
+      order.shipment_stock_location_notes = orderStockLocation.address2;
 
       const stops = await Geocoder.getOrderStops(order, true)
       const collectionKey = 'SPREE_ORDERS_' + order.shipment_stock_location_id;
@@ -237,6 +239,7 @@ exports.evaluateCabify = functions.https.onRequest(
       order.shipment_stock_location_name = orderStockLocation.address1;
       order.shipment_stock_location_phone = orderStockLocation.phone;
       order.shipment_stock_location_city = orderStockLocation.city;
+      order.shipment_stock_location_notes = orderStockLocation.address2;
 
       const stops = await Geocoder.getOrderStops(order);
       const cabifyEstimated = await cabifyEstimates.setCabifyEstimates(order);
@@ -264,6 +267,8 @@ exports.evaluateFourWheelsUber = functions.https.onRequest(async (request, respo
     );
     order.shipment_stock_location_name = orderStockLocation.address1;
     order.shipment_stock_location_city = orderStockLocation.city;
+    order.shipment_stock_location_phone = orderStockLocation.phone;
+    order.shipment_stock_location_notes = orderStockLocation.address2;
 
     const stops = await Geocoder.getOrderStops(order);
     console.log(stops);
@@ -306,6 +311,7 @@ exports.evaluateUber = functions.https.onRequest(async (request, response) => {
       order.shipment_stock_location_name = orderStockLocation.address1;
       order.shipment_stock_location_city = orderStockLocation.city;
       order.shipment_stock_location_phone = orderStockLocation.phone;
+      order.shipment_stock_location_notes = orderStockLocation.address2;
 
       const stops = await Geocoder.getOrderStops(order);
       console.log(stops);

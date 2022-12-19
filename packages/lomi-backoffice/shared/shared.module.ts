@@ -56,7 +56,8 @@ import { AgmCoreModule, GoogleMapsAPIWrapper } from '@agm/core';
 import { AgmDirectionModule } from 'agm-direction';
 import { EditAddressComponent } from './modals/edit-address/edit-address.component';
 import { PersistentNotificationComponent } from './components/persistent-notification/persistent-notification.component';
-import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS} from '@angular/material/snack-bar';
+import { EditStoreComponent } from './modals/edit-store/edit-store.component';
 
 @NgModule({
   declarations: [
@@ -73,6 +74,7 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     FirebaseTableComponent,
     EditAddressComponent,
     PersistentNotificationComponent,
+    EditStoreComponent
   ],
   imports: [
     CommonModule,
@@ -159,8 +161,10 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     MatAutocompleteModule,
     AgmDirectionModule,
     PersistentNotificationComponent,
-    MatSnackBarModule
+    MatSnackBarModule,
   ],
-  providers: [ScreenTrackingService, UserTrackingService, GoogleMapsAPIWrapper],
+  providers: [
+    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 3000}},
+    ScreenTrackingService, UserTrackingService, GoogleMapsAPIWrapper],
 })
 export class SharedModule {}

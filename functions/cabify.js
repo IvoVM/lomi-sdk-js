@@ -5,6 +5,31 @@ let accessToken = ""
 let clientId = "0d8b6b066ded47d1acfa25eb2aa7606d"
 let requesterId = "c2160c85550492493b1dbd0da7eceea0"
 
+const DebugCabify = "https://logistics.api.cabify-sandbox.com/"
+const ProductionCabify = "https://logistics.api.cabify.com/"
+
+async function catchCabifyError(error){
+  if (error.response) {
+    // The request was made and the server responded with a status code
+    // that falls out of the range of 2xx
+    console.log(error.response.data);
+    console.log(error.response.status);
+    console.log(error.response.headers);
+    return error.response
+  } else if (error.request) {
+    // The request was made but no response was received
+    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+    // http.ClientRequest in node.js
+    console.log(error.request);
+    return error.request
+  } else {
+    // Something happened in setting up the request that triggered an Error
+    console.log('Error', error.message);
+    return error.message
+  }
+  console.log(error.config);ß
+}
+
 async function setCabifyEstimates(order){
     try{
         await authCabify()
@@ -13,6 +38,29 @@ async function setCabifyEstimates(order){
     } catch(e){
         return null
     }
+}
+
+async function subscriptionCabify(order){
+  const subcription = await axios.post("https://cabify.com/api/v3/graphql",{
+    "query": "subscription($requesterId: String!) {\n  riderSubscribe(requesterId: $requesterId) {\n    id\n    __typename\n  }\n}\n",
+    "variables": {
+      "requesterId": requesterId
+    }
+  },{
+    headers:{
+      'Authorization' : 'Bearer ' + accessToken
+    }
+  }) 
+}
+
+async function getUser(email){
+  getUserQuery.variables.email = email
+  const user = await axios.post("https://cabify.com/api/v3/graphql",getUserQuery,{
+    headers:{
+      'Authorization' : 'Bearer ' + accessToken
+    }
+  }) 
+  return user.data
 }
 
 async function authCabify(){
@@ -25,7 +73,7 @@ async function authCabify(){
     return auth
 }
 
-async function estimateCabify(order){
+async function estimateCabifyGraphQlStrategy(order){
     console.log(accessToken)
     estimateQuery.variables.estimateInput.stops = [...order.stops].reverse()
     estimateQuery.variables.estimateInput.requesterId = requesterId
@@ -44,7 +92,101 @@ async function estimateCabify(order){
     return shipEstimate.data
 }
 
-async function createCabifyTrip(order, productId){
+async function createCabifyTrip(order){
+    try{
+        await authCabify()
+        const trip = await createCabifyTripGraphQlStrategy(order, "cabify")
+        return trip
+    } catch(e){
+        return null
+    }
+}
+
+async function estimateCabify(order){
+    try{
+        const shipEstimate = estimateCabifyTripLogisticsStrategy(order)
+        return shipEstimate
+    } catch(e){
+        return null
+    }
+}
+
+async function estimateCabifyTripLogisticsStrategy(order){
+  const createParcelResponse = await createParcel(order)
+  if(createParcelResponse.parcels){
+    order.parcel_ids = createParcelResponse.parcels.map((parcel) => (parcel.id))
+  }
+  const estimateTrip = await estimateCabifyTripLogistics(order.parcel_ids)
+  return { ...estimateTrip, parcel_ids: order.parcel_ids }
+}
+
+async function estimateCabifyTripLogistics(parcel_ids){
+  const estimateTrip = await axios.post(
+    ProductionCabify+"v1/parcels/estimate",
+    {
+      "parcel_ids": parcel_ids
+    },{
+      headers:{
+          'Authorization' : 'Bearer ' + accessToken
+      }
+    }).catch(catchCabifyError)
+    return estimateTrip.data
+}
+
+async function createParcel(order){
+  console.log("Estimating Logistics", accessToken)
+  const parcel = await axios.post(
+    ProductionCabify+"v1/parcels",
+    {
+      "parcels": [
+       {
+        "external_id": order.number,
+        "pickup_info": {
+         "addr": order.shipment_stock_location_name,
+         "contact": {
+          "name": "Lomi - "+order.shipment_stock_location_city,
+          "phone": order.shipment_stock_location_phone
+         },
+         "instr": order.shipment_stock_location_note,
+         "loc": {
+          "lat": order.stops[0].loc[0],
+          "lon": order.stops[0].loc[1]
+         }
+        },
+        "dropoff_info": {
+         "addr": order.ship_address_address1,
+         "contact": {
+          "name": order.name,
+          "phone": order.ship_address_phone
+         },
+         "instr": order.ship_address_note,
+         "loc": {
+          "lat": order.stops[1].loc[0],
+          "lon": order.stops[1].loc[1]
+         }
+        },
+        "dimensions": {
+         "height": 10,
+         "length": 10,
+         "width": 10,
+         "unit": "cm"
+        },
+        "weight": {
+         "value": 1500,
+         "unit": "g"
+        }
+       },
+      ]
+     },
+     {
+      headers:{
+          'Authorization' : 'Bearer ' + accessToken
+      }
+    }).catch(catchCabifyError)
+     return parcel.data
+}
+
+async function createCabifyTripGraphQlStrategy(order, productId){
   createJourneyMutation.variables.bookingInput = {
     "stops": [order.stops[1], order.stops[0]],
     "rider": {
@@ -54,7 +196,7 @@ async function createCabifyTrip(order, productId){
       "locale":"es-CL",
       "mobile": {
         "mobileCc": "+56",
-        "mobileNum": order.shipment_stock_location_phone
+        "mobileNum": order.ship_address_phone.replace("+56","")
       }
     },
     "requesterId": requesterId,
@@ -346,11 +488,36 @@ variables:{
 }
 }
 
+const getUserQuery = {
+  "query": `query user ($email: String, $id: String) {
+    user (email: $email, id: $id) {
+        canManage
+        canOrderForOthers
+        defaultChargeCode
+        disabled
+        email
+        emailCc
+        employeeCode
+        id
+        locale
+        mobileCc
+        mobileNum
+        name
+        surname
+    }
+}`,
+"operationName":"user",
+"variables":{
+  "email": ""
+}
+}
+
 module.exports = {
     authCabify,
     estimateCabify,
     setCabifyEstimates,
     createCabifyTrip,
     getCabifyTrip,
+    getUser,
     cancelCabifyTrip
 }

@@ -1,4 +1,4 @@
-function normalizePhone(phoneNumber){
+function normalizePhone(phoneNumber, noPrefix = false){
     if(phoneNumber.startsWith("+")){
         return phoneNumber
     } else if(phoneNumber.startsWith("9") && phoneNumber.length == 9){

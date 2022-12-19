@@ -14,8 +14,11 @@
               <mat-menu #menu="matMenu">
                 <button (click)="logout()" mat-menu-item><mat-icon>logout</mat-icon>Cerrar Sesión</button>
                 <button  mat-menu-item [routerLink]="['/settings']"><mat-icon>settings</mat-icon>Configuración</button>
-              </mat-menu>            
-            <h6 style="font-size: 1rem;margin-right: 3em;">{{ user.userRol != 1 ? user['userRol']: 'Admin' }}</h6>
+              </mat-menu>
+              <div>
+                  <h5 style="margin: 0 2.2em 0 0;">{{ user.email }}</h5>
+                  <h6 style="font-size: 0.8rem;margin: 0 12em 1em 0;line-height: 0;;">{{ user.userRol != 1 ? user['userRol']: 'Admin' }}</h6>
+              </div>            
         </div>
     </mat-toolbar>
         <div>
