@@ -1,6 +1,8 @@
 module.exports = {
+    cabifyEstimated: {
+        parcel_ids: ["f32a2fdf-d763-43de-8be4-4e19822a1bb4"],
+    },
     DEBUG: false,
-    cabifyEstimated: null,
     channel: "Web",
     completed_at: {
         seconds: 1663102346, 
@@ -81,7 +83,9 @@ module.exports = {
     shipment_stock_location_phone: "+56942143971",
     shipment_stock_location_city: "Las Condes",
     shipment_stock_location_note: "Piso -2",
+    shipment_stock_location_email: "tiendach1@lomi.cl",
 
     //Cabify Logistics
-    parcel_ids: [ "f32a2fdf-d763-43de-8be4-4e19822a1bb4" ]
+    parcel_ids: [ "f32a2fdf-d763-43de-8be4-4e19822a1bb4" ],
+    shipment_cabify_requester_id: "fc04184452337656491a6a4b28ae26e3",
 }

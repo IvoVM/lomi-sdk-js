@@ -22,10 +22,8 @@
         </div>
     </mat-toolbar>
         <div>
-            <!--
             <ng-container *ngFor="let journey of journeys">
-                <lomii-persistent-notification [journey]="journey" *ngIf="journey.uberFourWheelsTrip || journey.cabifyTrip || journey.uberTrip"></lomii-persistent-notification>
+                <lomii-persistent-notification [journey]="journey" *ngIf="journey.cabifyTrip && journey.status == 'pickingup'"></lomii-persistent-notification>
             </ng-container>
-            -->
         </div>
 </div>  

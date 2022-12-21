@@ -19,6 +19,7 @@ const uberFourWheelsDispatcher = require('./uber')(
 );
 const HmxDispatcher = require('./hermex');
 
+
 const cors = require('cors')({ origin: true });
 const Geocoder = require('./geocoder');
 const { default: axios } = require('axios');
@@ -28,7 +29,7 @@ const sendNoti = require('./handlers/sendFcmNotifications');
 const spree = require('./utils/spree/spree');
 
 admin.initializeApp();
-
+const firebaseLomiUtils = require('./utils/firebase/resources')(admin);
 const PRODUCTION = env.PRODUCTION === 'true';
 const DEBUG = true;
 const DEBUG_EMAILS = ['marco@lomi.cl', 'orlando@lomi.cl'];
@@ -80,6 +81,10 @@ exports.sendNotificationByType = sendNotificationByType;
 
 const listenToUberStatusWebHook = require('./https/webhooks/uberStatus')(admin);
 exports.listenToUberStatusWebHook = listenToUberStatusWebHook;
+
+const listenToCabifyStatusWebHook = require('./https/webhooks/cabifyStatus')(admin);
+exports.listenToCabifyStatusWebHook = listenToCabifyStatusWebHook;
+
 
 const createCabifyTripEndpoint = require('./https/requestCabify')(admin);
 exports.createCabifyTripEndpoint = createCabifyTripEndpoint;
@@ -187,7 +192,7 @@ exports.addCompletedOrder = functions.https.onRequest(
       credentialsRef.update({
         isStorePicking: isRetiroEnTienda,
         status: isRetiroEnTienda ? 0 : 2,
-        line_items : orderExpanded.line_items,
+        line_items_expanded : orderExpanded.line_items,
         DEBUG: orderExpanded.debug,
       });
     }
@@ -236,6 +241,10 @@ exports.evaluateCabify = functions.https.onRequest(
       const orderStockLocation = stockLocations.find(
         (loc) => loc.id == order.shipment_stock_location_id
       );
+
+      const firebaseStockLocation = await firebaseLomiUtils.getStockLocationResource(order.shipment_stock_location_id)
+      order.shipment_stock_location_uber_name = firebaseStockLocation.uber_store_name;
+
       order.shipment_stock_location_name = orderStockLocation.address1;
       order.shipment_stock_location_phone = orderStockLocation.phone;
       order.shipment_stock_location_city = orderStockLocation.city;
@@ -243,7 +252,9 @@ exports.evaluateCabify = functions.https.onRequest(
 
       const stops = await Geocoder.getOrderStops(order);
       const cabifyEstimated = await cabifyEstimates.setCabifyEstimates(order);
+
       const collectionKey = 'SPREE_ORDERS_' + order.shipment_stock_location_id;
+      
       const ref = await admin
         .firestore()
         .doc(collectionKey + '/' + order.number)
@@ -479,6 +490,13 @@ exports.creatUberTrip = functions.https.onRequest(async (request, response) => {
           (loc) => loc.id == order.shipment_stock_location_id
         );
       console.log(stockLocations)
+
+      const firebaseStockLocation = await firebaseLomiUtils.getStockLocationResource(order.shipment_stock_location_id)
+      console.log(firebaseStockLocation, "firebaseStockLocation")
+      order.shipment_stock_location_email = firebaseStockLocation.email;
+      order.shipment_stock_location_uber_name = firebaseStockLocation.uber_store_name;
+      order.shipment_stock_location_notes = firebaseStockLocation.notes;
+
       order.shipment_stock_location_name = orderStockLocation.address1;
       order.shipment_stock_location_phone = orderStockLocation.phone;
       order.shipment_stock_location_city = orderStockLocation.city;

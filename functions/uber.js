@@ -105,7 +105,7 @@ class UberDispatcher{
 
     async createTrip(dropoff_address, dropoff_name, dropoff_phone_number, pickup_address, pickup_name, pickup_phone_number, manifest_items, order){
         const stockLocations = (await spreeUtils.getStockLocations()).stock_locations
-        console.log({
+        const uberTripData = {
             dropoff_address: encode({
                 street_address: [order.ship_address_address1, ""],
                 city: order.ship_address_city,
@@ -131,8 +131,8 @@ class UberDispatcher{
             }),   
             pickup_latitude: parseFloat(pickup_address.split(",")[0]),
             pickup_longitude: parseFloat(pickup_address.split(",")[1]),
-            pickup_name: order.shipment_stock_location_name,
-            pickup_phone_number: pickup_phone_number,
+            pickup_name: order.shipment_stock_location_uber_name,
+            pickup_phone_number: normalizePhone(order.shipment_stock_location_phone),
             pickup_notes: stockLocations.find(loc=>loc.id==order.shipment_stock_location_id).address2,
             pickup_verification: {
                 picture: false,
@@ -142,45 +142,9 @@ class UberDispatcher{
             manifest_reference: order.number,
             manifest_total_value: (parseInt(order.total) - parseInt(order.shipment_total)) * 100,
             undeliverable_action: "return",
-        })
-        const trip = await axios.post("https://api.uber.com/v1/customers/"+this.customerId+"/deliveries",{
-            dropoff_address: encode({
-                street_address: [order.ship_address_address1, ""],
-                city: order.ship_address_city,
-                state: order.ship_address_state,
-                zip_code: "",
-                country: order.ship_address_country,
-            }),
-            dropoff_latitude: parseFloat(dropoff_address.split(",")[0]),
-            dropoff_longitude: parseFloat(dropoff_address.split(",")[1]),
-            dropoff_notes: order.special_instructions ? order.special_instructions : '',
-            dropoff_name: order.name,
-            dropoff_phone_number: order.ship_address_phone ? normalizePhone(order.ship_address_phone) : pickup_phone_number,
-            dropoff_verification: {
-                picture: true,
-                signature: false
-            },
-            pickup_address: encode({
-                street_address: [stockLocations.find(loc=>loc.id==order.shipment_stock_location_id).address1, ""],
-                city: order.ship_address_city,
-                state: order.ship_address_state,
-                zip_code: "",
-                country: order.ship_address_country,
-            }),     
-            pickup_latitude: parseFloat(pickup_address.split(",")[0]),
-            pickup_longitude: parseFloat(pickup_address.split(",")[1]),
-            pickup_name: 'Tienda LOMI' + order.shipment_stock_location_name,
-            pickup_phone_number: pickup_phone_number,
-            pickup_notes: stockLocations.find(loc=>loc.id==order.shipment_stock_location_id).address2,
-            pickup_verification: {
-                picture: false,
-                signature: false,
-            },
-            manifest_items: manifest_items.map(item => ({name: item.name, price: parseInt(item.price) * 100, size: item.size, quantity: item.quantity})),
-            manifest_reference: order.number,
-            manifest_total_value: (parseInt(order.total) - parseInt(order.shipment_total)) * 100,
-            undeliverable_action: "return",
-        },{
+        }
+        console.log(uberTripData)
+        const trip = await axios.post("https://api.uber.com/v1/customers/"+this.customerId+"/deliveries",uberTripData,{
             headers:{
                 'Authorization' : 'Bearer ' + this.accessToken.data.access_token,
                 "Content-Type": "application / json",

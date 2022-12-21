@@ -3,7 +3,7 @@
         <mat-icon (click)="stopAudio()" >close</mat-icon>
         <mat-icon *ngIf="!audio.volume" (click)="unmuteAudio()">volume_mute</mat-icon>
         <mat-icon *ngIf="audio.volume" (click)="muteAudio()">volume_up</mat-icon>
-        El repartidor esta cercano a tienda
+        El repartidor esta esperando el pedido fuera de la tienda
     </div>
     <div class="description">
         Orden numero : {{journey.orderNumber}}

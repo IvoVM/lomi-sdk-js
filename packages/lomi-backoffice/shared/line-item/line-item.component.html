@@ -7,13 +7,12 @@
             <h5 style="margin:0">Valor unidad: <b>${{lineItem.price}}</b></h5>
             <h5 style="margin:0">Total : <b>${{totalItem}}</b></h5>
             <ng-container *ngIf="lineItem.variant">
-                <h5 style="margin:0">VariantId: <b>{{lineItem.variant.option_values[0].name}}</b></h5>
-                <a target="_blank" href="https://lomi.cl/admin/products/{{lineItem.variant.slug}}/variants"><h5 style="margin:0">VariantId: <b>{{lineItem.variant_id}}</b></h5></a>
+                <h5 style="margin:0">Nombre variante: <b>{{lineItem.variant.option_values[0].name}}</b></h5>
 
             </ng-container>
         </div>
         <div class="img-container">
-            <img style="width: 5em;margin: 0;" mat-card-image src="{{lineItem.variant?.images.length ? lineItem.variant.images[0].mini_url : lineItem.img_url}}">
+            <img style="width: 5em;margin: 0;" mat-card-image src="{{!lineItem.img_url ? lineItem.variant.images[0].mini_url : lineItem.img_url}}">
         </div>
     </div>
 

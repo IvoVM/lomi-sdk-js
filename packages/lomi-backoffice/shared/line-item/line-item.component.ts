@@ -16,6 +16,7 @@ export class LineItemComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    console.log(this.lineItem)
     return
   }
 

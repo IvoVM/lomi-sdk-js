@@ -34,6 +34,7 @@ export type placedOrder = {
     stops: Stop[],
 	statusChanges: statusChange[]
 	line_items: LineItem[]
+	line_items_expanded: any[]
 	reintegratedItems: LineItem[]
 	journeys?: Journey[]
 
@@ -95,6 +96,7 @@ export type Journey = {
 	uberTrip?: any;
 	uberFourWheelsTrip?: any;
 	cabifyTrip?: any;
+	cabifyLogisticsTrip?: any;
 	state?: string,
 }
 

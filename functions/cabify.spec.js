@@ -42,11 +42,10 @@ test("Estimate cabify trip", async() => {
 test('Create cabify trip', async () => {
     await CabifyDispatcher.authCabify()
     const cabifyTrip = await CabifyDispatcher.createCabifyTrip(order, productId);
-    console.log(cabifyTrip)
-    console.log(cabifyTrip.data)
-    const journeyId = cabifyTrip.data.data.createJourney.id
-    const cancelTrip = await CabifyDispatcher.cancelCabifyTrip(journeyId);
-    console.log(cancelTrip)
+    console.log(cabifyTrip.data.deliveries)
+    //const journeyId = cabifyTrip.data.data.createJourney.id
+    //const cancelTrip = await CabifyDispatcher.cancelCabifyTrip(journeyId);
+    //console.log(cancelTrip)
 })
 
 test('Cancel cabify trip', async() => {
@@ -57,7 +56,7 @@ test('Cancel cabify trip', async() => {
 test('Get Cabify user', async() => {
     await CabifyDispatcher.authCabify()
     const cabifyUser = await CabifyDispatcher.getUser(userEmail);
-    console.log(cabifyUser)
+    console.log(cabifyUser.data.user)
 })
 
 test('Get cabify trip', async() => {

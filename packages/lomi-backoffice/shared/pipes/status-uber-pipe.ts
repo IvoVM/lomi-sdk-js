@@ -13,6 +13,17 @@ const uberStatus:any = {
     "delivered": "Entregado",
     "rider cancel": "Cancelado",
     "hire": "Buscando un repartidor",
+    "qualifiedforpickup": "Buscando un repartidor",
+    "onroutetopickup": "El repartidor esta camino a la tienda",
+    "pickingup": "El repartidor esta recogiendo el pedido",
+    "intransit": "En camino a despacho",
+    "delivering": "El repartidor llego a destino",
+    "returning": "Devolviendo el pedido a la tienda",
+    "incident": "Incidente",
+    "requestercancel": "Cancelado por Tienda",
+    "internalcanceled": "Cancelado por Cabify",
+    "pickupfailed": "No se pudo recoger el pedido",
+
 }
 
 @Pipe({ 

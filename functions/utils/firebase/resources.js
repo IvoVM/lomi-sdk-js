@@ -5,4 +5,8 @@ module.exports = (admin) => {
         const stockLocationResource = resources.data()["SPREE_ORDERS_"+stockLocationId];
         return stockLocationResource;
     }
+
+    return {
+        getStockLocationResource
+    }
 }

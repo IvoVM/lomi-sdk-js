@@ -27,8 +27,9 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
             error: order.cabifyEstimated.errors[0].friendly_message
           }]
         }
-        console.log(order.cabifyEstimated.data.estimates)
-        return order.cabifyEstimated.data.estimates.map((cabifyEstimated:any)=>{
+        console.log(order.cabifyEstimated)
+        
+        return order.cabifyEstimated.data?.estimates ? order.cabifyEstimated.data.estimates.map((cabifyEstimated:any)=>{
           const duration_display = Math.round(cabifyEstimated.duration / 60)
           const eta_display = cabifyEstimated.eta?.formatted
           const cost_display = cabifyEstimated.priceBase.amount
@@ -38,7 +39,14 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
           return {
             duration_display, eta_display, cost_display, product_type, deliveryTime_display, product_id
           }
-        })
+        }) : [{
+          eta_display: order.cabifyEstimated.eta_to_delivery,
+          duration_display: order.cabifyEstimated.eta_to_delivery,
+          deliveryTime_display: order.cabifyEstimated.eta_to_delivery - order.cabifyEstimated.eta_to_pickup,
+          cost_display: order.cabifyEstimated.price_total.amount,
+          product_type: "Cabify",
+          product_id: "cabify"
+        }]
       },
     },
     {

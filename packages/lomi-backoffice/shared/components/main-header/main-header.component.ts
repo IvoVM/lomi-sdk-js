@@ -15,6 +15,7 @@ import { IUser } from 'packages/lomi-backoffice/types/user';
 export class MainHeaderComponent implements OnInit {
 
   public journeys:any = []
+  public journeysUnsubscribable:any;
   public cabifyNear = false;
 
   public user:IUser = {
@@ -77,6 +78,10 @@ export class MainHeaderComponent implements OnInit {
     })
   }
 
+  ngOnDestroy(){
+    this.journeysUnsubscribable.unsubscribe()
+  }
+
   public logout(){
     this.store.dispatch(new Logout())
   }
@@ -85,7 +90,7 @@ export class MainHeaderComponent implements OnInit {
     setTimeout(()=>{
       this.cabifyNear = true
     }, 5000)
-    this.store.select("journeys").subscribe((journeys)=>{
+    this.journeysUnsubscribable = this.store.select("journeys").subscribe((journeys)=>{
       this.journeys = Object.values(journeys.entities)
       console.log(this.journeys)
     })

@@ -47,6 +47,7 @@ export class EditStoreComponent implements OnInit {
       "phone": new FormControl(this.store.phone),
       "notes": new FormControl(this.store.notes),
       "email": new FormControl(this.store.email),
+      "uber_store_name": new FormControl(this.store.uber_store_name),
 
     })
   }

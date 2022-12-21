@@ -8,6 +8,8 @@ let requesterId = "c2160c85550492493b1dbd0da7eceea0"
 const DebugCabify = "https://logistics.api.cabify-sandbox.com/"
 const ProductionCabify = "https://logistics.api.cabify.com/"
 
+const normalizePhone = require('./utils/functions').normalizePhone
+
 async function catchCabifyError(error){
   if (error.response) {
     // The request was made and the server responded with a status code
@@ -92,14 +94,66 @@ async function estimateCabifyGraphQlStrategy(order){
     return shipEstimate.data
 }
 
-async function createCabifyTrip(order){
+async function getLogisticsOrderInfo(order){
+  try{
+    await authCabify()
+    const trip = await getLogisticsOrderInfoStrategy(order)
+    return trip
+  } catch(e){
+    return null
+  }
+}
+
+async function createCabifyTrip(order, productId = null){
     try{
         await authCabify()
-        const trip = await createCabifyTripGraphQlStrategy(order, "cabify")
+        const trip = await createCabifyTripLogisticsStrategy(order, "cabify")
         return trip
     } catch(e){
         return null
     }
+}
+
+async function deleteParcel(parcel_id){
+  const deleteParcel = await axios.post(
+    ProductionCabify+"v1/parcels/delete",
+    {
+      "parcel_ids": [parcel_id]
+    },
+  {
+    headers:{
+      "Authorization" : "Bearer " + accessToken,
+    }
+  }
+  ).catch(catchCabifyError)
+  return deleteParcel
+}
+
+async function fetchUsers(){
+  const users = await axios.get(
+    ProductionCabify+"v1/users",
+  {
+    headers:{
+      'Authorization' : 'Bearer ' + accessToken
+    }
+  }).catch(catchCabifyError)
+  return users
+}
+
+async function createCabifyTripLogisticsStrategy(order){
+  const trip = await axios.post(
+    ProductionCabify+"v1/parcels/deliver",
+  {
+    "requester_id": order.cabify_requester_id,
+    "parcel_ids": order.cabifyEstimated.parcel_ids,
+    "optimize": true,
+  },
+  {
+    headers:{
+      'Authorization' : 'Bearer ' + accessToken
+    }
+  }).catch(catchCabifyError)
+  return trip
 }
 
 async function estimateCabify(order){
@@ -112,7 +166,20 @@ async function estimateCabify(order){
 }
 
 async function estimateCabifyTripLogisticsStrategy(order){
+  console.log(order.cabifyEstimated, "cabifyEstimated")
+  if(order.cabifyEstimated?.parcel_ids){
+    console.log("Updating old parcel", order.cabifyEstimated.parcel_ids[0])
+    const updatedParcel = await updateParcel(order)
+    console.log("Updated", updatedParcel)
+    if(updatedParcel.parcels){
+      order.parcel_ids = updatedParcel.parcels.map((parcel) => (parcel.id))
+    }
+  }
+
+  console.log("Creating new parcel")
   const createParcelResponse = await createParcel(order)
+  console.log("Created new parcel", createParcelResponse)
+
   if(createParcelResponse.parcels){
     order.parcel_ids = createParcelResponse.parcels.map((parcel) => (parcel.id))
   }
@@ -133,8 +200,57 @@ async function estimateCabifyTripLogistics(parcel_ids){
     return estimateTrip.data
 }
 
+async function updateParcel(order){
+  console.log("Updating parcel", accessToken, order.number, order.cabifyEstimated.parcel_ids[0])
+  const updatedParcel = await axios.put(
+    ProductionCabify+"v1/parcels/"+order.cabifyEstimated.parcel_ids[0],
+    {
+      "external_id": order.number,
+      "pickup_info": {
+       "addr": order.shipment_stock_location_name,
+       "contact": {
+        "name": order.shipment_stock_location_uber_name,
+        "phone": normalizePhone(order.shipment_stock_location_phone)
+       },
+       "instr": order.shipment_stock_location_note,
+       "loc": {
+        "lat": order.stops[0].loc[0],
+        "lon": order.stops[0].loc[1]
+       }
+      },
+      "dropoff_info": {
+       "addr": order.ship_address_address1,
+       "contact": {
+        "name": order.name,
+        "phone": normalizePhone(order.ship_address_phone)
+       },
+       "instr": order.ship_address_note,
+       "loc": {
+        "lat": order.stops[1].loc[0],
+        "lon": order.stops[1].loc[1]
+       }
+      },
+      "dimensions": {
+       "height": 10,
+       "length": 10,
+       "width": 10,
+       "unit": "cm"
+      },
+      "weight": {
+       "value": 1500,
+       "unit": "g"
+      }
+     },
+  {
+    headers:{
+      "Authorization" : "Bearer " + accessToken,
+    }
+  }).catch(catchCabifyError)
+  return updatedParcel.data
+}
+
 async function createParcel(order){
-  console.log("Estimating Logistics", accessToken)
+  console.log("Creating parcel", accessToken, order.number)
   const parcel = await axios.post(
     ProductionCabify+"v1/parcels",
     {
@@ -144,8 +260,8 @@ async function createParcel(order){
         "pickup_info": {
          "addr": order.shipment_stock_location_name,
          "contact": {
-          "name": "Lomi - "+order.shipment_stock_location_city,
-          "phone": order.shipment_stock_location_phone
+          "name": order.shipment_stock_location_uber_name,
+          "phone": normalizePhone(order.shipment_stock_location_phone)
          },
          "instr": order.shipment_stock_location_note,
          "loc": {
@@ -157,7 +273,7 @@ async function createParcel(order){
          "addr": order.ship_address_address1,
          "contact": {
           "name": order.name,
-          "phone": order.ship_address_phone
+          "phone": normalizePhone(order.ship_address_phone)
          },
          "instr": order.ship_address_note,
          "loc": {
@@ -239,6 +355,30 @@ async function getCabifyTrip(tripId){
 }
 
 async function cancelCabifyTrip(tripId){
+    try{
+        const cancelTrip = await cancelCabifyTripLogisticsStrategy(tripId)
+        return cancelTrip
+    } catch(e){
+        console.log(e)
+        return e.response
+    }
+}
+
+async function cancelCabifyTripLogisticsStrategy(parcelIds){
+  const cancelTrip = await axios.delete(
+    ProductionCabify+"v1/parcels/deliver/cancel",
+    {
+      "parcel_ids": parcel_ids
+    },
+    {
+      headers:{
+        "Authorization" : "Bearer " + accessToken
+      }
+    }
+  ).catch(catchCabifyError)
+  }
+
+async function cancelCabifyTripGraphQlStrategy(tripId){
     cancelJourneyMutation.variables.journeyId = tripId
     cancelJourneyMutation.variables.requesterId = requesterId
 
@@ -519,5 +659,6 @@ module.exports = {
     createCabifyTrip,
     getCabifyTrip,
     getUser,
-    cancelCabifyTrip
+    cancelCabifyTrip,
+    deleteParcel
 }

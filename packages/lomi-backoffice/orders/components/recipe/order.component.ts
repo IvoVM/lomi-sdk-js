@@ -38,7 +38,7 @@ export class OrderComponent implements OnInit {
   public cancelingJourney = false;
   public user:any;
   private userSubscription:Unsubscribable | undefined;
-
+  private orderJourneySubscription:Unsubscribable | undefined;
   public storeUnsubscribe:Unsubscribable | null = null;
   
   constructor( 
@@ -57,6 +57,13 @@ export class OrderComponent implements OnInit {
 
     }
 
+    public getLineItem(lineItemId:any){
+      if(this.order?.line_items_expanded){
+        return { ...this.order?.line_items.find((lineItem:any)=>lineItem.id == lineItemId) , ...(this.order?.line_items_expanded.find((lineItem:any)=>lineItem.id == lineItemId)) }
+      } else {
+        return this.order?.line_items.find((lineItem:any)=>lineItem.id == lineItemId)
+      }
+    }
     returnOrder(order:any){
       this.ordersProvider.updateOrder(order.number,{
         status: 2,
@@ -202,7 +209,10 @@ export class OrderComponent implements OnInit {
           if(this.order){
             const orderJourneysCollection = collection(this.afs,`SPREE_ORDERS_${this.order?.shipment_stock_location_id}/${this.order.number}/journeys`)
             const orderJourneysObservable = collectionData(orderJourneysCollection)
-            orderJourneysObservable.pipe(take(1)).subscribe((journeys:any)=>{
+            if(this.orderJourneySubscription){
+              this.orderJourneySubscription.unsubscribe()
+            }
+            this.orderJourneySubscription = orderJourneysObservable.subscribe((journeys:any)=>{
               if(this.order && journeys.length){
                 this.order.journeys = journeys
               }

@@ -16,7 +16,8 @@
               <agm-marker [latitude]="order.stops[0].loc[0]" [longitude]="order.stops[0].loc[1]"></agm-marker>
               <agm-marker [latitude]="order.stops[1].loc[0]" [longitude]="order.stops[1].loc[1]"></agm-marker>
               <ng-container *ngFor="let journey of order.journeys">
-                <agm-marker  *ngIf="journey.cabifyTrip"  [latitude]="journey.cabifyTrip.data.journey?.state?.loc[0]" [longitude]="journey.cabifyTrip.data.journey.state.loc[1]" [iconUrl]="'assets/images/location-pin-purple.png'"></agm-marker>
+                <agm-marker  *ngIf="journey.cabifyTrip && !journey.cabifyLogisticsTrip"  [latitude]="journey.cabifyTrip.data.journey?.state?.loc[0]" [longitude]="journey.cabifyTrip.data.journey.state.loc[1]" [iconUrl]="'assets/images/location-pin-purple.png'"></agm-marker>
+                <agm-marker  *ngIf="journey.cabifyLogisticsTrip && journey.cabifyTrip.driver"  [latitude]="journey.cabifyTrip.tracking.location.lat" [longitude]="journey.cabifyTrip.tracking.location.lon" [iconUrl]="'assets/images/location-pin-purple.png'"></agm-marker>
               </ng-container>
               <agm-direction 
               [markerOptions]="markerOptions"
@@ -88,7 +89,7 @@
               <p *ngIf="journey.providerId == 3">Operador: Cabify </p>              
               <p class="status-chip-{{journey.state ? journey.state.replace(' ', '') : journey.status.replace(' ', '')}} status-chip">Estado: {{journey.state ? journey.state : journey.status | uberStatus}}</p>
               <iframe *ngIf="false" [src]="journey.uberTrip.tracking_url | safe"> </iframe>
-              <button [disabled]="cancelingJourney" style="margin-bottom:1em;margin-top:0.25em" *ngIf="journey.cabifyTrip && !journey.cabifyTrip.complete && !(journey.status == 'canceled')" (click)="cancelCabify(journey.id)" mat-raised-button color="accent">Cancelar</button>
+              <button [disabled]="cancelingJourney" style="margin-bottom:1em;margin-top:0.25em" *ngIf="journey.cabifyLogisticsTrip && journey.cabifyTrip && (['pending','hire', 'qualifiedforpickup', 'onroutetopickup'].includes(journey.status))" (click)="cancelCabify(journey.id)" mat-raised-button color="accent">Cancelar</button>
               <button [disabled]="cancelingJourney" style="margin-bottom:1em;margin-top:0.25em" *ngIf="journey.status == 'Order queued sucesfully'" (click)="cancelHermex(journey.id)" mat-raised-button color="accent">Cancelar</button>
               <button [disabled]="cancelingJourney" style="margin-bottom:1em;margin-top:0.25em" (click)="cancelUber(journey.uberTrip.id)" *ngIf="journey.uberTrip" mat-raised-button color="accent">Cancelar</button>
               <button [disabled]="cancelingJourney" style="margin-bottom:1em;margin-top:0.25em" (click)="cancelFourWheelsUber(journey.uberFourWheelsTrip.id)" *ngIf="journey.uberFourWheelsTrip" mat-raised-button color="accent">Cancelar</button>
@@ -109,16 +110,37 @@
               <p *ngIf="journey.uberFourWheelsTrip">Hora solicitado: {{journey.uberFourWheelsTrip.created | date:'YYYY-MM-dd HH:mm:ss'}}</p>
             </div>
 
-            <div class="section-body" *ngIf="journey.cabifyTrip">
+            <div class="section-body" *ngIf="journey.cabifyTrip && !journey.cabifyLogisticsTrip">
               <p>Tracking Id: {{journey.cabifyTrip.data.journey.id}} </p>
               <p *ngIf="journey.cabifyTrip">Tracking Url: <a target="_blank" href="https://cabify.com/{{journey.cabifyTrip.data.journey.publicUrl}}">https://cabify.com/{{journey.cabifyTrip.data.journey.publicUrl}}</a></p>
               <p *ngIf="journey.cabifyTrip">Hora solicitado: {{journey.cabifyTrip.data.journey.startAt | date:'YYYY-MM-dd HH:mm:ss'}}</p>
             </div>
 
+            <div class="section-body" *ngIf="journey.cabifyLogisticsTrip">
+              <p>Tracking Id: {{journey.cabifyTrip.id}} </p>
+              <p *ngIf="journey.cabifyTrip.tracking">Tracking Url: <a target="_blank" href="{{journey.cabifyTrip.tracking.tracking_url}}">{{journey.cabifyTrip.tracking.tracking_url}}</a></p>
+            </div>
+
             <div class="title">
               <h1>Informacion del repartidor</h1>
             </div>
-            <ng-container *ngIf="journey.cabifyTrip">
+            <ng-container *ngIf="journey.cabifyLogisticsTrip && journey.cabifyTrip.driver">
+              <div class="section-header" *ngIf="journey.cabifyTrip && journey.cabifyTrip.driver">
+                <div style="display: flex;align-items: center;flex-direction: row;">
+                  <div style="margin-right: 2em;">
+                    <img style="height: 6em;width: auto;border-radius: 50%;" *ngIf="journey.cabifyTrip.driver.photo_url" [src]="journey.cabifyTrip.driver.photo_url">
+                  </div>
+                  <div>
+                    <p>Nombre : {{journey.cabifyTrip.driver.name }} </p>
+                    <p>Numero de telefono: {{journey.cabifyTrip.driver.phone }}</p>
+                    <p><b>Patente Vehiculo: {{journey.cabifyTrip.asset.reg_plate }}</b></p>
+                    <p>Modelo Vehiculo: {{journey.cabifyTrip.asset.name + journey.cabifyTrip.asset.color}}</p>
+
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="journey.cabifyTrip && !journey.cabifyLogisticsTrip">
               <div class="section-header" *ngIf="journey.cabifyTrip && journey.cabifyTrip.data.journey.state?.driver">
                 <div style="display: flex;align-items: center;flex-direction: row;">
                   <div style="margin-right: 2em;">
@@ -178,7 +200,7 @@
             <button (click)="ordersProvider.showItems(order.number)" style="margin:1em 8px;" mat-raised-button color="accent">Imprimir comanda <mat-icon style="transform: scale(0.9);">print</mat-icon></button>
           </div>
           <div class="section-body">
-            <lomii-line-item *ngFor="let lineItem of order.line_items" [lineItem]="lineItem"></lomii-line-item>
+            <lomii-line-item *ngFor="let lineItem of order.line_items" [lineItem]="getLineItem(lineItem.id)"></lomii-line-item>
           </div>
         </div>
       </div>

@@ -15,6 +15,7 @@ export type SpreeStockLocationResource = DefaultResource & {
     email: string;
     country: string;
     notes: string;
+    uber_store_name: string;
 }
 
 export type Resource = SpreeStockLocationResource | DefaultResource
