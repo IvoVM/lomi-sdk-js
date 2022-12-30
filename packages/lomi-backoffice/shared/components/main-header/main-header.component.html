@@ -22,6 +22,9 @@
         </div>
     </mat-toolbar>
         <div>
+            <ng-container *ngFor="let order of deliveringOrders">
+                <lomii-persistent-notification [order]="order" [title]="'Pedido '"></lomii-persistent-notification>
+            </ng-container>
             <ng-container *ngFor="let journey of journeys">
                 <lomii-persistent-notification [journey]="journey" *ngIf="journey.cabifyTrip && journey.status == 'pickingup'"></lomii-persistent-notification>
             </ng-container>

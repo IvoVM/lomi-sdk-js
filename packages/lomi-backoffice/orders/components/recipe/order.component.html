@@ -4,7 +4,21 @@
   <div *ngIf="order" class="example-sidenav-content p" style="padding-bottom: 10em;">
     
     <div class="half-card" style="padding:2em">
-        <div class="display-info-card">
+      <mat-tab-group style="width: 100%;">
+        <mat-tab label="Productos">
+          <div class="display-info-card">
+            <div class="title">
+              <h1>Line Items</h1>
+              <button (click)="ordersProvider.showItems(order.number)" style="margin:1em 8px;" mat-raised-button color="accent">Imprimir comanda <mat-icon style="transform: scale(0.9);">print</mat-icon></button>
+            </div>
+            <div class="section-body">
+              <lomii-line-item *ngFor="let lineItem of order.line_items" [lineItem]="getLineItem(lineItem.id)"></lomii-line-item>
+            </div>
+          </div>
+        </mat-tab>
+        <mat-tab label="Envio">
+        
+          <div class="display-info-card">
           <div class="title">
             <h1>Dirección de envio</h1>
             <button (click)="createTrip(order)" style="margin:1em 0;" mat-raised-button color="accent">Solicitar Envio de productos                     <mat-icon style="transform: scale(0.9);">local_shipping</mat-icon>            </button>
@@ -17,7 +31,7 @@
               <agm-marker [latitude]="order.stops[1].loc[0]" [longitude]="order.stops[1].loc[1]"></agm-marker>
               <ng-container *ngFor="let journey of order.journeys">
                 <agm-marker  *ngIf="journey.cabifyTrip && !journey.cabifyLogisticsTrip"  [latitude]="journey.cabifyTrip.data.journey?.state?.loc[0]" [longitude]="journey.cabifyTrip.data.journey.state.loc[1]" [iconUrl]="'assets/images/location-pin-purple.png'"></agm-marker>
-                <agm-marker  *ngIf="journey.cabifyLogisticsTrip && journey.cabifyTrip.driver"  [latitude]="journey.cabifyTrip.tracking.location.lat" [longitude]="journey.cabifyTrip.tracking.location.lon" [iconUrl]="'assets/images/location-pin-purple.png'"></agm-marker>
+                <agm-marker  *ngIf="journey?.cabifyLogisticsTrip && journey?.cabifyTrip?.driver"  [latitude]="journey.cabifyTrip.tracking.location.lat" [longitude]="journey.cabifyTrip.tracking.location.lon" [iconUrl]="'assets/images/location-pin-purple.png'"></agm-marker>
               </ng-container>
               <agm-direction 
               [markerOptions]="markerOptions"
@@ -116,7 +130,7 @@
               <p *ngIf="journey.cabifyTrip">Hora solicitado: {{journey.cabifyTrip.data.journey.startAt | date:'YYYY-MM-dd HH:mm:ss'}}</p>
             </div>
 
-            <div class="section-body" *ngIf="journey.cabifyLogisticsTrip">
+            <div class="section-body" *ngIf="journey?.cabifyLogisticsTrip && journey?.cabifyTrip">
               <p>Tracking Id: {{journey.cabifyTrip.id}} </p>
               <p *ngIf="journey.cabifyTrip.tracking">Tracking Url: <a target="_blank" href="{{journey.cabifyTrip.tracking.tracking_url}}">{{journey.cabifyTrip.tracking.tracking_url}}</a></p>
             </div>
@@ -124,7 +138,7 @@
             <div class="title">
               <h1>Informacion del repartidor</h1>
             </div>
-            <ng-container *ngIf="journey.cabifyLogisticsTrip && journey.cabifyTrip.driver">
+            <ng-container *ngIf="journey?.cabifyLogisticsTrip && journey?.cabifyTrip?.driver">
               <div class="section-header" *ngIf="journey.cabifyTrip && journey.cabifyTrip.driver">
                 <div style="display: flex;align-items: center;flex-direction: row;">
                   <div style="margin-right: 2em;">
@@ -186,25 +200,18 @@
           </div>
         </div>
       
-        <div class="display-info-card">
+        <div class="display-info-card" *ngIf="false">
           <div class="title">
             <h1>Informacion de pago</h1>
           </div>
           <div class="section-header">
-            <p>Estado: {{order.payment_state}}</p>
+            <p>Estado: {{order?.payment_state}}</p>
           </div>
         </div>
-        <div class="display-info-card">
-          <div class="title">
-            <h1>Line Items</h1>
-            <button (click)="ordersProvider.showItems(order.number)" style="margin:1em 8px;" mat-raised-button color="accent">Imprimir comanda <mat-icon style="transform: scale(0.9);">print</mat-icon></button>
-          </div>
-          <div class="section-body">
-            <lomii-line-item *ngFor="let lineItem of order.line_items" [lineItem]="getLineItem(lineItem.id)"></lomii-line-item>
-          </div>
-        </div>
+
+        </mat-tab>
+        </mat-tab-group>
       </div>
     </div>
-
   </mat-drawer-container>
 

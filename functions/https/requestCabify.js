@@ -14,16 +14,17 @@ module.exports = (admin) => {
     const requestCabify = functions.https.onRequest(async (req, res) => {
         cors(req,res,async () => {
             const order = req.body;
+            order.phone = order.phone.replace(/ /g, "")
             /**
             const stockLocations = (await spreeUtils.getStockLocations()).stock_locations;
               const orderStockLocation = stockLocations.find(
                 (loc) => loc.id == order.shipment_stock_location_id
               );
             console.log(stockLocations)
-            order.shipment_stock_location_name = orderStockLocation.address1;
             order.shipment_stock_location_phone = orderStockLocation.phone;
             order.shipment_stock_location_city = orderStockLocation.city;
             order.shipment_stock_location_notes = orderStockLocation.address2;
+            order.shipment_stock_location_name = orderStockLocation.address1;
             */
 
 

@@ -7,15 +7,38 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class PersistentNotificationComponent implements OnInit {  
 
+  @Input() title = "El repartidor esta esperando el pedido fuera de la tienda";
   @Input() journey: any;
+  @Input() order: any;
+  @Input() cssColor = "green";
 
   public audio:HTMLAudioElement = new Audio();
   public interval:any;
   public closed = false;
 
+  public timesPlayed = 0;
+
   playAudio(){
+    if(!this.order && !this.journey){
+      return
+    }
+    const alarmMuted = localStorage.getItem(this.order ? "muteAlarm#"+this.order.number : "muteAlarm#"+this.journey.orderNumber)
+    if(alarmMuted && new Date().getTime() - parseInt(alarmMuted) < 1000*3*5){
+      this.muteAudio()
+      return
+    } else if(alarmMuted && new Date().getTime() - parseInt(alarmMuted) > 1000*60*5) {
+      localStorage.removeItem(this.order ? "muteAlarm#"+this.order.number : "muteAlarm#"+this.journey.orderNumber)
+      this.unmuteAudio()
+      this.timesPlayed = 0;
+    }
+
+    if(this.timesPlayed == 5){
+      this.muteAudio()
+      localStorage.setItem(this.order? "muteAlarm#"+this.order.number : "muteAlarm#"+this.journey.orderNumber, new Date().getTime().toString())
+    }
     this.audio.load();
     this.audio.play();
+    this.timesPlayed++;
   }
 
   muteAudio(){
@@ -23,12 +46,12 @@ export class PersistentNotificationComponent implements OnInit {
   }
 
   unmuteAudio(){
-    this.audio.volume = 0.2;
+    this.audio.volume = 1;
   }
 
   constructor() {
     this.audio.src = "/assets/audio/cabify_near.wav";
-    this.audio.volume = 0.2
+    this.audio.volume = 1
     this.playAudio()
   }
 

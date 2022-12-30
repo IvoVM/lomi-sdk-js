@@ -1,14 +1,20 @@
-<div *ngIf="!closed" class="persistent-notification bg shadow">
+<div *ngIf="!closed" class="persistent-notification bg bg-{{cssColor}} shadow">
     <div class="title">
         <mat-icon (click)="stopAudio()" >close</mat-icon>
         <mat-icon *ngIf="!audio.volume" (click)="unmuteAudio()">volume_mute</mat-icon>
         <mat-icon *ngIf="audio.volume" (click)="muteAudio()">volume_up</mat-icon>
-        El repartidor esta esperando el pedido fuera de la tienda
+        {{title}}
+        <span *ngIf="order">
+            {{order.status | status}} 
+        </span>
     </div>
-    <div class="description">
-        Orden numero : {{journey.orderNumber}}
+    <div class="description" *ngIf="journey || order">
+        Orden numero : {{journey ? journey.orderNumber : order.number}}
+    </div>
+    <div *ngIf="order">
+        {{order.name}}
     </div>
     <div class="action" style="margin-right: 4em;">
-        Ir a la orden >
+        <a style="text-decoration: none;color: white !important;" href="{{journey ? 'orders/'+journey.orderNumber : 'orders#'+order.number}}">Ir a la orden ></a>
     </div>
 </div>

@@ -15,6 +15,8 @@ import { ConfirmModalComponent } from 'packages/lomi-backoffice/shared/component
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { UtilsTime } from 'packages/lomi-backoffice/shared/utils/dateTime';
 import { ReintegrateOrderComponent } from '../components/reintegrate-order/reintegrate-order.component';
+import { Route, Router } from '@angular/router';
+
 @Component({
   selector: 'lomii-table',
   templateUrl: './table.component.html',
@@ -47,6 +49,7 @@ export class TableComponent implements OnInit, AfterViewInit {
     public ordersProvider: OrdersService,
     private _bottomSheet: MatBottomSheet,
     private store: Store<BackofficeState>,
+    private router : Router,
   ) {
 
   }
@@ -56,7 +59,12 @@ export class TableComponent implements OnInit, AfterViewInit {
   }
 
   showItems(orderId: string) {
-    window.open('https://lomi.cl/admin/orders/' + orderId + '/invoice', "_blank")
+    const stockLocationId = localStorage.getItem("stockLocationId")
+    if(stockLocationId && ["1", "24", "25", "27", "28"].includes(stockLocationId)) {
+      window.open('https://lomi.cl/admin/orders/' + orderId + '/invoice', "_blank")
+    } else {
+      window.open(window.location.host+"/orders/" + orderId, "_blank")
+    }
     this.ordersProvider.updateOrder(orderId, {
       status: PENDING_STATE
     })

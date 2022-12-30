@@ -365,10 +365,11 @@ async function cancelCabifyTrip(tripId){
 }
 
 async function cancelCabifyTripLogisticsStrategy(parcelIds){
+  console.log("Canceling, ",parcelIds)
   const cancelTrip = await axios.delete(
     ProductionCabify+"v1/parcels/deliver/cancel",
     {
-      "parcel_ids": parcel_ids
+      "parcel_ids": [parcelIds]
     },
     {
       headers:{

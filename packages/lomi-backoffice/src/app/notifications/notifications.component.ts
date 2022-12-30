@@ -24,6 +24,7 @@ type notificationType = [
 export class NotificationsComponent implements OnInit {
 
   public userId:any = 0;
+  public audio:HTMLAudioElement = new Audio();
   notificationsList: notificationType = []
   public lastNotification:any;
 
@@ -33,8 +34,23 @@ export class NotificationsComponent implements OnInit {
     private afs: Firestore,
     public router: Router,
     public store: Store<BackofficeState>
-  ) {}
+  ) {
+    this.audio.src = "/assets/audio/cabify_near.wav";
+    this.audio.volume = 0.6
+  }
 
+  playAudio(){
+    this.audio.load();
+    this.audio.play();
+  }
+
+  muteAudio(){
+    this.audio.volume = 0;
+  }
+
+  unmuteAudio(){
+    this.audio.volume = 0.6;
+  }
   ngOnInit(): void {
     this.store.select("user").subscribe((user:any)=>{
       if(user.uid){
@@ -65,6 +81,7 @@ export class NotificationsComponent implements OnInit {
           }
           console.log(message, "Notification");
           this.lastNotification = message;
+          this.playAudio()
           setTimeout(()=>{
             this.lastNotification = null;
           }, 3000)

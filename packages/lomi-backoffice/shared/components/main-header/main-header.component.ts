@@ -17,6 +17,7 @@ export class MainHeaderComponent implements OnInit {
   public journeys:any = []
   public journeysUnsubscribable:any;
   public cabifyNear = false;
+  public deliveringOrders: any[] = [];
 
   public user:IUser = {
     uid: "",
@@ -90,6 +91,10 @@ export class MainHeaderComponent implements OnInit {
     setTimeout(()=>{
       this.cabifyNear = true
     }, 5000)
+    this.store.select("orders").subscribe((orders:any)=>{
+      console.log(orders)
+      this.deliveringOrders = Object.values(orders.entities).filter((order:any)=>order.status == 2 && !(order.scheduled_at && new Date(order.scheduled_at) > new Date()));
+    })
     this.journeysUnsubscribable = this.store.select("journeys").subscribe((journeys)=>{
       this.journeys = Object.values(journeys.entities)
       console.log(this.journeys)

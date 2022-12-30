@@ -55,7 +55,7 @@ export class OrderEffects {
             //OrderBy
             action.payload.orderBy ? action.payload.orderBySort ? orderBy(action.payload.orderBy,action.payload.orderBySort) : orderBy(action.payload.orderBy) : orderBy('completed_at', 'desc'),
             //Limit
-            limit(action.payload.per_page ? action.payload.per_page : 25),
+            limit(action.payload.per_page ? action.payload.per_page : 40),
             )
             const newObs = new Observable(observer => {
                 return onSnapshot(queryDefinition,

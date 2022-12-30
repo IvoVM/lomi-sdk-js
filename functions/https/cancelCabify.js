@@ -9,8 +9,12 @@ module.exports = (admin) => {
         cors(req,res,async () => {
             const order = req.body;
             await cabify.authCabify();
-            const cabifyResponse = await cabify.cancelCabifyTrip(order.tripId);
-            if(cabifyResponse.errors){
+            const cabifyResponse = await cabify.cancelCabifyTrip([order.tripId]);
+            if(!cabifyResponse){
+                res.send({errors: 'Cabify no responde'})
+                return
+            }
+            else if(cabifyResponse.errors){
                 res.send(cabifyResponse);
                 return
             } else{

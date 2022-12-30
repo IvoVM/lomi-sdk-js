@@ -41,7 +41,7 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
           }
         }) : [{
           eta_display: order.cabifyEstimated.eta_to_delivery,
-          duration_display: order.cabifyEstimated.eta_to_delivery,
+          duration_display: order.cabifyEstimated.eta_to_delivery / 60,
           deliveryTime_display: order.cabifyEstimated.eta_to_delivery - order.cabifyEstimated.eta_to_pickup,
           cost_display: order.cabifyEstimated.price_total.amount,
           product_type: "Cabify",
@@ -83,7 +83,6 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
         return uberEstimated ? [uberEstimated] : [{}]
       }
     },
-    /**
     {
       name: "Hermex",
       icon: "hermex.png",
@@ -101,7 +100,7 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
         }
         return [hermexEstimated]
       }
-    } */
+    }
   ]
   public selectedOperator:any = ""
 

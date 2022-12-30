@@ -13,19 +13,30 @@ module.exports = (admin) => {
             const status = req.body.data.status;
             const journeyDoc = admin.firestore().doc("deliveringJourneys/" + orderId)
             const newStatus = status
-            const journey = await journeyDoc.get()
-            const orderJourneyDoc = admin.firestore().doc("SPREE_ORDERS_"+ journey.stock_location_id + "/" + orderId + "/journeys/" + journey.id)
-            console.log(newStatus, "newStatus")
+            const journey = (await journeyDoc.get()).data()
+            console.log(journey, orderId)
+            const orderJourneyDoc = admin.firestore().doc("SPREE_ORDERS_"+ journey.stock_location_id + "/" + journey.orderNumber + "/journeys/" + journey.id)
+            const orderDoc = admin.firestore().doc("SPREE_ORDERS_"+ journey.stock_location_id + "/" + journey.orderNumber)
+            console.log(newStatus , req.body.data.external_id, "newStatus")
             
+            await orderJourneyDoc.update({
+              status: status,
+              updatedAt: new Date(),
+              [ journey.uberTrip ? 'uberTrip' : 'uberFourWheelsTrip'] : req.body.data
+            })
             if(newStatus == 'delivered'){
               await journeyDoc.delete()
+              await orderDoc.update({
+                status: 6
+              })
+            } 
+            else if(newStatus == 'canceled' || newStatus == 'returned'){
+              await journeyDoc.delete()
+              await orderDoc.update({
+                status: 4
+              })
             } else {
               await journeyDoc.update({
-                status: status,
-                updatedAt: new Date(),
-                [ journey.uberTrip ? 'uberTrip' : 'uberFourWheelsTrip'] : req.body.data
-              })
-              await orderJourneyDoc.update({
                 status: status,
                 updatedAt: new Date(),
                 [ journey.uberTrip ? 'uberTrip' : 'uberFourWheelsTrip'] : req.body.data
