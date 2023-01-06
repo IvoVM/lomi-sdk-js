@@ -147,6 +147,25 @@ module.exports = ( spreeUrl, spreeToken, spreeDebugUrl ) => {
         })
     }
 
+    function createJourney(shipmentId, journeyId, providerId , xSpreeOrderToken){
+        return new Promise(async (resolve, reject) => {
+            const url = `${spreeUrl}/api/v2/storefront/journeys`;
+            const headers = {
+                "X-Spree-Order-Token": `Bearer ${xSpreeOrderToken}`,
+            }
+
+            const response = await axios.post(url, {
+                "shipment_id": shipmentId,
+                "journey_id": journeyId,
+                "logistic_operator_id": providerId,
+            }, { headers }).catch((error) => {
+                console.log(error)
+                return error.response
+            });
+            resolve(response.data);
+        })
+    }
+
     return {
         getShipments,
         markShipmentAsReady,
@@ -154,6 +173,7 @@ module.exports = ( spreeUrl, spreeToken, spreeDebugUrl ) => {
         getStockLocations,
         getOrder,
         getDebugOrder,
-        getJourneys
+        getJourneys,
+        createJourney,
     }
 }

@@ -33,8 +33,6 @@ export class AppComponent {
       )).subscribe(async (args: [user:any, app:App])=>{
         const [user,app] = args;
         this.userId = user.uid
-        console.log("user", user)
-        console.log("app", app)
         if(app?.userPrivileges && app.userRols && user.userRol){
 
           const collectionNames:any = app.userRols.find((rol:any)=>rol.id === user.userRol)?.userPrivileges

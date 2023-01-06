@@ -16,6 +16,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { UtilsTime } from 'packages/lomi-backoffice/shared/utils/dateTime';
 import { ReintegrateOrderComponent } from '../components/reintegrate-order/reintegrate-order.component';
 import { Route, Router } from '@angular/router';
+import { Firestore } from '@angular/fire/firestore';
 
 @Component({
   selector: 'lomii-table',
@@ -41,6 +42,7 @@ export class TableComponent implements OnInit, AfterViewInit {
   totalTime: any = [{}]
   @Input() state: any = null;
   @Output() recordsFetched = new EventEmitter<number>();
+  unsubscribableStore:any;
 
   componentOrders: any = []
 
@@ -68,6 +70,7 @@ export class TableComponent implements OnInit, AfterViewInit {
     this.ordersProvider.updateOrder(orderId, {
       status: PENDING_STATE
     })
+
     this.ordersProvider.currentStep++
   }
 
@@ -172,7 +175,6 @@ export class TableComponent implements OnInit, AfterViewInit {
   }
 
   actionFunction(order: Order) {
-    console.log(order)
     switch (this.state) {
       case SCHEDULED_STATE: return this.selectPicker(order)
       case PENDING_STATE: return this.selectPicker(order)
@@ -181,7 +183,6 @@ export class TableComponent implements OnInit, AfterViewInit {
       case OrderStates.STORE_PICKING_STATE: return this.completeOrder(order)
       case OrderStates.FAILED: return this.reintegrate(order)
     }
-    console.log(this.state, "state",)
     return this.showItems
   }
 
@@ -229,7 +230,7 @@ export class TableComponent implements OnInit, AfterViewInit {
     this.getJourneys()
 
     const selector = selectState0(this.state)
-    this.store.pipe(
+    this.unsubscribableStore = this.store.pipe(
       selector
     ).subscribe((orders) => {
       if (orders) {
@@ -276,5 +277,9 @@ export class TableComponent implements OnInit, AfterViewInit {
         })
       }
     }, 1000)
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribableStore.unsubscribe()
   }
 }

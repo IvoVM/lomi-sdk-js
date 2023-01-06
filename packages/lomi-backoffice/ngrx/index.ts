@@ -67,7 +67,6 @@ export function debug(reducer: ActionReducer<any>): ActionReducer<any> {
             return statusId == FAILED
           }
           if(statusId == STORE_PICKING_STATE || !statusId){
-            console.log("order", order)
             return order.name.includes("Retiro") || order.isStorePicking
           }
           return false

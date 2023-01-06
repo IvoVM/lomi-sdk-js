@@ -14,7 +14,7 @@ module.exports = (admin) => {
     const requestCabify = functions.https.onRequest(async (req, res) => {
         cors(req,res,async () => {
             const order = req.body;
-            order.phone = order.phone.replace(/ /g, "")
+            order.ship_address_phone = order.ship_address_phone.replace(/ /g, "")
             /**
             const stockLocations = (await spreeUtils.getStockLocations()).stock_locations;
               const orderStockLocation = stockLocations.find(

@@ -194,6 +194,7 @@ exports.addCompletedOrder = functions.https.onRequest(
         status: isRetiroEnTienda ? 0 : 2,
         line_items_expanded : orderExpanded.line_items,
         DEBUG: orderExpanded.debug,
+        token: orderExpanded.token,
       });
     }
 
@@ -288,15 +289,7 @@ exports.evaluateFourWheelsUber = functions.https.onRequest(async (request, respo
      selectedUberDispatcher = uberDispatcherDebug; 
     }
     await selectedUberDispatcher.auth();
-    const uberFourWheelsEstimated = await selectedUberDispatcher.createQuote(
-      order.ship_address_address1 +
-        ', ' +
-        order.ship_address_state +
-        ', ' +
-        order.ship_address_country,
-      order.shipment_stock_location_name,
-      order
-    );
+    const uberFourWheelsEstimated = await selectedUberDispatcher.createQuote(order);
     collectionKey = 'SPREE_ORDERS_' + order.shipment_stock_location_id;
     const ref = await admin
       .firestore()
@@ -319,10 +312,18 @@ exports.evaluateUber = functions.https.onRequest(async (request, response) => {
       const orderStockLocation = stockLocations.find(
         (loc) => loc.id == order.shipment_stock_location_id
       );
+      const firebaseStockLocation = await firebaseLomiUtils.getStockLocationResource(order.shipment_stock_location_id)
+      console.log(firebaseStockLocation, "firebaseStockLocation")
+      order.shipment_stock_location_email = firebaseStockLocation.email;
+      order.shipment_stock_location_uber_name = firebaseStockLocation.uber_store_name;
+      order.shipment_stock_location_notes = firebaseStockLocation.notes;
+
       order.shipment_stock_location_name = orderStockLocation.address1;
-      order.shipment_stock_location_city = orderStockLocation.city;
       order.shipment_stock_location_phone = orderStockLocation.phone;
-      order.shipment_stock_location_notes = orderStockLocation.address2;
+      order.shipment_stock_location_city = orderStockLocation.city;
+
+      order.ship_address_phone = order.ship_address_phone.replace(/ /g, "")
+      
 
       const stops = await Geocoder.getOrderStops(order);
       console.log(stops);
@@ -331,20 +332,13 @@ exports.evaluateUber = functions.https.onRequest(async (request, response) => {
        selectedUberDispatcher = uberDispatcherDebug; 
       }
       await selectedUberDispatcher.auth();
-      const uberEstimated = await selectedUberDispatcher.createQuote(
-        order.ship_address_address1 +
-          ', ' +
-          order.ship_address_state +
-          ', ' +
-          order.ship_address_country,
-        order.shipment_stock_location_name,
-        order
-      );
+      const uberEstimated = await selectedUberDispatcher.createQuote(order);
       collectionKey = 'SPREE_ORDERS_' + order.shipment_stock_location_id;
       const ref = await admin
         .firestore()
         .doc(collectionKey + '/' + order.number)
         .update({
+          
           uberEstimated,
           stops,
         });
@@ -404,7 +398,6 @@ exports.createHmxTrip = functions.https.onRequest(async (request, response) => {
     const hmxOrder = await HmxDispatcher.placeOrder(request.body);
     const order = request.body;
     if (hmxOrder.status === 200) {
-      // SET DOCUMENT INFORMATION
       const collectionKey = 'SPREE_ORDERS_' + order.shipment_stock_location_id;
       const orderDocRef = admin
         .firestore()
@@ -429,12 +422,11 @@ exports.createHmxTrip = functions.https.onRequest(async (request, response) => {
         providerId: 2,
       };
       await orderJourneyDocRef.set(orderJourneyPayload);
-
       const journeyDocRef = admin
         .firestore()
         .doc('deliveringJourneys/' + hmxOrder.data.trackingId);
       await journeyDocRef.set(orderJourneyPayload);
-      //SET DOCUMENT INFORMATION COULD BE A FUNCTION
+      //await spreeUtils.createJourney(order.shipment_id, orderJourneyPayload.id, "12", order.)
 
       return response.status(200).send(hmxOrder.data);
     } else {
@@ -546,6 +538,7 @@ exports.creatUberTrip = functions.https.onRequest(async (request, response) => {
         status: DELIVERING_ORDER_STATE,
       });
 
+      
       const snapshot = await ref.get();
       if (uberTrip) {
         if (snapshot.exists) {
@@ -563,6 +556,7 @@ exports.creatUberTrip = functions.https.onRequest(async (request, response) => {
             .firestore()
             .doc('deliveringJourneys/' + uberTrip.id)
             .set(journey);
+          await spreeUtils.createJourney(order.shipment_id, journey.id, "3", order.token)
           return response.status(200).json(journey);
         }
         return response.status(500).json({
@@ -657,6 +651,7 @@ exports.creatFourWheelsUberTrip = functions.https.onRequest(async (request, resp
             .firestore()
             .doc('deliveringJourneys/' + uberTrip.id)
             .set(journey);
+          await spreeUtils.createJourney(order.shipment_id, journey.id, "3", order.token)
           return response.status(200).json(journey);
         }
         return response.status(500).json({
@@ -877,149 +872,7 @@ exports.listenToOrderStatusChange39 = functions.firestore
         });
     }
 
-    if (DEBUG || !PRODUCTION) {
-      DEBUG_EMAILS.forEach((email) => {
-        axios.post(
-          'https://us-central1-lomi-35ab6.cloudfunctions.net/appPush/notification',
-          {
-            email: email,
-            status: statusAdapter(order.status),
-            data: {
-              ruta: 'tabs/orders',
-            },
-          }
-        );
-      });
-    } else {
-      if (order.user_email) {
-        axios.post(
-          'https://us-central1-lomi-35ab6.cloudfunctions.net/appPush/notification',
-          {
-            email: '', //order.user_email,
-            status: statusAdapter(order.status),
-          }
-        );
-      }
-    }
-
-    return null;
-  });
-
-  exports.listenToOrderStatusChange40 = functions.firestore
-  .document('SPREE_ORDERS_40/{docId}')
-  .onUpdate(async (change, context) => {
-    console.log(
-      context.resource.name.includes('SPREE_ORDERS'),
-      context.resource.name,
-      'context.resource.name'
-    );
-    const order = change.after.data();
-    const previousOrder = change.before.data();
-    if (order.status == previousOrder.status) {
-      return;
-    }
-    if (!order.status) {
-      console.log(order);
-      return;
-    }
-    console.log(order);
-    if (order.status == WAITING_AT_DRIVER_STATE) {
-      spreeUtils
-        .markShipmentAsReady(order.number, order.shipment_stock_location_id)
-        .catch((e) => console.log(e))
-        .then(() => {
-          console.log('Shipment marked as ready');
-        });
-    }
-
-    if (order.email) {
-        axios.post(
-          'https://us-central1-lomi-35ab6.cloudfunctions.net/appPush/notification',
-          {
-            email: order.email, //order.user_email,
-            status: statusAdapter(order.status),
-          }
-        );
-      }
-    
-
-    return null;
-  });
-
-exports.listenToOrderStatusChange39 = functions.firestore
-  .document('SPREE_ORDERS_39/{docId}')
-  .onUpdate(async (change, context) => {
-    console.log(
-      context.resource.name.includes('SPREE_ORDERS'),
-      context.resource.name,
-      'context.resource.name'
-    );
-    const order = change.after.data();
-    const previousOrder = change.before.data();
-    if (order.status == previousOrder.status) {
-      return;
-    }
-    if (!order.status) {
-      console.log(order);
-      return;
-    }
-    console.log(order);
-    if (order.status == WAITING_AT_DRIVER_STATE) {
-      spreeUtils
-        .markShipmentAsReady(order.number, order.shipment_stock_location_id)
-        .catch((e) => console.log(e))
-        .then(() => {
-          console.log('Shipment marked as ready');
-        });
-    }
-
-    if (DEBUG || !PRODUCTION) {
-      DEBUG_EMAILS.forEach((email) => {
-        axios.post(
-          'https://us-central1-lomi-35ab6.cloudfunctions.net/appPush/notification',
-          {
-            email: email,
-            status: statusAdapter(order.status),
-            data: {
-              ruta: 'tabs/orders',
-            },
-          }
-        );
-      });
-    } else {
-      if (order.user_email) {
-        axios.post(
-          'https://us-central1-lomi-35ab6.cloudfunctions.net/appPush/notification',
-          {
-            email: '', //order.user_email,
-            status: statusAdapter(order.status),
-          }
-        );
-      }
-    }
-
-    return null;
-  });
-
-exports.listenToOrderStatusChange = functions.firestore
-  .document('SPREE_ORDERS_1/{docId}')
-  .onUpdate(async (change, context) => {
-    console.log(
-      context.resource.name.includes('SPREE_ORDERS'),
-      context.resource.name,
-      'context.resource.name'
-    );
-    const order = change.after.data();
-    const previousOrder = change.before.data();
-    if (order.status == previousOrder.status) {
-      return;
-    }
-    if (!order.status) {
-      console.log(order);
-      return;
-    }
-    console.log(order);
-    if (DEBUG || !PRODUCTION) {
+    if (order.DEBUG || !PRODUCTION) {
       DEBUG_EMAILS.forEach((email) => {
         axios.post(
           'https://us-central1-lomi-35ab6.cloudfunctions.net/appPush/notification',

@@ -63,7 +63,6 @@ export class FiltersSideComponent implements OnInit {
   ]
 
   select(event:any){
-    console.log(event)
   }
 
   constructor(
@@ -96,7 +95,6 @@ export class FiltersSideComponent implements OnInit {
       const options = this.filters.find((filter:Filter)=>filter.name == 'Tienda')
       if(options){
         options.options = this.stores.map((store:any)=>store.name)
-        console.log(this.stores,"stores")
         if(localStorage.getItem("stockLocationId")){
           this.filtersForm.get('Tienda').setValue(this.stores.find((store:any)=>store.stockLocationId == localStorage.getItem("stockLocationId")).name)
         }
@@ -127,7 +125,6 @@ export class FiltersSideComponent implements OnInit {
         queryValues.endsAt = value['Fecha Fin']
       }
       this.store.dispatch(new Query(queryValues))
-      console.log(value)
     })
   }
 }

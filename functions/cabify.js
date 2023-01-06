@@ -282,13 +282,13 @@ async function createParcel(order){
          }
         },
         "dimensions": {
-         "height": 10,
-         "length": 10,
-         "width": 10,
+         "height": 40,
+         "length": 15,
+         "width": parseInt(25 * order.line_items.length / 3),
          "unit": "cm"
         },
         "weight": {
-         "value": 1500,
+         "value": parseInt(2000 * order.line_items.length / 3),
          "unit": "g"
         }
        },

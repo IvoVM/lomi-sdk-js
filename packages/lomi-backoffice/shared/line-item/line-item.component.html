@@ -12,7 +12,7 @@
             </ng-container>
         </div>
         <div class="img-container">
-            <img style="width: 5em;margin: 0;" mat-card-image src="{{!lineItem.img_url ? lineItem.variant.images[0].mini_url : lineItem.img_url}}">
+            <img *ngIf="lineItem.variant?.images.length || lineItem.img_url" style="width: 5em;margin: 0;" mat-card-image src="{{!lineItem.img_url ? lineItem.variant.images[0].mini_url : lineItem.img_url}}">
         </div>
     </div>
 

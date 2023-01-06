@@ -4,7 +4,7 @@ import { BackofficeState } from '..';
 import { collectionData, doc, Firestore, startAt } from '@angular/fire/firestore';
 import { Action, Store } from '@ngrx/store';
 import { collection, limit, onSnapshot, orderBy, query, QuerySnapshot, where } from 'firebase/firestore';
-import { lastValueFrom, map, mergeMap, Observable } from 'rxjs';
+import { lastValueFrom, map, merge, mergeMap, Observable } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators'
 import { ADDED, Query, QUERY, QUERY_SUCCESS } from '../actions/orders.actions';
 import { snapshotChanges } from '@angular/fire/compat/database';
@@ -17,17 +17,17 @@ export class OrderEffects {
     query$: Observable<Action> = createEffect(() => this.actions$.pipe(
         ofType(QUERY),
         switchMap((action: Query) => {
-          console.log(action.payload, "QUery orders")
           if(action.payload.stock_location_id){
             this.ordersService.filters.stockLocationId = action.payload.stock_location_id as number;
             localStorage.setItem('stockLocationId', action.payload.stock_location_id.toString())
           }
-          console.log(action.payload.collections_names ? action.payload.collections_names[0] : action.payload.stock_location_id ? `SPREE_ORDERS_${action.payload.stock_location_id}` : this.ordersService.filters.stockLocationId)
             const queryDefinition = query(
               collection(
                 this.afs,
                 (action.payload.collections_names ? action.payload.collections_names[0] : action.payload.stock_location_id ? `SPREE_ORDERS_${action.payload.stock_location_id}` : 'SPREE_ORDERS_'+this.ordersService.filters.stockLocationId),),
-              ...(action.payload.name ? [
+              ...(
+                action.payload.name ? [
+                  
                 orderBy('name', 'asc'),
               where('name', '>=', action.payload.name ? action.payload.name : ''),
               where('name', '<=', (action.payload.name ? action.payload.name : '') + '\uf8ff')] : []),
@@ -55,10 +55,56 @@ export class OrderEffects {
             //OrderBy
             action.payload.orderBy ? action.payload.orderBySort ? orderBy(action.payload.orderBy,action.payload.orderBySort) : orderBy(action.payload.orderBy) : orderBy('completed_at', 'desc'),
             //Limit
-            limit(action.payload.per_page ? action.payload.per_page : 40),
+            limit(action.payload.per_page ? action.payload.per_page : 25),
+            )
+            const queryDefinitionPending = query(
+              collection(
+                this.afs,
+                (action.payload.collections_names ? action.payload.collections_names[0] : action.payload.stock_location_id ? `SPREE_ORDERS_${action.payload.stock_location_id}` : 'SPREE_ORDERS_'+this.ordersService.filters.stockLocationId),),
+              
+              
+                orderBy("status"),
+              where(
+                  'status', '!=', 6
+                ),
+              ...(
+                action.payload.name ? [
+                  
+                orderBy('name', 'asc'),
+              where('name', '>=', action.payload.name ? action.payload.name : ''),
+              where('name', '<=', (action.payload.name ? action.payload.name : '') + '\uf8ff')] : []),
+
+              ...(action.payload.email? [
+                orderBy('email', 'asc'),
+              where('email', '>=', action.payload.email ? action.payload.email : ''),
+              where('email', '<=', (action.payload.email ? action.payload.email : '') + '\uf8ff')] : []),
+
+              ...(action.payload.number ? [
+                orderBy('number', 'asc'),
+              where('number', '>=', action.payload.number ? action.payload.number : ''),
+              where('number', '<=', (action.payload.number ? action.payload.number : '') + '\uf8ff')] : []),
+            
+            //StartsAt
+            ...(action.payload.startsAt ? [
+              where('completed_at', '>=', action.payload.startsAt ? action.payload.startsAt : ''),
+            ] : []),
+
+            //EndsAt
+            ...(action.payload.endsAt ? [
+              where('completed_at', '<=', action.payload.endsAt ? action.payload.endsAt : ''),
+            ] : []),
+            
+            //OrderBy
+            action.payload.orderBy ? action.payload.orderBySort ? orderBy(action.payload.orderBy,action.payload.orderBySort) : orderBy(action.payload.orderBy) : orderBy('completed_at', 'desc'),
+            //Limit
+            limit(action.payload.per_page ? action.payload.per_page : 25),
             )
             const newObs = new Observable(observer => {
-                return onSnapshot(queryDefinition,
+                onSnapshot(queryDefinition,
+                  ((snapshot:QuerySnapshot) => observer.next(snapshot)),
+                  (error => observer.error(error.message))
+                );
+                onSnapshot(queryDefinitionPending,
                   ((snapshot:QuerySnapshot) => observer.next(snapshot)),
                   (error => observer.error(error.message))
                 );
