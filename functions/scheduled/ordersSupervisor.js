@@ -41,7 +41,8 @@ module.exports = (spreeUrl, token, admin, spreeDebugUrl) => {
 
               shipments.forEach((shipment) => {
                 console.log(shipment.number, 'Shipment number');
-                if (shipment.state == 'shipped') {
+                if (shipment.state == 'shipped' && doc.data().status != 6) {
+                  console.log("Marking shipment as shipped in firebase")
                   admin
                     .firestore()
                     .doc('SPREE_ORDERS_' + stockLocation.id + '/' + doc.id)
@@ -49,11 +50,13 @@ module.exports = (spreeUrl, token, admin, spreeDebugUrl) => {
                       state: 'shipped',
                       status: 6,
                     });
-                } else if(doc.data().status == 6){
+                } else if(doc.data().status == 6 && shipment.state == 'ready'){
+                  console.log("Marking shipment as shipped in spree")
                   spree.markShipmentAsShipped(shipment.number).then(()=>{
                     console.log("Shipment "+shipment.number+" marked as shipped")
                   })
-                } else if(shipment.state == 'ready'){
+                } else if(shipment.state == 'ready' && doc.data().status < 4){
+                  console.log("Shipment "+shipment.number+" marking as ready in firebase")
                     spree.getJourneys(shipment.id).then((journeys) => {
                       journeys.forEach((journey) => {
                         console.log(journey.id, stockLocation.id, doc.id, 'Journeys')
@@ -82,9 +85,16 @@ module.exports = (spreeUrl, token, admin, spreeDebugUrl) => {
                       status: 6,
                     });
                     }
-                  }else if(doc.data().status >= 4){
+                  }else if(doc.data().status >= 4 && shipment.state != 'ready'){
+                    console.log("Shipment "+shipment.number+" marking as ready in spree")
                     spree.markShipmentAsReady(shipment.number).then(()=>{
-                      console.log("Shipment "+shipment.number+" marked as ready")
+                      console.log("Shipment "+shipment.number+" marked as ready in spree")
+                      admin
+                        .firestore()
+                        .doc('SPREE_ORDERS_' + stockLocation.id + '/' + doc.id)
+                        .update({
+                          state: "ready"
+                        })
                     })
                   }
                 admin

@@ -63,7 +63,8 @@ export class Promotions{
     static async fetchDeliveryPromotions(stockLocations: string = "") : Promise<PromotionsResponse>{
         let deliveryPromotions:any = await this.fetchPromotionsByCategoryName('Delivery Fee', stockLocations)
         deliveryPromotions.promotions = deliveryPromotions.promotions.filter((deliveryPromotion:Promotion)=>{
-            return (deliveryPromotion.rules.length && deliveryPromotion.rules[0].amount_max) && !(deliveryPromotion.expires_at && new Date(deliveryPromotion.expires_at).getTime() < new Date().getTime())
+            const dfRule = deliveryPromotion.rules.find((rule:Rule)=>rule.operator_max)
+            return (dfRule && dfRule.amount_max) && !(deliveryPromotion.expires_at && new Date(deliveryPromotion.expires_at).getTime() < new Date().getTime())
         })
         return deliveryPromotions
     }
@@ -76,18 +77,21 @@ export class Promotions{
         return true
     }
     
-    static async sortPromotionsByMaxAmountOfFirstRule(){
+    static async sortPromotionsByMaxAmountOfPriceSegmentRule(){
         Promotions.deliveryPromotions.promotions.sort((promotion1:Promotion, promotion2:Promotion)=>{
-            const firstRule1:Rule = promotion1.rules[0]
-            const firstRule2:Rule = promotion2.rules[0]
-            return firstRule1.amount_min - firstRule2.amount_min
+            const dfRule1 = promotion1.rules.find((rule:Rule)=>rule.operator_max)
+            const dfRule2 = promotion2.rules.find((rule:Rule)=>rule.operator_max)
+            if(!dfRule1 || !dfRule2){
+                return 0
+            }
+            return dfRule1.amount_min - dfRule2.amount_min
         })
     }
 
     static async getPromotionsOfCart(cart:Cart, withBuffer = true) : Promise<Object>{
         if(!withBuffer || !Promotions.deliveryPromotions){
             Promotions.deliveryPromotions = await this.fetchDeliveryPromotions();
-            Promotions.sortPromotionsByMaxAmountOfFirstRule();
+            Promotions.sortPromotionsByMaxAmountOfPriceSegmentRule();
         }
         const filteredPromos = []
         let nextPromotion = null;
@@ -105,7 +109,10 @@ export class Promotions{
         }
         nextPromotion = filteredPromos.length ? nextPromotion : Promotions.deliveryPromotions.promotions.length ? Promotions.deliveryPromotions.promotions[0] : null
         if(nextPromotion){
-            nextPromotion.amountToReach = nextPromotion.rules[0].amount_min - +cart.total
+            const rule = nextPromotion.rules.find((rule)=>rule.amount_max)
+            if(rule){
+                nextPromotion.amountToReach = rule.amount_min - +cart.total
+            }
         }
         const cartPromotions:cartPromotions = {
             nextPromotion,

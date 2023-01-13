@@ -4,7 +4,6 @@ import { changeClient } from '../lomi-sdk'
 
 describe('promotions',()=>{
     it('Should fetch delivery promotions', async ()=>{
-        changeClient('http://localhost:3000/')
         expect(await Promotions.fetchDeliveryPromotions())
         console.log(await Promotions.fetchDeliveryPromotions("1"))
         expect((await Promotions.getPromotionsOfCart(MOCK_CART.attributes)))

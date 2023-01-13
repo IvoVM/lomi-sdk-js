@@ -8,7 +8,7 @@
         "{options.outputPath}"
       ],
       "options": {
-        "outputPath": "dist/packages/lomi-sdk",
+        "outputPath": "dist/lomi-sdk",
         "main": "packages/lomi-sdk/src/index.ts",
         "tsConfig": "packages/lomi-sdk/tsconfig.lib.json",
         "assets": [

@@ -488,9 +488,9 @@ exports.creatUberTrip = functions.https.onRequest(async (request, response) => {
       order.shipment_stock_location_email = firebaseStockLocation.email;
       order.shipment_stock_location_uber_name = firebaseStockLocation.uber_store_name;
       order.shipment_stock_location_notes = firebaseStockLocation.notes;
+      order.shipment_stock_location_phone = firebaseStockLocation.phone;
 
       order.shipment_stock_location_name = orderStockLocation.address1;
-      order.shipment_stock_location_phone = orderStockLocation.phone;
       order.shipment_stock_location_city = orderStockLocation.city;
 
       order.ship_address_phone = order.ship_address_phone.replace(/ /g, "")
@@ -584,9 +584,9 @@ exports.creatFourWheelsUberTrip = functions.https.onRequest(async (request, resp
       order.shipment_stock_location_email = firebaseStockLocation.email;
       order.shipment_stock_location_uber_name = firebaseStockLocation.uber_store_name;
       order.shipment_stock_location_notes = firebaseStockLocation.notes;
+      order.shipment_stock_location_phone = firebaseStockLocation.phone;
 
       order.shipment_stock_location_name = orderStockLocation.address1;
-      order.shipment_stock_location_phone = orderStockLocation.phone;
       order.shipment_stock_location_city = orderStockLocation.city;
 
       order.ship_address_phone = order.ship_address_phone.replace(/ /g, "")

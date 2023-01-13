@@ -1,6 +1,7 @@
 {
   "version": 2,
   "projects": {
-    "lomi-backoffice": "packages/lomi-backoffice"
+    "lomi-backoffice": "packages/lomi-backoffice",
+    "lomi-sdk": "packages/lomi-sdk"
   }
 }
