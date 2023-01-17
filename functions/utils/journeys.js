@@ -6,6 +6,7 @@ const spreeUtils = require('../utils/spree/spree')(spreeUrl, token, spreeDebugUr
 
 module.exports = (admin) => {
 
+
     async function createJourney(journeyId, providerId, additionalData, order){
         const db = admin.firestore();
         const journeyRef = db.collection('deliveringJourneys').doc(journeyId);

@@ -24,6 +24,10 @@ test("get Order", async () => {
     console.log(order)
 })
 
+test('create journey', async() => {
+    
+})
+
 test('get Journeys', async () => {
     const journeys = await spree.getJourneys(JourneyId).then(res => res, err => {
         console.error(err.response.data);

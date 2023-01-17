@@ -85,7 +85,6 @@ exports.listenToUberStatusWebHook = listenToUberStatusWebHook;
 const listenToCabifyStatusWebHook = require('./https/webhooks/cabifyStatus')(admin);
 exports.listenToCabifyStatusWebHook = listenToCabifyStatusWebHook;
 
-
 const createCabifyTripEndpoint = require('./https/requestCabify')(admin);
 exports.createCabifyTripEndpoint = createCabifyTripEndpoint;
 
@@ -94,6 +93,9 @@ exports.cancelCabifyTripEndpoint = cancelCabifyTripEndpoint;
 
 const listenToSlackEvents = require('./https/webhooks/slackEvents')(admin);
 exports.listenToSlackEvents = listenToSlackEvents
+
+const getDeliveryTimes = require('./https/api/getDeliveryTimes')(admin);
+exports.getDeliveryTimes = getDeliveryTimes.apiGetOrdersDeliveryTimes;
 //End Imported API functions
 
 //Imported Handlers

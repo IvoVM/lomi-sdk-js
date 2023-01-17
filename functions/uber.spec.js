@@ -22,12 +22,6 @@ let quoteId = null;
 test('Create Uber Quote',async ()=>{
     const uber = await uberDispatcher.auth()
     const uberEstimated = await uberDispatcher.createQuote(
-        order.ship_address_address1 +
-          ', ' +
-          order.ship_address_city +
-          ', ' +
-          order.ship_address_country,
-        order.shipment_stock_location_name,
         order
       );
     if(uberEstimated.kind && uberEstimated.kind == 'error'){
@@ -35,10 +29,12 @@ test('Create Uber Quote',async ()=>{
       return
     }
     quoteId = uberEstimated.id
-    console.log(uberEstimated, quoteId)
 })
 
 test('Create Uber Trip',async ()=>{
+
+    //Not running this test because it will create a trip
+    return
     const uber = await uberDispatcher.auth()
     console.log(order)
     const uberTrip = await uberDispatcher.createTrip(

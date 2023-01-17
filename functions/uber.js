@@ -65,7 +65,7 @@ class UberDispatcher{
 
     async createQuote(order){
         const stockLocations = (await spreeUtils.getStockLocations()).stock_locations
-        console.log(stockLocations.find(loc=>loc.id==order.shipment_stock_location_id).address1)
+        console.log(stockLocations.find(loc=>loc.id==order.shipment_stock_location_id), order.shipment_stock_location_id, order)
         const quoteObject = {
             dropoff_address: encode({
                 street_address: [order.ship_address_address1, ""],
@@ -100,7 +100,7 @@ class UberDispatcher{
             })
             return quote.data
         } catch(e){
-            console.log(e.response ? e.response : e)
+            console.log(e.response ? e.response.data : e)
             return e.response.data
         }
     }

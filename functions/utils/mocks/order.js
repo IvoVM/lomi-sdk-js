@@ -27,7 +27,7 @@ module.exports = {
     ],
     miles_latam: null,
     name: "Valentina Hickmann",
-    number: "R266577403",
+    number: "R545693269",
     payment_state: "paid",
     picker: null,
     ship_address_address1: "Avenida Américo Vespucio 642",
@@ -88,4 +88,5 @@ module.exports = {
     //Cabify Logistics
     parcel_ids: [ "f32a2fdf-d763-43de-8be4-4e19822a1bb4" ],
     shipment_cabify_requester_id: "fc04184452337656491a6a4b28ae26e3",
+
 }

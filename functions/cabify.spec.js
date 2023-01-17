@@ -40,6 +40,8 @@ test("Estimate cabify trip", async() => {
 })
 
 test('Create cabify trip', async () => {
+    //not runned because it will create a trip
+    return
     await CabifyDispatcher.authCabify()
     const cabifyTrip = await CabifyDispatcher.createCabifyTrip(order, productId);
     console.log(cabifyTrip.data.deliveries)
