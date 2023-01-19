@@ -197,6 +197,9 @@ exports.addCompletedOrder = functions.https.onRequest(
         line_items_expanded : orderExpanded.line_items,
         DEBUG: orderExpanded.debug,
         token: orderExpanded.token,
+        shipment_id: orderExpanded.shipments[0].id,
+        shipment_state: orderExpanded.shipments[0].state,
+        shipment_number: orderExpanded.shipments[0].tracking,
       });
     }
 
