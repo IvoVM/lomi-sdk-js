@@ -34,7 +34,7 @@ test('get Journeys', async () => {
         throw (err)
     });
     journeys.forEach(element => {
-        console.log(element.id)
+        console.log(element)
     });
 })
 

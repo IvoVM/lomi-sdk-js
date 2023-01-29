@@ -5,10 +5,10 @@ const cors = require('cors')({ origin: true });
 
 module.exports = (admin) => {
 
-    const converOrderToDeliveryTime = (order) => {
+    const convertOrderToDeliveryTime = (order) => {
         return {
             number: order.number || null,
-            completed_at: order.completed_at || null,
+            completed_at: new Date(order.completed_at) || null,
             courier_at_store: order.courier_at_store || null,
             courier_at_dropoff: order.courier_at_dropoff || null,
             delivered_at: order.delivered_at || null,
@@ -16,15 +16,15 @@ module.exports = (admin) => {
             picking_time: order.picking_time || null
         }
     };
-
+    
     const getStoreOrdersDeliveryTimes = async (stockLocationId) => {
-        const stockLocationOrdersCollection = await firebaseUtils(admin).getFirebaseCollection("SPREE_ORDERS_"+stockLocationId);
-        return stockLocationOrdersCollection.map(converOrderToDeliveryTime);
+        const stockLocationOrdersCollection = await firebaseUtils(admin).getFirebaseCollection("SPREE_ORDERS_"+stockLocationId, 200);
+        return stockLocationOrdersCollection.map(convertOrderToDeliveryTime);
     };
-
+    
     const getAllOrdersDeliveryTimes = async () => {
         const stockLocations = await firebaseResourceUtils(admin).getResourcesCollectionStockLocations();
-        const stockLocationsIds = stockLocations.map(stockLocation => stockLocation.id);
+        const stockLocationsIds = stockLocations.map(stockLocation => stockLocation.stockLocationId);
         const stockLocationsOrders = await Promise.all(stockLocationsIds.map(stockLocationId => getStoreOrdersDeliveryTimes(stockLocationId)));
         return stockLocationsOrders.reduce((acc, orders) => acc.concat(orders), []);
     };

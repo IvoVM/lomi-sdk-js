@@ -1,117 +1,97 @@
 const functions = require('firebase-functions');
+const order = require('../utils/mocks/order');
 
 module.exports = (spreeUrl, token, admin, spreeDebugUrl) => {
   const spree = require('../utils/spree/spree')(spreeUrl, token, admin, spreeDebugUrl);
 
-  const ordersSupervisor = functions.pubsub
+  const updateOrderWithShipmentInfo = async (order,shipment) => {
+    console.log("Updating order with shipment info", "number: "+shipment.number, "state: "+shipment.state, "info: "+shipment.id)
+    const docName = 'SPREE_ORDERS_' + order.shipment_stock_location_id + '/' + order.number;
+    const updateObject = {
+      shipment_number: shipment.number,
+      shipment_id: shipment.id,
+      shipment_state: shipment.state,
+      state: shipment.state,
+    }
+    await admin.firestore().doc(docName).update(updateObject);
+  }
+
+  const nextOrderShipmentUntilCurrentStatusEquivalent = async (shipment, order) => {
+    console.log("Next order shipment", "shipmentId: "+shipment.number, "for order: ", order.number, " in: ", order.status )
+    response = false
+    if(order.status >= 4 && shipment.state == 'pending'){
+      response = await spree.markShipmentAsReady(shipment.number).catch((error) => {
+        console.log("Error marking shipment " + shipment.number + " as ready", error)
+      })
+    }
+    if(order.status == 6 && shipment.state == 'ready'){
+      response = await spree.markShipmentAsShipped(shipment.number).catch((error) => {
+        console.log("Error marking shipment " + shipment.number + " as shipped", error)
+        return
+      })
+    }
+
+    console.log(response)
+    return response;
+  }
+
+  const syncroSingleOrder = async (order) => {
+    console.log("Syncronizing order to spree", "number: "+order.number, "state: "+order.state, "info: "+order.id)
+    const shipments = await spree.getShipments(order.number)
+    if(shipments == 'broken'){
+      console.log("Error getting shipments for order", order.number)
+      return
+    } else {
+      console.log("Shipments for order", order.number, "are", shipments?.map(shipment => shipment.number))
+    }
+
+    if(shipments.length > 0){
+      if(order.state != shipments[0].state){
+        await updateOrderWithShipmentInfo(order, shipments[0])
+      }
+      await nextOrderShipmentUntilCurrentStatusEquivalent(shipments[0], order)
+    } else {
+      console.log("No shipments for order", order.number + ": "+order.name + " - SL : ", order.shipment_stock_location_id)
+    }
+      
+
+  }
+  
+  const syncroOrdersToSpree = async (stockLocation) => {
+    console.log("Syncronizing orders to spree stockLocation: "+stockLocation.id)
+    const docsRef = admin.firestore().collection('SPREE_ORDERS_' + stockLocation.id);
+    const ordersDocuments = await docsRef.where('state', 'not-in', ['shipped', 'broken', 'Out of time']).limit(40).get();
+    if(ordersDocuments.empty){
+      console.log('No matching documents for: ', 'SPREE_ORDERS_' + stockLocation.id);
+      return false;
+    }
+    
+    console.log("Orders to syncronize: ", ordersDocuments.size)
+
+    return Promise.all(
+      ordersDocuments.docs.map(
+        (orderDocument) => syncroSingleOrder(orderDocument.data())
+        ));
+  }
+
+  const syncroAllOrdersOfStockLocationToSpree = async (stockLocation) => {
+    await syncroOrdersToSpree(stockLocation)
+  }
+
+  const runtimeOpts = {
+    timeoutSeconds: 300,
+    memory: '1GB'
+  }
+
+  const ordersSupervisor = functions
+    .runWith(runtimeOpts)
+    .pubsub
     .schedule('* * * * *')
     .onRun(async (context) => {
       const stockLocations = (await spree.getStockLocations()).stock_locations;
       stockLocations.forEach(async (stockLocation) => {
-        const docsRef = admin
-          .firestore()
-          .collection('SPREE_ORDERS_' + stockLocation.id);
-        const ordersSnapshot = await docsRef
-          .where('state', 'not-in', ['shipped', 'broken', 'Out of time'])
-          .limit(30)
-          .get();
-        console.log('SPREE_ORDERS_' + stockLocation.id, 'Doc Id');
-        if (ordersSnapshot.empty) {
-          console.log('No matching documents.');
-          return;
-        }
-
-        ordersSnapshot.forEach((doc) => {
-          try {
-            spree.getShipments(doc.id, doc.data().DEBUG).then((shipments) => {
-                console.log(doc.id)              
-
-                if (shipments == 'broken') {
-                    admin
-                    .firestore()
-                    .doc('SPREE_ORDERS_' + stockLocation.id + '/' + doc.id)
-                    .update({
-                      state: 'broken',
-                      status: 6,
-                    }).then(() => {
-                        console.log("Order "+doc.id+" Updated")
-                    })
-                    return
-                }
-
-              shipments.forEach((shipment) => {
-                console.log(shipment.number, 'Shipment number');
-                if (shipment.state == 'shipped' && doc.data().status != 6) {
-                  console.log("Marking shipment as shipped in firebase")
-                  admin
-                    .firestore()
-                    .doc('SPREE_ORDERS_' + stockLocation.id + '/' + doc.id)
-                    .update({
-                      state: 'shipped',
-                      status: 6,
-                    });
-                } else if(doc.data().status == 6 && shipment.state == 'ready'){
-                  console.log("Marking shipment as shipped in spree")
-                  spree.markShipmentAsShipped(shipment.number).then(()=>{
-                    console.log("Shipment "+shipment.number+" marked as shipped")
-                  })
-                } else if(shipment.state == 'ready' && doc.data().status < 4){
-                  console.log("Shipment "+shipment.number+" marking as ready in firebase")
-                    spree.getJourneys(shipment.id).then((journeys) => {
-                      journeys.forEach((journey) => {
-                        console.log(journey.id, stockLocation.id, doc.id, 'Journeys')
-                        admin
-                          .firestore()
-                          .doc('SPREE_ORDERS_' + stockLocation.id + '/' + doc.id)
-                          .update({
-                              status: journey.state.includes(["drop off"]) ? 6 : 5
-                          })
-                        
-                        admin
-                          .firestore()
-                          .doc('SPREE_ORDERS_' + stockLocation.id + '/' + doc.id)
-                          .collection('journeys')
-                          .doc(journey.id.toString())
-                          .set(journey);
-                      });
-                    })
-                    console.log(new Date(doc.data().completed_at.seconds*1000), 'Completed at', doc.data().completed_at);
-                    if(new Date(doc.data().completed_at.seconds*1000).getTime() + 1000 * 60 * 60 * 24 * 4 < new Date().getTime()){
-                    admin
-                    .firestore()
-                    .doc('SPREE_ORDERS_' + stockLocation.id + '/' + doc.id)
-                    .update({
-                      state: 'Out of time',
-                      status: 6,
-                    });
-                    }
-                  }else if(doc.data().status >= 4 && shipment.state != 'ready'){
-                    console.log("Shipment "+shipment.number+" marking as ready in spree")
-                    spree.markShipmentAsReady(shipment.number).then(()=>{
-                      console.log("Shipment "+shipment.number+" marked as ready in spree")
-                      admin
-                        .firestore()
-                        .doc('SPREE_ORDERS_' + stockLocation.id + '/' + doc.id)
-                        .update({
-                          state: "ready"
-                        })
-                    })
-                  }
-                admin
-                  .firestore()
-                  .doc('SPREE_ORDERS_' + stockLocation.id + '/' + doc.id)
-                  .update({
-                    shipment_number: shipment.number,
-                    shipment_id: shipment.id,
-                    shipment_state: shipment.state,
-                  });
-              });
-            });
-          } catch (e) {
-            console.log(e.error);
-          }
+          syncroAllOrdersOfStockLocationToSpree(stockLocation)
         });
-      });
       const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
       await delay(20000);
     });

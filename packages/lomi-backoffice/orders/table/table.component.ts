@@ -76,10 +76,15 @@ export class TableComponent implements OnInit, AfterViewInit {
 
   pickOrder(order: Order) {
     this.ordersProvider.updateOrder(order.number, {
-      status: WAITING_AT_DRIVER_STATE
+      status: WAITING_AT_DRIVER_STATE,
+      picked_at: new Date()
     })
-    this.ordersProvider.setCabifyEstimated(order)
-    this.ordersProvider.setUberEstimated(order)
+    try{
+      this.ordersProvider.setCabifyEstimated(order)
+      this.ordersProvider.setUberEstimated(order)
+    } catch(e){
+      console.log("Error al setear estimados")
+    }
     this.ordersProvider.currentStep++
   }
 
