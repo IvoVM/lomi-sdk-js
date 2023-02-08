@@ -36,6 +36,7 @@ import { OrdersService } from 'packages/lomi-backoffice/providers/lomi/orders.se
 import { GoogleMapsAPIWrapper } from '@agm/core';
 import { StockModule } from 'packages/lomi-backoffice/stock/stock.module';
 
+
 @NgModule({
   declarations: [AppComponent, MainHeaderComponent, NotificationsComponent],
   imports: [

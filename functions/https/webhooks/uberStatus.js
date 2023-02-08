@@ -3,11 +3,12 @@ const cors = require('cors')({ origin: true });
 
 module.exports = (admin) => {
   const journeyUtils = require('../../utils/journeys.js')(admin);
-  const statesUtils = require('../../utils/states.js')();
+  const statesUtils = require('../../utils/states.js');
 
   async function updateJourney(journey) {
     console.log("Updating journey", "id: " + journey.id, "status: " + journey.status)
-    const spreeStatusEquivalent = statesUtils.getSpreeStatusEquivalent(journey.status)
+    const spreeStatusEquivalent = statesUtils.decodeUberStatus(journey.status)
+    journey.trackingUrl = journey.
     journeyUtils.updateJourney(spreeStatusEquivalent,journey);
   }
 
@@ -18,13 +19,14 @@ module.exports = (admin) => {
         const status = req.body.data.status;
         const journeyDoc = admin.firestore().doc('deliveringJourneys/' + journeyId);
         const newStatus = status;
+        const trackingUrl = req.body
         const journey = (await journeyDoc.get()).data();
         const newJourney = {
           ...journey,
           status: newStatus,
           [journey.uberTrip ? 'uberTrip' : 'uberFourWheelsTrip']: req.body.data,
         };
-        await updateJourney(status, newJourney);
+        await updateJourney(newJourney);
         res.send(newStatus);
       });
     }
