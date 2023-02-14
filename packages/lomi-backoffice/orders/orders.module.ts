@@ -9,6 +9,7 @@ import { PickerSelectComponent } from './picker-select/picker-select.component';
 import { OrdersHistoryComponent } from './history/history.component';
 import { ReintegrateOrderComponent } from './components/reintegrate-order/reintegrate-order.component';
 import { GoogleMapsAPIWrapper } from '@agm/core';
+import { IncidentComponent } from './incident/incident.component';
 
 @NgModule({
   declarations: [
@@ -19,11 +20,10 @@ import { GoogleMapsAPIWrapper } from '@agm/core';
     PickerSelectComponent,
     OrdersHistoryComponent,
     ReintegrateOrderComponent,
+    IncidentComponent,
   ],
-  providers: [
-    GoogleMapsAPIWrapper
-  ],
+  providers: [GoogleMapsAPIWrapper],
   imports: [CommonModule, SharedModule],
-  exports: [OrdersComponent, OrderComponent],
+  exports: [OrdersComponent, OrderComponent, IncidentComponent],
 })
 export class OrdersModule {}

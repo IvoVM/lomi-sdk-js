@@ -58,6 +58,7 @@ import { EditAddressComponent } from './modals/edit-address/edit-address.compone
 import { PersistentNotificationComponent } from './components/persistent-notification/persistent-notification.component';
 import {MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS} from '@angular/material/snack-bar';
 import { EditStoreComponent } from './modals/edit-store/edit-store.component';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -113,6 +114,7 @@ import { EditStoreComponent } from './modals/edit-store/edit-store.component';
     MatToolbarModule,
     MatPaginatorModule,
     MatAutocompleteModule,
+    MatTooltipModule,
     AgmCoreModule.forRoot({
       apiKey: environment.gMapsKey,
     }),
@@ -162,6 +164,7 @@ import { EditStoreComponent } from './modals/edit-store/edit-store.component';
     AgmDirectionModule,
     PersistentNotificationComponent,
     MatSnackBarModule,
+    MatTooltipModule
   ],
   providers: [
     {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 3000}},

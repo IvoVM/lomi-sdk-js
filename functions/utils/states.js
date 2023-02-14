@@ -19,12 +19,11 @@ module.exports = (() => {
         4: {
             text: 'store_rider_searching',
             value: "Esperando al repartidor",
-            uber_status: "pending"
         },
         5: {
-            text: 'store_rider_assigned',
+            text: 'store_rider_picked',
             value: "El repartidor va camino a la direccion del cliente",
-            uber_status: "dropoff"
+            uber_status: "pickup_complete"
         },
         6: {
             text: 'store_rider_delivered',
@@ -34,7 +33,7 @@ module.exports = (() => {
         7: {
             text: 'store_rider_canceled',
             value: "El repartidor cancelo el pedido",
-            uber_status: "canceled"
+            uber_status: "returned,canceled"
         }
 
     }
@@ -48,7 +47,8 @@ module.exports = (() => {
     }
 
     function decodeUberStatus(status){
-        return statusDicc[status].uber_status;
+        const index = Object.values(statusDicc).findIndex((statusDicc) => statusDicc.uber_status?.split(",").includes(status))
+        return index ? Object.keys(statusDicc)[index] : null
     }
 
     return {

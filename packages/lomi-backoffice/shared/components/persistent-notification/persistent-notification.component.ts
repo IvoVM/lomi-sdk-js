@@ -49,10 +49,15 @@ export class PersistentNotificationComponent implements OnInit {
     this.audio.volume = 1;
   }
 
+  chooseSoundBasedOnTitle(){
+    switch(this.title){
+      case "El repartidor esta esperando el pedido fuera de la tienda" : return "cabify_near.wav";
+      default: return "new_order.wav"
+    }
+  }
+
   constructor() {
-    this.audio.src = "/assets/audio/cabify_near.wav";
-    this.audio.volume = 1
-    this.playAudio()
+
   }
 
   stopAudio(){
@@ -66,6 +71,9 @@ export class PersistentNotificationComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.audio.src = "/assets/audio/"+this.chooseSoundBasedOnTitle();
+    this.audio.volume = 1
+    this.playAudio()
     this.interval = setInterval(()=>{
       this.playAudio()
     },3000)

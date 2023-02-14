@@ -14,6 +14,8 @@ module.exports = (admin) => {
     const requestCabify = functions.https.onRequest(async (req, res) => {
         cors(req,res,async () => {
             const order = req.body;
+            const vehicleType = req.body.vehicleType
+            console.log("Requesting for ", vehicleType )
             order.ship_address_phone = order.ship_address_phone.replace(/ /g, "")
             /**
             const stockLocations = (await spreeUtils.getStockLocations()).stock_locations;
@@ -40,7 +42,8 @@ module.exports = (admin) => {
 
             const cabifyResponse = await cabify.createCabifyTrip(order, req.body.productId);
             console.log(cabifyResponse)
-            await journeysUtils.createJourney(order.cabifyEstimated.parcel_ids[0], 3 , {
+            const parcelId = vehicleType == "4W" ? order.cabifyEstimated4W.parcel_ids[0] : order.cabifyEstimated.parcel_ids[0]
+            await journeysUtils.createJourney(parcelId, 3 , {
                 cabifyLogisticsTrip: cabifyResponse.data.deliveries,
                 shipment_stock_location_email: order.shipment_stock_location_email,
                 cabify_requester_id: order.cabify_requester_id,

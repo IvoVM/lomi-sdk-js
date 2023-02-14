@@ -17,17 +17,17 @@
                             <div *ngIf="trip && !(trip.kind === 'error')">
                                 <div style="display: flex;flex-direction: column;">
                                     <span *ngIf="trip.deliveryTime_display">
-                                        <b>Total viaje: </b>{{trip.deliveryTime_display}} Minutos
+                                        <b>Total viaje: </b>{{trip.deliveryTime_display | date: "m" }} Minutos
                                     </span>
 
 
                 
                                     <span *ngIf="trip.duration_display">
-                                        <b>Est viaje : </b>{{trip.duration_display}} Mins
+                                        <b>Est viaje : </b>{{trip.duration_display | date: "m"}} Minutos
                                     </span>
                 
                                     <span *ngIf="trip.eta_display">
-                                        <b>Est arrivo en tienda: </b>{{trip.eta_display}}
+                                        <b>Est arrivo en tienda: </b>{{trip.eta_display | date: "m" }} Minutos
                                     </span>
             
                                         

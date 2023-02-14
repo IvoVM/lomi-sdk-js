@@ -15,7 +15,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { EditAddressComponent } from 'packages/lomi-backoffice/shared/modals/edit-address/edit-address.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ProductsService } from 'packages/lomi-backoffice/providers/lomi/products.service';
-
+import { normalizePhone } from 'packages/lomi-backoffice/shared/functions/utils';
 
 @Component({
   selector: 'lomi-order',
@@ -24,7 +24,8 @@ import { ProductsService } from 'packages/lomi-backoffice/providers/lomi/product
 })
 export class OrderComponent implements OnInit {
 
-  
+  public normalizePhone = normalizePhone
+
   markerOptions = {
     origin: {
       icon: 'path-to-icon'

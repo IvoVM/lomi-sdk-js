@@ -27,6 +27,7 @@ const { env } = require('process');
 const { orderInitialState } = require('./fillOrderState');
 const sendNoti = require('./handlers/sendFcmNotifications');
 const spree = require('./utils/spree/spree');
+const Algolia  = require('./libraries/algolia')
 
 admin.initializeApp();
 const firebaseLomiUtils = require('./utils/firebase/resources')(admin);
@@ -206,11 +207,15 @@ exports.addCompletedOrder = functions.https.onRequest(
       });
     }
 
+    Algolia.saveRecordToAlgolia(order)
+
     await sendNoti(
       order.shipment_stock_location_name,
       order.number,
       order.shipment_stock_location_id
     );
+
+
     return response.send('ok');
   }
 );
@@ -268,7 +273,8 @@ exports.evaluateCabify = functions.https.onRequest(
         .firestore()
         .doc(collectionKey + '/' + order.number)
         .update({
-          cabifyEstimated,
+          cabifyEstimated: cabifyEstimated.cabifyEstimated,
+          cabifyEstimated4W: cabifyEstimated.cabifyEstimated4W,
           stops,
         });
       return response.status(200).send(cabifyEstimated);
@@ -564,7 +570,11 @@ exports.creatUberTrip = functions.https.onRequest(async (request, response) => {
             .firestore()
             .doc('deliveringJourneys/' + uberTrip.id)
             .set(journey);
-          await spreeUtils.createJourney(order.shipment_id, journey.id, "3", order.token)
+            try{
+              await spreeUtils.createJourney(order.shipment_id, journey.id, 1, order.token)
+            } catch(e){
+              console.log("Error creating journey uber 2W", )
+            }
           return response.status(200).json(journey);
         }
         return response.status(500).json({
@@ -587,7 +597,6 @@ exports.creatFourWheelsUberTrip = functions.https.onRequest(async (request, resp
         const orderStockLocation = stockLocations.find(
           (loc) => loc.id == order.shipment_stock_location_id
         );
-      console.log(stockLocations)
       const firebaseStockLocation = await firebaseLomiUtils.getStockLocationResource(order.shipment_stock_location_id)
       order.shipment_stock_location_email = firebaseStockLocation.email;
       order.shipment_stock_location_uber_name = firebaseStockLocation.uber_store_name;
@@ -602,12 +611,12 @@ exports.creatFourWheelsUberTrip = functions.https.onRequest(async (request, resp
       const selectedUberDispatcher = order.DEBUG
         ? uberDebugDispatcher
         : uberFourWheelsDispatcher;
-      console.log(
-        selectedUberDispatcher.accessToken,
-        selectedUberDispatcher.customerId,
-        selectedUberDispatcher.clientId
-      );
-      await selectedUberDispatcher.auth();
+        await selectedUberDispatcher.auth();
+        console.log(
+          selectedUberDispatcher.accessToken,
+          selectedUberDispatcher.customerId,
+          selectedUberDispatcher.clientId
+        );
       const uberTrip = await selectedUberDispatcher.createTrip(
         order.stops
           ? order.stops[1].loc.join(',')
@@ -659,7 +668,11 @@ exports.creatFourWheelsUberTrip = functions.https.onRequest(async (request, resp
             .firestore()
             .doc('deliveringJourneys/' + uberTrip.id)
             .set(journey);
-          await spreeUtils.createJourney(order.shipment_id, journey.id, "3", order.token)
+          try{
+            await spreeUtils.createJourney(order.shipment_id, journey.id, 1, order.token)
+          } catch(e){
+            console.log("Error at creating journey")
+          }
           return response.status(200).json(journey);
         }
         return response.status(500).json({

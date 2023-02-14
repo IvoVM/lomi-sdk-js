@@ -19,7 +19,8 @@ module.exports = (admin) => {
     };
 
     const getStockLocationResourceById = async (stockLocationId) => {
-        return this.getBackofficeAppResourcesCollection()["SPREE_ORDERS_"+stockLocationId];
+        const resources = await getResourcesDocument()
+        return resources["SPREE_ORDERS_"+stockLocationId];
     };
 
     return {

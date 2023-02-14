@@ -1,0 +1,20 @@
+<ng-container *ngIf="incidents.length">
+    <div *ngIf="type == 'extended-info'">
+        <div style="padding: 0.5em 1em;display: flex;justify-content: space-between;" *ngFor="let incident of incidents" class="large-incident">
+            <div>
+                <mat-icon>warning</mat-icon>
+                <mat-icon>{{incident.icon}}</mat-icon>
+            </div>
+            <p  style="margin:4px">{{incident.description}}</p>
+        </div>
+    </div>
+    
+    <div style="display:inline;" *ngIf="type == 'condensed-info'">
+        <mat-icon style="margin-bottom: -0.25em;color:red" >warning</mat-icon>
+        <mat-icon
+            matTooltip = "{{incident.description}}"
+            style="margin-bottom: -0.25em;color:red" *ngFor="let incident of incidents">
+            {{incident.icon}}
+        </mat-icon>
+    </div>
+</ng-container>

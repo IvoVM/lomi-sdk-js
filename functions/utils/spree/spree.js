@@ -1,11 +1,11 @@
 const axios = require('axios');
 const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
 const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
-
+const logisticProvidersUtils = require('../logisticProviders.js');
 
 
 module.exports = ( spreeUrl, spreeToken, spreeDebugUrl ) => {
-    
+
     function axiosErrorHandling(error){
         const response = error.response;
         if(!response){
@@ -34,9 +34,12 @@ module.exports = ( spreeUrl, spreeToken, spreeDebugUrl ) => {
                     'Content-Type': 'application/json',
                     
                 }
-                console.log("searching for order", orderId, "IS_DEBUG=", DEBUG)
+                console.log("searching for shipments for", orderId, "IS_DEBUG=", DEBUG)
                 const response = await axios.get(url, { headers }).then(shipments=>{
-                    resolve(shipments.data.shipments)
+                    resolve({
+                        shipments: shipments.data.shipments,
+                        xSpreeOrderToken: shipments.data.token
+                    })
                 }).catch(axiosErrorHandling);
                 if(response?.error){
                     console.log(response.error.status)
@@ -163,18 +166,34 @@ module.exports = ( spreeUrl, spreeToken, spreeDebugUrl ) => {
         })
     }
 
-    function createJourney(shipmentId, journeyId, providerId , xSpreeOrderToken){
+    function createJourney(journey, shipmentId , xSpreeOrderToken){
+        const spreeProviderId = logisticProvidersUtils.normalProviderIdToSpreeProviderId(journey.providerId)
+        console.log("Creating journey in spree for shipment: ", shipmentId, " with provider: ", spreeProviderId)
         return new Promise(async (resolve, reject) => {
             const url = `${spreeUrl}/api/v2/storefront/journeys`;
             const headers = {
-                "X-Spree-Order-Token": `Bearer ${xSpreeOrderToken}`,
+                "X-Spree-Order-Token": `${xSpreeOrderToken}`,
             }
 
             const response = await axios.post(url, {
                 "shipment_id": shipmentId,
-                "journey_id": journeyId,
-                "logistic_operator_id": providerId,
-            }, { headers }).catch((error) => {
+                "logistic_operator_id": spreeProviderId,
+                "tracking_url": journey.trackingUrl,
+                "journey_id": journey.id
+            }, { headers }).catch(axiosErrorHandling);
+            resolve(response.data);
+        })
+    }
+
+    function updateJourney(updatePayload, journeyId, xSpreeOrderToken){
+        console.log("Updating journey in spree for journey: ", journeyId)
+        return new Promise(async (resolve, reject) => {
+            const url = `${spreeUrl}/api/v2/storefront/journeys/${journeyId}`;
+            const headers = {
+                "X-Spree-Order-Token": `${xSpreeOrderToken}`,
+            }
+
+            const response = await axios.patch(url, updatePayload, { headers }).catch((error) => {
                 console.log(error)
                 return error.response
             });
@@ -191,5 +210,6 @@ module.exports = ( spreeUrl, spreeToken, spreeDebugUrl ) => {
         getDebugOrder,
         getJourneys,
         createJourney,
+        updateJourney
     }
 }

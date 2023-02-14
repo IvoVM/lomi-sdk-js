@@ -35,8 +35,13 @@ async function catchCabifyError(error){
 async function setCabifyEstimates(order){
     try{
         await authCabify()
-        order.cabifyEstimated = await estimateCabify(order)
-        return order.cabifyEstimated
+        const estimateds = await estimateCabify(order)
+        order.cabifyEstimated = estimateds.estimateTrip2W
+        order.cabifyEstimated4W = estimateds.estimateTrip4W
+        return {
+          cabifyEstimated: order.cabifyEstimated,
+          cabifyEstimated4W: order.cabifyEstimated4W
+        }
     } catch(e){
         return null
     }
@@ -167,24 +172,38 @@ async function estimateCabify(order){
 
 async function estimateCabifyTripLogisticsStrategy(order){
   console.log(order.cabifyEstimated, "cabifyEstimated")
-  if(order.cabifyEstimated?.parcel_ids){
-    console.log("Updating old parcel", order.cabifyEstimated.parcel_ids[0])
-    const updatedParcel = await updateParcel(order)
+  if(order.cabifyEstimated?.parcel_ids && order.cabifyEstimated.parcel_ids.length == 2){
+    console.log("Updating old parcels", order.cabifyEstimated.parcel_ids)
+    const updatedParcel2W = await updateParcel2W(order)
+    const updatedParcel4W = await updateParcel4W(order)
     console.log("Updated", updatedParcel)
-    if(updatedParcel.parcels){
-      order.parcel_ids = updatedParcel.parcels.map((parcel) => (parcel.id))
+    if(updatedParcel2W.parcels && updatedParcel4W.parcels){
+      order.parcel_ids = [
+        updatedParcel2W.parcels.map((parcel) => (parcel.id)),
+        updatedParcel4W.parcels.map((parcel) => (parcel.id))
+      ]
+    }
+    return {
+      estimateTrip2W: updatedParcel2W,
+      estimateTrip4W: updatedParcel4W,
+      parcel_ids: order.parcel_ids
     }
   }
 
   console.log("Creating new parcel")
-  const createParcelResponse = await createParcel(order)
+  const createParcelResponse = await createParcel2W(order)
+  const createParcel4WResponse = await createParcel4W(order)
   console.log("Created new parcel", createParcelResponse)
 
   if(createParcelResponse.parcels){
-    order.parcel_ids = createParcelResponse.parcels.map((parcel) => (parcel.id))
+    order.parcel_ids = 
+    [ ...createParcelResponse.parcels.map((parcel) => (parcel.id)),  
+      ...createParcel4WResponse.parcels.map((parcel) => (parcel.id))
+    ]
   }
-  const estimateTrip = await estimateCabifyTripLogistics(order.parcel_ids)
-  return { ...estimateTrip, parcel_ids: order.parcel_ids }
+  const estimateTrip2W = await estimateCabifyTripLogistics([order.parcel_ids[0]])
+  const estimateTrip4W = await estimateCabifyTripLogistics([order.parcel_ids[1]])
+  return { estimateTrip2W: {...estimateTrip2W, parcel_ids: [order.parcel_ids[0]]}, estimateTrip4W: {...estimateTrip4W,  parcel_ids: [order.parcel_ids[1]]}, parcel_ids: order.parcel_ids }
 }
 
 async function estimateCabifyTripLogistics(parcel_ids){
@@ -200,12 +219,12 @@ async function estimateCabifyTripLogistics(parcel_ids){
     return estimateTrip.data
 }
 
-async function updateParcel(order){
+async function updateParcel2W(order){
   console.log("Updating parcel", accessToken, order.number, order.cabifyEstimated.parcel_ids[0])
   const updatedParcel = await axios.put(
     ProductionCabify+"v1/parcels/"+order.cabifyEstimated.parcel_ids[0],
     {
-      "external_id": order.number,
+      "external_id": order.number + "_2W",
       "pickup_info": {
        "addr": order.shipment_stock_location_name,
        "contact": {
@@ -249,14 +268,116 @@ async function updateParcel(order){
   return updatedParcel.data
 }
 
-async function createParcel(order){
+async function updateParcel4W(order){
+  console.log("Updating parcel", accessToken, order.number, order.cabifyEstimated.parcel_ids[0])
+  const updatedParcel = await axios.put(
+    ProductionCabify+"v1/parcels/"+order.cabifyEstimated.parcel_ids[1],
+    {
+      "external_id": order.number + "_4W",
+      "pickup_info": {
+       "addr": order.shipment_stock_location_name,
+       "contact": {
+        "name": order.shipment_stock_location_uber_name,
+        "phone": normalizePhone(order.shipment_stock_location_phone)
+       },
+       "instr": order.shipment_stock_location_note,
+       "loc": {
+        "lat": order.stops[0].loc[0],
+        "lon": order.stops[0].loc[1]
+       }
+      },
+      "dropoff_info": {
+       "addr": order.ship_address_address1,
+       "contact": {
+        "name": order.name,
+        "phone": normalizePhone(order.ship_address_phone)
+       },
+       "instr": order.ship_address_note,
+       "loc": {
+        "lat": order.stops[1].loc[0],
+        "lon": order.stops[1].loc[1]
+       }
+      },
+      "dimensions": {
+        "height": 80,
+        "length": 80,
+        "width": 45,
+        "unit": "cm"
+       },
+       "weight": {
+        "value": parseInt(5000 * order.line_items.length),
+        "unit": "g"
+       }
+     },
+  {
+    headers:{
+      "Authorization" : "Bearer " + accessToken,
+    }
+  }).catch(catchCabifyError)
+  return updatedParcel.data
+}
+
+async function createParcel4W(order){
   console.log("Creating parcel", accessToken, order.number)
   const parcel = await axios.post(
     ProductionCabify+"v1/parcels",
     {
       "parcels": [
        {
-        "external_id": order.number,
+        "external_id": order.number + "_4W",
+        "pickup_info": {
+         "addr": order.shipment_stock_location_name,
+         "contact": {
+          "name": order.shipment_stock_location_uber_name,
+          "phone": normalizePhone(order.shipment_stock_location_phone)
+         },
+         "instr": order.shipment_stock_location_note,
+         "loc": {
+          "lat": order.stops[0].loc[0],
+          "lon": order.stops[0].loc[1]
+         }
+        },
+        "dropoff_info": {
+         "addr": order.ship_address_address1,
+         "contact": {
+          "name": order.name,
+          "phone": normalizePhone(order.ship_address_phone)
+         },
+         "instr": order.ship_address_note,
+         "loc": {
+          "lat": order.stops[1].loc[0],
+          "lon": order.stops[1].loc[1]
+         }
+        },
+        "dimensions": {
+         "height": 80,
+         "length": 80,
+         "width": 45,
+         "unit": "cm"
+        },
+        "weight": {
+         "value": parseInt(5000 * order.line_items.length),
+         "unit": "g"
+        }
+       },
+      ]
+     },
+     {
+      headers:{
+          'Authorization' : 'Bearer ' + accessToken
+      }
+    }).catch(catchCabifyError)
+     return parcel.data
+}
+
+async function createParcel2W(order){
+  console.log("Creating parcel", accessToken, order.number)
+  const parcel = await axios.post(
+    ProductionCabify+"v1/parcels",
+    {
+      "parcels": [
+       {
+        "external_id": order.number + "_2W",
         "pickup_info": {
          "addr": order.shipment_stock_location_name,
          "contact": {
@@ -284,11 +405,11 @@ async function createParcel(order){
         "dimensions": {
          "height": 40,
          "length": 15,
-         "width": parseInt(25 * order.line_items.length / 3),
+         "width": 30,
          "unit": "cm"
         },
         "weight": {
-         "value": parseInt(2000 * order.line_items.length / 3),
+         "value": 9000,
          "unit": "g"
         }
        },

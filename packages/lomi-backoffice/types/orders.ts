@@ -38,6 +38,10 @@ export type placedOrder = {
 	reintegratedItems: LineItem[]
 	journeys?: Journey[]
 
+	cabifyEstimated: any,
+	uberFourWheelsEstimated: any,
+	uberEstimated: any,
+
 	DEBUG: boolean
 } 
 

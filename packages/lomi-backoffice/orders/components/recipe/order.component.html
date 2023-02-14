@@ -1,9 +1,9 @@
 <mat-drawer-container *ngIf="order" class="example-container" autosize style="height: 100%">
   
-  
   <div *ngIf="order" class="example-sidenav-content p" style="padding-bottom: 10em;">
     
     <div class="half-card" style="padding:2em">
+      <lomii-incident [order]="order" [type]="'extended-info'"></lomii-incident>
       <mat-tab-group style="width: 100%;">
         <mat-tab label="Productos">
           <div class="display-info-card">
@@ -21,6 +21,10 @@
           <div class="display-info-card">
           <div class="title">
             <h1>Dirección de envio</h1>
+            <div class="sendable_operators">
+              <img *ngIf="order.uberEstimated" class="{{order.uberEstimated ? '' : 'logistic-icon-disable'}} logistic-icon" src="assets/images/uber.png">
+              <img *ngIf="order.cabifyEstimated" class="{{order.cabifyEstimated ? '' : 'logistic-icon-disable'}} logistic-icon" src="assets/images/cabify.png">
+            </div>
             <button (click)="createTrip(order)" style="margin:1em 0;" mat-raised-button color="accent">Solicitar Envio de productos                     <mat-icon style="transform: scale(0.9);">local_shipping</mat-icon>            </button>
             <button (click)="editAddress()" style="margin:1em 8px;" mat-raised-button color="accent">Editar dirección <mat-icon style="transform: scale(0.9);">pin_drop</mat-icon></button>
             <button (click)="completeOrder(order)" style="margin:1em 8px;" mat-raised-button color="accent" *ngIf="user.userRol == 1 && order.status != 6">Marcar pedido como enviado<mat-icon style="margin-left:0.4em;transform: scale(0.9);">verified</mat-icon></button>
@@ -83,7 +87,7 @@
             </div>
             <div class="section-separator">
               <p class="title-grid">Teléfono:</p>
-              <p class="info-grid">{{order.ship_address_phone}}</p>
+              <p class="info-grid">{{normalizePhone(order.ship_address_phone)}}</p>
             </div>
             <div class="section-separator">
               <p class="title-grid">Notas:</p>

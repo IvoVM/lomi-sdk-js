@@ -14,7 +14,7 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
   public requestingOperator = false;
   public operators = [
     {
-      name: "Cabify",
+      name: "Cabify moto",
       icon: "cabify.png",
       trips : (order:any)=> {
         if(!order.cabifyEstimated){
@@ -22,7 +22,7 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
         }
         if(order.cabifyEstimated.errors){
           return [{
-            operator_name: "Cabify",
+            operator_name: "Cabify Moto",
             kind:"error",
             error: order.cabifyEstimated.errors[0].friendly_message
           }]
@@ -40,12 +40,48 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
             duration_display, eta_display, cost_display, product_type, deliveryTime_display, product_id
           }
         }) : [{
-          eta_display: order.cabifyEstimated.eta_to_delivery,
-          duration_display: order.cabifyEstimated.eta_to_delivery / 60,
-          deliveryTime_display: order.cabifyEstimated.eta_to_delivery - order.cabifyEstimated.eta_to_pickup,
+          eta_display: order.cabifyEstimated.eta_to_pick_up * 1000,
+          duration_display: order.cabifyEstimated.eta_to_delivery * 1000,
+          deliveryTime_display: ((order.cabifyEstimated.eta_to_delivery + order.cabifyEstimated.eta_to_pick_up )* 1000),
+          cost_display: order.cabifyEstimated.price_total.amount,
+          product_type: "Cabify moto",
+          product_id: "cabify_moto"
+        }]
+      },
+    },
+    {
+      name: "Cabify auto",
+      icon: "cabify.png",
+      trips : (order:any)=> {
+        if(!order.cabifyEstimated){
+          return [{}]
+        }
+        if(order.cabifyEstimated.errors){
+          return [{
+            operator_name: "Cabify Auto",
+            kind:"error",
+            error: order.cabifyEstimated.errors[0].friendly_message
+          }]
+        }
+        console.log(order.cabifyEstimated)
+        
+        return order.cabifyEstimated.data?.estimates ? order.cabifyEstimated.data.estimates.map((cabifyEstimated:any)=>{
+          const duration_display = cabifyEstimated.duration * 1000
+          const eta_display = cabifyEstimated.eta?.formatted
+          const cost_display = cabifyEstimated.priceBase.amount
+          const product_type = cabifyEstimated.product.name.es
+          const product_id = cabifyEstimated.product.id
+          const deliveryTime_display = (cabifyEstimated.eta.max + cabifyEstimated.duration) * 1000
+          return {
+            duration_display, eta_display, cost_display, product_type, deliveryTime_display, product_id
+          }
+        }) : [{
+          eta_display: (order.cabifyEstimated.eta_to_pick_up* 1000),
+          duration_display: (order.cabifyEstimated.eta_to_delivery * 1000),
+          deliveryTime_display: ((order.cabifyEstimated.eta_to_delivery + order.cabifyEstimated.eta_to_pick_up )* 1000),
           cost_display: order.cabifyEstimated.price_total.amount,
           product_type: "Cabify",
-          product_id: "cabify"
+          product_id: "cabify_auto"
         }]
       },
     },
@@ -59,10 +95,10 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
 
         const uberEstimated = {...order.uberEstimated}
         uberEstimated.operator_name = "Uber Moto"
-        uberEstimated.duration_display = uberEstimated.duration - uberEstimated.pickup_duration,
-        uberEstimated.eta_display = uberEstimated.pickup_duration + " minutos",
+        uberEstimated.duration_display = (uberEstimated.duration - uberEstimated.pickup_duration)* 60 * 1000,
+        uberEstimated.eta_display = uberEstimated.pickup_duration * 60 * 1000,
         uberEstimated.cost_display = uberEstimated.fee / 100
-        uberEstimated.deliveryTime_display = uberEstimated.duration
+        uberEstimated.deliveryTime_display = uberEstimated.duration * 60 * 1000
         return uberEstimated ? [uberEstimated] : [{}]
       }
     },
@@ -76,29 +112,11 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
 
         const uberEstimated = {...order.uberFourWheelsEstimated}
         uberEstimated.operator_name = "Uber Auto"
-        uberEstimated.duration_display = uberEstimated.duration - uberEstimated.pickup_duration,
-        uberEstimated.eta_display = uberEstimated.pickup_duration + " minutos",
+        uberEstimated.duration_display = (uberEstimated.duration - uberEstimated.pickup_duration) * 60 * 1000,
+        uberEstimated.eta_display = uberEstimated.pickup_duration * 60 * 1000,
         uberEstimated.cost_display = uberEstimated.fee / 100
-        uberEstimated.deliveryTime_display = uberEstimated.duration
+        uberEstimated.deliveryTime_display = uberEstimated.duration * 60 * 1000
         return uberEstimated ? [uberEstimated] : [{}]
-      }
-    },
-    {
-      name: "Hermex",
-      icon: "hermex.png",
-      trips: (order:any)=>{
-       const hermexEstimated = order.cabifyEstimated || order.uberEstimated ? 
-          order.uberEstimated?
-          {
-            duration_display: order.uberEstimated.duration,
-          } :
-          {
-            duration_display: order.cabifyEstimated[0] ? (Math.round(order.cabifyEstimated[0].duration / 60)) : 0
-          }
-        : {
-          duration_display: 0,
-        }
-        return [hermexEstimated]
       }
     }
   ]
@@ -141,6 +159,7 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
         this.listenForOperator,
         (err)=>{
           console.log(err)
+          this.snackBar.open("No se pudo solicitar el viaje, intente nuevamente");
           this.requestingOperator = false;
         }
         ); break;
@@ -152,7 +171,7 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
           this.requestingOperator = false;
         }
         ); break;
-      case "Hermex": this._orders.createHermexTrip(order).subscribe(
+      case "Cabify moto": this._orders.createCabifyTrip({...order, vehicleType: "2W"}).subscribe(
         this.listenForOperator,
         (err)=>{
           console.log(err)
@@ -160,7 +179,7 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
           this.requestingOperator = false;
         }
       ); break;
-      case "Cabify": this._orders.createCabifyTrip({...order, productId: selectedTrip.product_id}).subscribe(
+      case "Cabify auto": this._orders.createCabifyTrip({...order, vehicleType: "4W" }).subscribe(
         this.listenForOperator,
         (err)=>{
           console.log(err)

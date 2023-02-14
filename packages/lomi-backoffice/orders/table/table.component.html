@@ -1,8 +1,8 @@
 
-<table mat-table [dataSource]="componentOrders">
+<table mat-table [dataSource]="componentOrders" *ngIf="componentOrders.length > 0">
     <ng-container matColumnDef="number">
         <th mat-header-cell *matHeaderCellDef> Nº Orden </th>
-        <td mat-cell *matCellDef="let order" [routerLink]="['/orders/'+order.number]" class="hoverable"> {{order.number}} </td>
+        <td mat-cell *matCellDef="let order" [routerLink]="['/orders/'+order.number]" class="hoverable"> <lomii-incident [order]="order" ></lomii-incident>{{order.number}} </td>
     </ng-container>
 
     <ng-container matColumnDef="actions">
@@ -94,3 +94,9 @@
     <tr mat-row *matRowDef="let row; columns: columnsToDisplay" class="{{ (row.completed_at.seconds + secondsToAlert) * 1000  < currentTime && state != 6 && state != undefined ? (row.completed_at.seconds + secondsToWarning) * 1000 < currentTime? 'red-bg' : 'yellow-bg'  : '' }}">
     </tr>
   </table>
+  
+  <div style="display: flex;width: 100%;height: 10em;align-items: center;justify-content: center;" *ngIf="componentOrders.length == 0">
+    <h1 >
+        No hay ordenes para mostrar
+    </h1>
+  </div>

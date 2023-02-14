@@ -1,5 +1,15 @@
 @import './theme.scss';
 
+.logistic-icon{
+  height: 3em;
+  width: 3em;
+  margin-right: 1em;
+  margin-top: 1em;
+  &-disable{
+    opacity: 0.4;
+  }
+}
+
 .p{
   padding: 16px;
   &-t{

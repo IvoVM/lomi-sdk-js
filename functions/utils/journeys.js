@@ -3,20 +3,20 @@ const spreeUrl = 'https://lomi.cl/';
 const token = '8b9c307dd89928cc60e8e59d2233dbafc7618f26c52fa5d3';
 const spreeDebugUrl = 'https://lomi-dev.herokuapp.com/';
 const spreeUtils = require('../utils/spree/spree')(spreeUrl, token, spreeDebugUrl);
-const statusUtils = require('../utils/status');
+const statusUtils = require('../utils/states');
 
 module.exports = (admin) => {
 
     async function setStatusInDocWithTimestamp(status, orderDoc){
         console.log("Setting status in doc with timestamp", "status: "+status, "doc: "+orderDoc.id)
-        const statusText = getStatusText(status);
+        const statusText = statusUtils.getStatusText(status);
         await orderDoc.update({
             status: status,
-            [statusUtils[statusText]+"_at"]: new Date()
+            [statusText+"_at"]: new Date()
         });
     }
 
-    async function syncroJourney(journey){
+    async function syncroJourneyWithFirebase(journey){
         console.log("Syncronizing journey", "id: "+journey.id, "status: "+journey.status)
         const orderJourneyDoc = admin.firestore().collection('SPREE_ORDERS_'+journey.stock_location_id).doc(journey.orderNumber).collection("journeys").doc(journey.id);
         const deliveringJourneyDoc = admin.firestore().collection('deliveringJourneys').doc(journey.id);
@@ -28,14 +28,43 @@ module.exports = (admin) => {
         )
     }
 
+    async function syncroJourneyWithSpree(journey){
+        console.log("Syncronizing journey with spree", "id: "+journey.id, "status: "+journey.status)
+        const shipments = await spreeUtils.getShipments(journey.orderNumber);
+        const uniqueShipment = shipments.shipments[0]
+        console.log("Shipments is", uniqueShipment.number, "for order", journey.orderNumber)
+        const spreeJourneys = await spreeUtils.getJourneys(uniqueShipment.id)
+        const spreeJourney = spreeJourneys.find((spreeJourney) => journey.id === spreeJourney.journey_id)
+        if(spreeJourney){
+            console.log("Spree journey is", spreeJourney.id, "for shipment", uniqueShipment.number)
+            const updatePayload = {
+                state: journey.status
+            }
+            spreeUtils.updateJourney(updatePayload , spreeJourney.id, shipments.xSpreeOrderToken)
+        } else {
+            console.log("XSpreeOrderToken is", shipments.xSpreeOrderToken, "provider is: ",journey.providerId)
+            spreeUtils.createJourney(journey, uniqueShipment.id, shipments.xSpreeOrderToken)
+        }
+    }
+
     async function updateJourney(status, journey){
         const orderDoc = admin.firestore().collection('SPREE_ORDERS_'+journey.stock_location_id).doc(journey.orderNumber);
         if(status){
             await setStatusInDocWithTimestamp(status, orderDoc);
+            if(status === 6 || status === 7){
+                await finishJourney(journey);
+            }
         }
-        await syncroJourney(journey);
+        await Promise.all([
+            await syncroJourneyWithFirebase(journey),
+            await syncroJourneyWithSpree(journey)
+        ])
     }
 
+    async function finishJourney(journey){
+        const deliveringJourneyDoc = admin.firestore().collection('deliveringJourneys').doc(journey.id);
+        deliveringJourneyDoc.delete()
+    }
 
     async function createJourney(journeyId, providerId, additionalData, order){
         const db = admin.firestore();
@@ -54,8 +83,7 @@ module.exports = (admin) => {
             stock_location_id: order.shipment_stock_location_id,
             ...additionalData
         })
-        await spreeUtils.createJourney(order.shipment_id, "4", order.token);
-        return journeyRef.set({
+        const journey = await journeyRef.set({
             id: journeyId,
             providerId: providerId,
             orderNumber: order.number,
@@ -65,6 +93,12 @@ module.exports = (admin) => {
             stock_location_id: order.shipment_stock_location_id,
             ...additionalData
         })
+        await spreeUtils.createJourney({
+            providerId: providerId,
+            id: journeyId,
+            tracking_url: "Sin url de tracking"
+        },order.shipment_id, order.token);
+        return journey
     }
 
     async function cancelJourney(journeyId, order){
@@ -80,21 +114,6 @@ module.exports = (admin) => {
             updatedAt: new Date(),
         })
         return journeyRef.delete()
-    }
-
-    async function finishJourney(journeyId, order){
-        const db = admin.firestore();
-        const journeyRef = db.collection('deliveringJourneys').doc(journeyId);
-        const orderJourneyRef = db.collection('SPREE_ORDERS_'+order.shipment_stock_location_id).doc(order.number).collection("journeys").doc(journeyId);
-        const orderRef = db.collection('SPREE_ORDERS_'+order.shipment_stock_location_id).doc(order.number)
-        await orderRef.update({
-            status: 8,
-        })
-        await orderJourneyRef.update({
-            status: "shipped",
-            updatedAt: new Date(),
-        })
-        return journeyRef.delete();
     }
 
     return {
