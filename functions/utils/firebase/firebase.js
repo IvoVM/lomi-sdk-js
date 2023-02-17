@@ -1,9 +1,10 @@
 module.exports = (admin) => {
-    const getFirebaseCollection = async (collectionName, limit = false) => {
-        let collectionRef = admin.firestore().collection(collectionName, limit = false);
+    const getFirebaseCollection = async (collectionName, limit = 100) => {
+        let collectionRef = admin.firestore().collection(collectionName);
+        console.log("Getting collection with limit setted to ", limit)
         const collection = await collectionRef
         .orderBy('completed_at','desc')
-        .limit(100)
+        .limit(limit)
         .get();
         console.log("Getting collection with name: ", collectionName, "and size:", collection.size)
         return collection.docs.map(doc => doc.data());

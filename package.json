@@ -31,6 +31,8 @@
     "@slack/events-api": "^3.0.1",
     "@slack/web-api": "^6.8.0",
     "agm-direction": "^0.8.10",
+    "algoliasearch": "^4.14.3",
+    "angular-instantsearch": "^4.4.0",
     "axios": "^0.26.1",
     "dotenv": "^16.0.3",
     "firebase": "^9.9.0",

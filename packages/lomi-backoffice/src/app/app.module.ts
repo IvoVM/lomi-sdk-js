@@ -35,6 +35,7 @@ import { NotificationsComponent } from './notifications/notifications.component'
 import { OrdersService } from 'packages/lomi-backoffice/providers/lomi/orders.service';
 import { GoogleMapsAPIWrapper } from '@agm/core';
 import { StockModule } from 'packages/lomi-backoffice/stock/stock.module';
+import { NgAisModule } from 'angular-instantsearch';
 
 
 @NgModule({
@@ -68,6 +69,7 @@ import { StockModule } from 'packages/lomi-backoffice/stock/stock.module';
     SettingsModule,
     JourneysModule,
     AngularFireMessagingModule,
+    NgAisModule.forRoot()
   ],
   exports: [],
   providers: [JourneysService, UserService, NotificationsService, OrdersService, GoogleMapsAPIWrapper],

@@ -1,18 +1,17 @@
 
 <mat-card class="line-item" style="width: 97%">
     <div class="flex" style="display: flex;justify-content: space-between;align-items: center;width: 100%;">
-        <div class="body">
-            <h4 style="margin-bottom:0">{{lineItem.variant ? lineItem.variant.name : lineItem.name}}</h4>
+        <div class="number-count" style="width: 2em;display: flex;justify-content: center;align-items: center; width: 10em;">
+            <b><h1>{{lineItem.quantity}}</h1></b>
+        </div>
+        <div class="body" style="width:80%">
+            <h2 style="margin-bottom:0">{{lineItem.variant ? lineItem.variant.name : lineItem.name}}</h2>
             <h5 *ngIf="lineItem.sku" style="margin-top:0;opacity: 0.6;">SKU: <b>{{lineItem.sku}}</b></h5>
-            <h5 style="margin:0">Valor unidad: <b>${{lineItem.price}}</b></h5>
-            <h5 style="margin:0">Total : <b>${{totalItem}}</b></h5>
-            <ng-container *ngIf="lineItem.variant">
-                <h5 style="margin:0">Nombre variante: <b>{{lineItem.variant.option_values[0].name}}</b></h5>
-
-            </ng-container>
+            <h5 style="margin:0">ID: <b>{{lineItem.variant.id}}</b></h5>
+            <h5 style="margin:0">Productor : <b>{{lineItem.producer_name}}</b></h5>
         </div>
         <div class="img-container">
-            <img *ngIf="lineItem.variant?.images.length || lineItem.img_url" style="width: 10em;margin: 0;" mat-card-image src="{{!lineItem.img_url ? lineItem.variant.images[0].mini_url : lineItem.img_url}}">
+            <img *ngIf="lineItem.variant?.images.length || lineItem.img_url" style="width: 15em;margin: 0;" mat-card-image src="{{!lineItem.img_url ? lineItem.variant.images[0].mini_url : lineItem.img_url}}">
         </div>
     </div>
 
