@@ -31,12 +31,12 @@ async function getOrderStops(order, forceRecalculate = false){
   if(order.stops && !forceRecalculate){
     return order.stops
   }
-  const addressForGeocodingStart = order.shipment_stock_location_name  + ", " + order.stock_location_city + "," + order.ship_address_state + ", " +order.ship_address_country
+  const addressForGeocodingStart = order.shipment_stock_location_name  + ", " + order.shipment_stock_location_city + "," + order.ship_address_state + ", " +order.ship_address_country
   const endAddressForGeoCoding = order.ship_address_address1 + ", " + order.ship_address_county + ", " +order.ship_address_state + ", " +order.ship_address_country
   console.log(addressForGeocodingStart, endAddressForGeoCoding)
   const endAddressGeocode = await geocoder.geocode(endAddressForGeoCoding);
   const startAddressGeocode =  await(geocoder.geocode(addressForGeocodingStart))
-  console.log(startAddressGeocode, endAddressGeocode, order.shipment_stock_location_name)
+  console.log("Formatted Address",startAddressGeocode, endAddressGeocode, order.shipment_stock_location_name)
   const stops = [
       {...stop},
       {...stop}

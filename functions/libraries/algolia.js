@@ -7,6 +7,7 @@ function saveRecordToAlgolia(record){
     return index.saveObject(record).wait()
 }
 
+
 module.exports = {
     saveRecordToAlgolia
 }

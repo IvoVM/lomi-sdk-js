@@ -59,6 +59,7 @@ import { PersistentNotificationComponent } from './components/persistent-notific
 import {MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS} from '@angular/material/snack-bar';
 import { EditStoreComponent } from './modals/edit-store/edit-store.component';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import { NgAisModule } from 'angular-instantsearch';
 
 @NgModule({
   declarations: [
@@ -119,7 +120,9 @@ import {MatTooltipModule} from '@angular/material/tooltip';
       apiKey: environment.gMapsKey,
     }),
     AgmDirectionModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    NgAisModule.forRoot()
+
   ],
   exports: [
     MatCardModule,
@@ -164,7 +167,9 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     AgmDirectionModule,
     PersistentNotificationComponent,
     MatSnackBarModule,
-    MatTooltipModule
+    MatTooltipModule,
+    NgAisModule
+
   ],
   providers: [
     {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 3000}},

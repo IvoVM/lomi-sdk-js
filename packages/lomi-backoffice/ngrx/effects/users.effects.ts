@@ -25,7 +25,7 @@ export class UsersEffects {
               where('name', '>=', action.payload.email ? action.payload.email: ''),
               where('name', '<=', (action.payload.email ? action.payload.email : '') + '\uf8ff')] : []),
             //Limit
-            limit(action.payload.per_page ? action.payload.per_page : 25),
+            limit(action.payload.per_page ? action.payload.per_page : 100),
             )
             if(action.payload.stock_location_id && action.payload.stock_location_id != -1){
                 queryDefinition = query(
@@ -38,7 +38,7 @@ export class UsersEffects {
                     where('name', '<=', (action.payload.email ? action.payload.email : '') + '\uf8ff')] : []),
                     where('stockLocationId', '==', action.payload.stock_location_id),
                   //Limit
-                  limit(action.payload.per_page ? action.payload.per_page : 25),
+                  limit(action.payload.per_page ? action.payload.per_page : 100),
                   )
             }
             const newObs = new Observable(observer => {

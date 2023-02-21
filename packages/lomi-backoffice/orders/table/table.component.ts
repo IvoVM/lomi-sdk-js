@@ -17,6 +17,7 @@ import { UtilsTime } from 'packages/lomi-backoffice/shared/utils/dateTime';
 import { ReintegrateOrderComponent } from '../components/reintegrate-order/reintegrate-order.component';
 import { Route, Router } from '@angular/router';
 import { Firestore } from '@angular/fire/firestore';
+import { SearcherService } from 'packages/lomi-backoffice/src/app/orders/searcher.service';
 
 @Component({
   selector: 'lomii-table',
@@ -41,6 +42,7 @@ export class TableComponent implements OnInit, AfterViewInit {
   timeLeft: any = [{}]
   totalTime: any = [{}]
   @Input() state: any = null;
+  @Input() records: any = [];
   @Output() recordsFetched = new EventEmitter<number>();
   unsubscribableStore:any;
 
@@ -52,6 +54,7 @@ export class TableComponent implements OnInit, AfterViewInit {
     private _bottomSheet: MatBottomSheet,
     private store: Store<BackofficeState>,
     private router : Router,
+    private searchService: SearcherService
   ) {
 
   }
@@ -203,6 +206,7 @@ export class TableComponent implements OnInit, AfterViewInit {
     return []
   }
 
+
   getJourneys() {
     this.store.select("journeys").subscribe((journeys: EntityState<Journey>) => {
       this.journeys = journeys
@@ -230,6 +234,9 @@ export class TableComponent implements OnInit, AfterViewInit {
     }
     if (this.state == undefined) {
       this.columnsToDisplay = ["number", "name", "completed_at", "state", "shipment_state"]
+    }
+    if(this.records.length){
+      this.columnsToDisplay = ["number", "name", "completed_at", "shipment_stock_location_name"]
     }
 
     this.getJourneys()

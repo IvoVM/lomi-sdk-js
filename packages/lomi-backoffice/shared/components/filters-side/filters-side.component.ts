@@ -8,6 +8,7 @@ import { currentUserSelector } from 'packages/lomi-backoffice/ngrx/reducers/user
 import { BackofficeState } from 'packages/lomi-backoffice/ngrx';
 import { Unsubscribable } from 'rxjs';
 import { App } from 'packages/lomi-backoffice/types/app';
+import { SearcherService } from 'packages/lomi-backoffice/src/app/orders/searcher.service';
 
 export type Filter = {
   name: string;
@@ -68,6 +69,7 @@ export class FiltersSideComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private store:Store<BackofficeState>,
+    public searcherService: SearcherService
   ) {
     const formGroup = this.filters.reduce((acc:any = {},filter)=>{
       if(!acc.name){

@@ -564,6 +564,7 @@ exports.creatUberTrip = functions.https.onRequest(async (request, response) => {
             stock_location_id: order.shipment_stock_location_id,
             uberTrip: uberTrip,
             providerId: 1,
+            trackingUrl: "No Tracking"
           };
           await ref.collection('journeys').doc(uberTrip.id).set(journey);
           await admin
@@ -571,7 +572,7 @@ exports.creatUberTrip = functions.https.onRequest(async (request, response) => {
             .doc('deliveringJourneys/' + uberTrip.id)
             .set(journey);
             try{
-              await spreeUtils.createJourney(order.shipment_id, journey.id, 1, order.token)
+              await spreeUtils.createJourney(journey, order.shipment_id, order.token)
             } catch(e){
               console.log("Error creating journey uber 2W", )
             }
@@ -662,6 +663,7 @@ exports.creatFourWheelsUberTrip = functions.https.onRequest(async (request, resp
             stock_location_id: order.shipment_stock_location_id,
             uberFourWheelsTrip: uberTrip,
             providerId: 1,
+            trackingUrl: "No Tracking"
           };
           await ref.collection('journeys').doc(uberTrip.id).set(journey);
           await admin
@@ -669,7 +671,7 @@ exports.creatFourWheelsUberTrip = functions.https.onRequest(async (request, resp
             .doc('deliveringJourneys/' + uberTrip.id)
             .set(journey);
           try{
-            await spreeUtils.createJourney(order.shipment_id, journey.id, 1, order.token)
+            await spreeUtils.createJourney(journey, order.shipment_id , order.token)
           } catch(e){
             console.log("Error at creating journey")
           }

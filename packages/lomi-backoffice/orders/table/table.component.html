@@ -1,5 +1,5 @@
 
-<table mat-table [dataSource]="componentOrders" *ngIf="componentOrders.length > 0">
+<table mat-table [dataSource]="records.length ? records : componentOrders" *ngIf="componentOrders.length > 0">
     <ng-container matColumnDef="number">
         <th mat-header-cell *matHeaderCellDef> Nº Orden </th>
         <td mat-cell *matCellDef="let order" [routerLink]="['/orders/'+order.number]" class="hoverable"> <lomii-incident [order]="order" ></lomii-incident>{{order.number}} </td>
@@ -39,7 +39,10 @@
 
     <ng-container matColumnDef="completed_at">
         <th mat-header-cell *matHeaderCellDef> Hora del pedido </th>
-        <td mat-cell *matCellDef="let order" > {{order.completed_at.seconds*1000 | date:'dd/MM HH:mm:ss'}} </td>
+        <td mat-cell *matCellDef="let order" > 
+            <span *ngIf="order.completed_at.seconds">{{ order.completed_at.seconds*1000 | date:'dd/MM HH:mm:ss' }} </span>
+            <span *ngIf="!order.completed_at.seconds">{{ order.completed_at | date:'dd/MM HH:mm:ss' }} </span>
+        </td>
     </ng-container>
 
     <ng-container matColumnDef="total_time">
@@ -88,6 +91,11 @@
     <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef> Nombre </th>
         <td mat-cell *matCellDef="let order" > {{order.name}}    </td>
+    </ng-container>
+
+    <ng-container matColumnDef="shipment_stock_location_name">
+        <th mat-header-cell *matHeaderCellDef> Stock location </th>
+        <td mat-cell *matCellDef="let order; let i = index" > {{order.shipment_stock_location_name }}</td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>

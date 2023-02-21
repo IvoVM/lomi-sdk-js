@@ -4,10 +4,11 @@
                 <lomii-filters-side></lomii-filters-side>
     </mat-drawer>
 
-
+    
     <div class="example-sidenav-content p" *ngIf="ordersProvider.orders">
         <div style="display:flex;flex-direction: row;align-items: flex-end;justify-content: space-between;margin: 1em 0;width:100%;max-width: 1080px;">
             <h1 style="margin:0 !important"><b>Pedidos</b></h1>
+            <lomii-searcher></lomii-searcher>
             <div class="actions" style="display: flex;flex-direction: row;">
                 <button (click)="drawer.toggle()" mat-raised-button color="accent">Filtros</button>
             </div>
@@ -15,7 +16,7 @@
 
         <div class="half-card shadow" style="padding: 0.5em 1em;overflow: scroll;">
          
-            <mat-tab-group id="orders-tabs" [(selectedIndex)]="ordersProvider.currentStep" mat-align-tabs="start">
+            <mat-tab-group *ngIf="!searchedRecords.length" id="orders-tabs" [(selectedIndex)]="ordersProvider.currentStep" mat-align-tabs="start">
                 <mat-tab *ngFor="let state of ordersProvider.states;let i = index" label="{{state}}">
                     <ng-template mat-tab-label>
                         
@@ -31,6 +32,11 @@
                     </div>
                 </mat-tab>
               </mat-tab-group>
+
+              <div *ngIf="searchedRecords.length">
+                <h2>Resultados de busqueda:</h2>
+                <lomii-table [records]="searchedRecords"></lomii-table>
+              </div>
         </div>
     </div>
 

@@ -10,6 +10,7 @@ import { OrdersHistoryComponent } from './history/history.component';
 import { ReintegrateOrderComponent } from './components/reintegrate-order/reintegrate-order.component';
 import { GoogleMapsAPIWrapper } from '@agm/core';
 import { IncidentComponent } from './incident/incident.component';
+import { SearcherComponent } from './searcher/searcher.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { IncidentComponent } from './incident/incident.component';
     OrdersHistoryComponent,
     ReintegrateOrderComponent,
     IncidentComponent,
+    SearcherComponent,
   ],
   providers: [GoogleMapsAPIWrapper],
   imports: [CommonModule, SharedModule],
