@@ -233,7 +233,7 @@ export class TableComponent implements OnInit, AfterViewInit {
       this.columnsToDisplay.splice(3, 0, 'scheduled_at', 'left_to')
     }
     if (this.state == undefined) {
-      this.columnsToDisplay = ["number", "name", "completed_at", "state", "shipment_state"]
+      this.columnsToDisplay = ["number", "name", "completed_at", "state", "shipment_state", "shipment_stock_location_name"]
     }
     if(this.records.length){
       this.columnsToDisplay = ["number", "name", "completed_at", "shipment_stock_location_name"]
@@ -245,7 +245,12 @@ export class TableComponent implements OnInit, AfterViewInit {
     this.unsubscribableStore = this.store.pipe(
       selector
     ).subscribe((orders) => {
-      if (orders) {
+      if (this.state == undefined) {
+        this.searchService.search('R', 'completed_at_desc')
+        this.searchService.hitsSubject.subscribe((resp) => {
+          this.componentOrders = resp
+        })
+      } else if (orders) {
         this.componentOrders = orders
         this.componentOrders.forEach((order: Order, index: number) => {
           if (order && !order.completed_at?.seconds) {

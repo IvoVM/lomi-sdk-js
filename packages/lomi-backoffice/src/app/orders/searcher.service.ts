@@ -27,7 +27,7 @@ export class SearcherService {
     return [...this.currentRecords]
   }
 
-  public search(queryString:any){
+  public search(queryString:any, indexName = 'name'){
     if(!queryString){
       this.hitsSubject.next([])
       return
@@ -39,7 +39,7 @@ export class SearcherService {
     console.log("currentStockLocation", currentStockLocation, "userRol", userRol)
     
     const query = {
-      indexName: 'name',
+      indexName,
       query: queryString,
       params: {
         hitsPerPage: 20,
