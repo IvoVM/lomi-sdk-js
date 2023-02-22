@@ -99,11 +99,10 @@ export class OrdersService {
 
   }
 
-  getOrder(orderId: string) {
-    const stockLocation = localStorage.getItem('stockLocationId');
+  getOrder(orderId: string, stockLocationId = localStorage.getItem('stockLocationId')) {
     const orderDoc = doc(
       this.firestore,
-      'SPREE_ORDERS_' + stockLocation + '/' + orderId
+      'SPREE_ORDERS_' + stockLocationId + '/' + orderId
     );
     return getDoc(orderDoc);
   }

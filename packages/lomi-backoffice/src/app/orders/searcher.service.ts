@@ -34,12 +34,16 @@ export class SearcherService {
     }
 
     const currentStockLocation = localStorage.getItem('stockLocationId')
+    const userRol = localStorage.getItem('userRol')
+    
+    console.log("currentStockLocation", currentStockLocation, "userRol", userRol)
+    
     const query = {
       indexName: 'name',
       query: queryString,
       params: {
         hitsPerPage: 20,
-        filters: ''
+        filters: userRol === '1' ? '' : `shipment_stock_location_id:${currentStockLocation}`
       }
     }
 
@@ -50,7 +54,9 @@ export class SearcherService {
   }
 
   constructor( ) {
+
     this.searchClient = searchClient;
+
     this.hitsObservable.subscribe((hits:any)=>{
       this.currentRecords = hits
       console.log("hits", hits)

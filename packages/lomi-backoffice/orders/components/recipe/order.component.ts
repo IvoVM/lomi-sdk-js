@@ -219,9 +219,12 @@ export class OrderComponent implements OnInit {
               }
             })
           } else {
-            this.ordersProvider.getOrder(orderNumber).then((order:any)=>{
-              this.order = order.data()
-              this.ngOnInit()
+            console.log(params,"params")
+            this.activatedRoute.queryParams.pipe(take(1)).subscribe((queryParams:any)=>{
+              this.ordersProvider.getOrder(orderNumber, queryParams.shipment_stock_location).then((order:any)=>{
+                this.order = order.data()
+                this.ngOnInit()
+              })
             })
           }
           console.log(this.order)
