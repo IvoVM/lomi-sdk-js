@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { OrdersService } from '../../providers/lomi/orders.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -29,7 +29,19 @@ export class OrdersComponent implements OnInit {
       stockLocationId: [null],
       deliveryState: ['Estado envio']
     })
+
+    this.router.events.subscribe(async (event: any) => {
+      if (event.anchor) {
+        const st = localStorage.getItem('stockLocationId')
+        const getOrder = await this.ordersProvider.getOrder(event.anchor, st)
+        const order: any = getOrder.data()
+        if (!order) return
+        const { status } = order
+        this.ordersProvider.currentStep = status
+      }
+    })
   }
+
 
   stateName(state:any){
     switch(state){
