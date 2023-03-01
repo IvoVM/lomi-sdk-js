@@ -130,7 +130,7 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
     private snackBar : MatSnackBar
     ) {
       this.trips = []
-      const permitedStockLocations = ["1", "24", "25", "27", "28"]
+      const permitedStockLocations = ["1", "24", "25", "27", "28", "46"]
       this.operators.forEach((operator:any)=>{
         this.trips = this.trips.concat(...operator.trips(order).map((trip:any)=>({...trip, operator: operator.name, icon: operator.icon})))
       })
