@@ -265,8 +265,9 @@ exports.evaluateCabify = functions.https.onRequest(
       order.shipment_stock_location_notes = orderStockLocation.address2;
 
       const stops = await Geocoder.getOrderStops(order);
+        console.log("stops", stops)
       const cabifyEstimated = await cabifyEstimates.setCabifyEstimates(order);
-
+        console.log('cabifyEstimated', cabifyEstimated)
       const collectionKey = 'SPREE_ORDERS_' + order.shipment_stock_location_id;
       
       const ref = await admin
@@ -506,6 +507,8 @@ exports.creatUberTrip = functions.https.onRequest(async (request, response) => {
 
       order.shipment_stock_location_name = orderStockLocation.address1;
       order.shipment_stock_location_city = orderStockLocation.city;
+      order.shipment_stock_location_state = orderStockLocation.state;
+
 
       order.ship_address_phone = order.ship_address_phone.replace(/ /g, "")
       
@@ -606,6 +609,7 @@ exports.creatFourWheelsUberTrip = functions.https.onRequest(async (request, resp
 
       order.shipment_stock_location_name = orderStockLocation.address1;
       order.shipment_stock_location_city = orderStockLocation.city;
+      order.shipment_stock_location_state = orderStockLocation.state;
 
       order.ship_address_phone = order.ship_address_phone.replace(/ /g, "")
 

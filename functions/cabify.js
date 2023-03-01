@@ -2,7 +2,7 @@
 const axios = require('axios')
 
 let accessToken = ""
-let clientId = "0d8b6b066ded47d1acfa25eb2aa7606d"
+let clientId = "d353648822a447e5842ae7c8919609d3"
 let requesterId = "c2160c85550492493b1dbd0da7eceea0"
 
 const DebugCabify = "https://logistics.api.cabify-sandbox.com/"
@@ -38,11 +38,13 @@ async function setCabifyEstimates(order){
         const estimateds = await estimateCabify(order)
         order.cabifyEstimated = estimateds.estimateTrip2W
         order.cabifyEstimated4W = estimateds.estimateTrip4W
+        console.log(estimateds)
         return {
           cabifyEstimated: order.cabifyEstimated,
           cabifyEstimated4W: order.cabifyEstimated4W
         }
     } catch(e){
+        console.log("setCabifyEstimates:errorCatch", e.request.error)
         return null
     }
 }
@@ -74,7 +76,7 @@ async function authCabify(){
     const auth = await axios.post("https://cabify.com/auth/api/authorization",{
         "grant_type" : "client_credentials",
         "client_id": clientId,
-        "client_secret": "GPElTQmyfrYa-qU9"
+        "client_secret": "QsrU7MU_fQ8j0iOJ"
     })
     accessToken = auth.data.access_token
     return auth
@@ -109,10 +111,10 @@ async function getLogisticsOrderInfo(order){
   }
 }
 
-async function createCabifyTrip(order, productId = null){
+async function createCabifyTrip(order, vehicleType = "2W"){
     try{
         await authCabify()
-        const trip = await createCabifyTripLogisticsStrategy(order, "cabify")
+        const trip = await createCabifyTripLogisticsStrategy(order, vehicleType)
         return trip
     } catch(e){
         return null
@@ -145,12 +147,12 @@ async function fetchUsers(){
   return users
 }
 
-async function createCabifyTripLogisticsStrategy(order){
+async function createCabifyTripLogisticsStrategy(order, vehicleType = "2W"){
   const trip = await axios.post(
     ProductionCabify+"v1/parcels/deliver",
   {
     "requester_id": order.cabify_requester_id,
-    "parcel_ids": order.cabifyEstimated.parcel_ids,
+    "parcel_ids": vehicleType == '4W' ? order.cabifyEstimated4W.parcel_ids : order.cabifyEstimated.parcel_ids,
     "optimize": true,
   },
   {
@@ -350,13 +352,13 @@ async function createParcel4W(order){
          }
         },
         "dimensions": {
-         "height": 80,
+         "height": 120,
          "length": 80,
          "width": 45,
          "unit": "cm"
         },
         "weight": {
-         "value": parseInt(5000 * order.line_items.length),
+         "value": 30000,
          "unit": "g"
         }
        },
@@ -409,7 +411,7 @@ async function createParcel2W(order){
          "unit": "cm"
         },
         "weight": {
-         "value": 9000,
+         "value": 12000,
          "unit": "g"
         }
        },

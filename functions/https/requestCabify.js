@@ -40,7 +40,7 @@ module.exports = (admin) => {
             const cabifyUser = (await cabify.getUser(firebaseStoreResources.email)).data.user;
             order.cabify_requester_id = cabifyUser.id;
 
-            const cabifyResponse = await cabify.createCabifyTrip(order, req.body.productId);
+            const cabifyResponse = await cabify.createCabifyTrip(order, vehicleType);
             console.log(cabifyResponse)
             const parcelId = vehicleType == "4W" ? order.cabifyEstimated4W.parcel_ids[0] : order.cabifyEstimated.parcel_ids[0]
             await journeysUtils.createJourney(parcelId, 3 , {
