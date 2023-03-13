@@ -44,7 +44,11 @@ async function setCabifyEstimates(order){
           cabifyEstimated4W: order.cabifyEstimated4W
         }
     } catch(e){
-        console.log("setCabifyEstimates:errorCatch", e.request.error)
+      if(e.request){
+        console.log("setCabifyEstimates:errorCatch", e.request.error )
+      } else {
+        console.log("setCabifyEstimates:errorCatch", e )
+      }
         return null
     }
 }
@@ -181,8 +185,8 @@ async function estimateCabifyTripLogisticsStrategy(order){
     console.log("Updated", updatedParcel)
     if(updatedParcel2W.parcels && updatedParcel4W.parcels){
       order.parcel_ids = [
-        updatedParcel2W.parcels.map((parcel) => (parcel.id)),
-        updatedParcel4W.parcels.map((parcel) => (parcel.id))
+        ...updatedParcel2W.parcels.map((parcel) => (parcel.id)),
+        ...updatedParcel4W.parcels.map((parcel) => (parcel.id))
       ]
     }
     return {

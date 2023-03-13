@@ -8,7 +8,7 @@ module.exports = (admin) => {
   async function updateJourney(journey) {
     console.log("Updating journey", "id: " + journey.id, "status: " + journey.status)
     const spreeStatusEquivalent = statesUtils.decodeUberStatus(journey.status)
-    journey.trackingUrl = journey.
+    journey.trackingUrl = "No tracking url available"
     journeyUtils.updateJourney(spreeStatusEquivalent,journey);
   }
 
@@ -19,6 +19,7 @@ module.exports = (admin) => {
         const status = req.body.data.status;
         const journeyDoc = admin.firestore().doc('deliveringJourneys/' + journeyId);
         const newStatus = status;
+        console.log("New status is: ", newStatus)
         const trackingUrl = req.body
         const journey = (await journeyDoc.get()).data();
         const newJourney = {

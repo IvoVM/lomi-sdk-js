@@ -20,6 +20,8 @@ export class IncidentComponent implements OnInit {
 
   incidents:Incident[] = []
 
+  public userRolIsAdmin = true;
+
 
 
 
@@ -40,9 +42,14 @@ phoneValidation(phoneNumber:any){
     }
   }
 
-  constructor() {}
+  constructor() {
+    const userRol = localStorage.getItem('userRol')
+    console.log("userRol", userRol)
+    this.userRolIsAdmin = userRol === "1";
+  }
 
   ngOnInit(): void {
+    
     this.detectIncidents()
   }
 }

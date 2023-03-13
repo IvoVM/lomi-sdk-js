@@ -18,7 +18,12 @@ const uberFourWheelsDispatcher = require('./uber')(
   '3bc20eef-481a-4942-94f1-ecb5a15ddd6e',
 );
 const HmxDispatcher = require('./hermex');
+const Sentry = require("@sentry/serverless");
 
+Sentry.GCPFunction.init({
+  dsn: "https://b1f2ced1d2a34132b09bb411caba3f12@o1122273.ingest.sentry.io/4504815267086336",
+  tracesSampleRate: 1.0,
+});
 
 const cors = require('cors')({ origin: true });
 const Geocoder = require('./geocoder');
@@ -247,41 +252,44 @@ exports.geocodeOrder = functions.https.onRequest(
   }
 )
 
-exports.evaluateCabify = functions.https.onRequest(
-  async (request, response) => {
-    cors(request, response, async () => {
-      const stockLocations = (await spreeUtils.getStockLocations()).stock_locations;
-      const order = request.body;
-      const orderStockLocation = stockLocations.find(
-        (loc) => loc.id == order.shipment_stock_location_id
-      );
+exports.evaluateCabify = 
+functions.https.onRequest(
+  Sentry.GCPFunction.wrapHttpFunction(
+    async (request, response) => {
+      cors(request, response, async () => {
+        const stockLocations = (await spreeUtils.getStockLocations()).stock_locations;
+        const order = request.body;
+        const orderStockLocation = stockLocations.find(
+          (loc) => loc.id == order.shipment_stock_location_id
+        );
 
-      const firebaseStockLocation = await firebaseLomiUtils.getStockLocationResource(order.shipment_stock_location_id)
-      order.shipment_stock_location_uber_name = firebaseStockLocation.uber_store_name;
+        const firebaseStockLocation = await firebaseLomiUtils.getStockLocationResource(order.shipment_stock_location_id)
+        order.shipment_stock_location_uber_name = firebaseStockLocation.uber_store_name;
 
-      order.shipment_stock_location_name = orderStockLocation.address1;
-      order.shipment_stock_location_phone = orderStockLocation.phone;
-      order.shipment_stock_location_city = orderStockLocation.city;
-      order.shipment_stock_location_notes = orderStockLocation.address2;
+        order.shipment_stock_location_name = orderStockLocation.address1;
+        order.shipment_stock_location_phone = orderStockLocation.phone;
+        order.shipment_stock_location_city = orderStockLocation.city;
+        order.shipment_stock_location_notes = orderStockLocation.address2;
 
-      const stops = await Geocoder.getOrderStops(order);
-        console.log("stops", stops)
-      const cabifyEstimated = await cabifyEstimates.setCabifyEstimates(order);
-        console.log('cabifyEstimated', cabifyEstimated)
-      const collectionKey = 'SPREE_ORDERS_' + order.shipment_stock_location_id;
-      
-      const ref = await admin
-        .firestore()
-        .doc(collectionKey + '/' + order.number)
-        .update({
-          cabifyEstimated: cabifyEstimated.cabifyEstimated,
-          cabifyEstimated4W: cabifyEstimated.cabifyEstimated4W,
-          stops,
-        });
-      return response.status(200).send(cabifyEstimated);
-    });
-  }
-);
+        const stops = await Geocoder.getOrderStops(order);
+          console.log("stops", stops)
+        const cabifyEstimated = await cabifyEstimates.setCabifyEstimates(order);
+          console.log('cabifyEstimated', cabifyEstimated)
+        const collectionKey = 'SPREE_ORDERS_' + order.shipment_stock_location_id;
+        
+        const ref = await admin
+          .firestore()
+          .doc(collectionKey + '/' + order.number)
+          .update({
+            cabifyEstimated: cabifyEstimated.cabifyEstimated,
+            cabifyEstimated4W: cabifyEstimated.cabifyEstimated4W,
+            stops,
+          });
+        return response.status(200).send(cabifyEstimated);
+      });
+    }
+  )
+)
 
 
 exports.evaluateFourWheelsUber = functions.https.onRequest(async (request, response) => {
@@ -968,3 +976,13 @@ exports.showLastOrders = functions.https.onRequest(
     });
   }
 );
+
+exports.watchAllOrders = functions.firestore.document('{collectionName}/{docId}').onUpdate(async (change, context) => {
+  console.log("Changes in :", context.params.collectionName, context.params.docId);
+  const collectionName = context.params.collectionName;
+  if(collectionName.includes("SPREE_ORDERS")){
+    const order = change.after.data();
+    const previousOrder = change.before.data();
+    Algolia.updateRecordToAlgolia(order).then(() => console.log("Order updated in algolia")).catch((e) => console.log(e));
+  }
+})

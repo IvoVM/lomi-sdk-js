@@ -4,6 +4,7 @@ const token = '8b9c307dd89928cc60e8e59d2233dbafc7618f26c52fa5d3';
 const spreeDebugUrl = 'https://lomi-dev.herokuapp.com/';
 const spreeUtils = require('../utils/spree/spree')(spreeUrl, token, spreeDebugUrl);
 const statusUtils = require('../utils/states');
+const algoliaUtils = require('../libraries/algolia');
 
 module.exports = (admin) => {
 
@@ -47,6 +48,16 @@ module.exports = (admin) => {
         }
     }
 
+    async function syncroJourneyStatusWithAlgolia(journey){
+        const orderId = journey.orderNumber;
+        const order = await spreeUtils.getOrder(orderId);
+        const orderJsonToUpdate = {
+            id: order.id,
+            journeyStatus: journey.status,
+        }
+        return await algoliaUtils.updateRecordToAlgolia(orderJsonToUpdate)
+    }
+
     async function updateJourney(status, journey){
         const orderDoc = admin.firestore().collection('SPREE_ORDERS_'+journey.stock_location_id).doc(journey.orderNumber);
         if(status){
@@ -59,6 +70,8 @@ module.exports = (admin) => {
             await syncroJourneyWithFirebase(journey),
             await syncroJourneyWithSpree(journey)
         ])
+
+        await syncroJourneyStatusWithAlgolia(journey)
     }
 
     async function finishJourney(journey){

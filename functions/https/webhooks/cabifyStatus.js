@@ -2,16 +2,6 @@ const functions = require('firebase-functions');
 const cors = require('cors')({ origin: true });
 const states = require('../../utils/mocks/states.js')()
 
-const spreeUrl = 'https://lomi.cl/';
-const token = '8b9c307dd89928cc60e8e59d2233dbafc7618f26c52fa5d3';
-const spreeDebugUrl = 'https://lomi-dev.herokuapp.com/';
-const spreeUtils = require('./utils/spree/spree')(
-  spreeUrl,
-  token,
-  spreeDebugUrl
-);
-
-
 module.exports = (admin) => {
 
     const listenToCabifyStatusWebHook = functions.https.onRequest(async (req, res) => {
@@ -26,15 +16,8 @@ module.exports = (admin) => {
             } else {
                 console.log("Journey not found", req.body.id, req.body.external_id)
                 const orderNumber = req.body.external_id.split("_")[0]
-
-                const order = await spreeUtils.getOrder(orderNumber)
-
-                console.log("Order", order)
-
                 const vehicleType = req.body.external_id.split("_")[1]
-                console.log("Vehicle type", vehicleType)
-
-                const expandedOrder = await spreeUtils.getOrder(orderNumber)
+                const expandedOrder = 
                 res.status(200).send("Event received")
                 return
             }

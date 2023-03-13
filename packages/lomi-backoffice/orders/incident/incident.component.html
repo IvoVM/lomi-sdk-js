@@ -1,4 +1,4 @@
-<ng-container *ngIf="incidents.length">
+<ng-container *ngIf="incidents.length && userRolIsAdmin">
     <div *ngIf="type == 'extended-info'">
         <div style="padding: 0.5em 1em;display: flex;justify-content: space-between;" *ngFor="let incident of incidents" class="large-incident">
             <div>

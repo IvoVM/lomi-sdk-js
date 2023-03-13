@@ -79,15 +79,8 @@ export class TableComponent implements OnInit, AfterViewInit {
 
   pickOrder(order: Order) {
     this.ordersProvider.updateOrder(order.number, {
-      status: WAITING_AT_DRIVER_STATE,
       picked_at: new Date()
     })
-    try{
-      this.ordersProvider.setCabifyEstimated(order)
-      this.ordersProvider.setUberEstimated(order)
-    } catch(e){
-      console.log("Error al setear estimados")
-    }
     this.ordersProvider.currentStep++
   }
 
@@ -159,7 +152,12 @@ export class TableComponent implements OnInit, AfterViewInit {
         this.ordersProvider.updateOrder(order.number, {
           status: ON_PICKING_STATE
         })
-        this.ordersProvider.currentStep++
+        try{
+          this.ordersProvider.setCabifyEstimated(order)
+          this.ordersProvider.setUberEstimated(order)
+        } catch(e){
+          console.log("Error al setear estimados")
+        }
       }
     })
   }
@@ -174,7 +172,7 @@ export class TableComponent implements OnInit, AfterViewInit {
     switch (this.state) {
       case SCHEDULED_STATE: return 'person_add'
       case PENDING_STATE: return 'person_add'
-      case ON_PICKING_STATE: return 'arrow_forward_ios'
+      case ON_PICKING_STATE: return 'local_shipping'
       case WAITING_AT_DRIVER_STATE: return 'local_shipping'
       case OrderStates.STORE_PICKING_STATE: return 'slide-toggle'
       case OrderStates.FAILED: return 'autorenew'
@@ -186,7 +184,7 @@ export class TableComponent implements OnInit, AfterViewInit {
     switch (this.state) {
       case SCHEDULED_STATE: return this.selectPicker(order)
       case PENDING_STATE: return this.selectPicker(order)
-      case ON_PICKING_STATE: return this.pickOrder(order)
+      case ON_PICKING_STATE: return this.createTrip(order)
       case WAITING_AT_DRIVER_STATE: return this.createTrip(order)
       case OrderStates.STORE_PICKING_STATE: return this.completeOrder(order)
       case OrderStates.FAILED: return this.reintegrate(order)
@@ -198,7 +196,7 @@ export class TableComponent implements OnInit, AfterViewInit {
     switch (this.state) {
       case SCHEDULED_STATE: return ['selectPicker']
       case PENDING_STATE: return ['selectPicker']
-      case ON_PICKING_STATE: return ['pickOrder']
+      case ON_PICKING_STATE: return ['createTrip']
       case WAITING_AT_DRIVER_STATE: return ['createTrip']
       case OrderStates.STORE_PICKING_STATE: return ['completeOrder']
       case OrderStates.FAILED: return ['reintegrate']

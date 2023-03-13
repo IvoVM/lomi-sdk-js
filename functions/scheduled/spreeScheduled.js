@@ -47,7 +47,7 @@ module.exports = (spreeUrl, token, admin) => {
                         state: stockLocation.state.name,
                         email: stockLocation.email ? stockLocation.email : "tiendach"+order.shipment_stock_location_id+"@lomi.cl",
                         ...resources["SPREE_ORDERS_"+stockLocation.id],
-                        cabifyUid: cabifyUser ? cabifyUser.id : null,
+                        cabifyUid: cabifyUser ? cabifyUser.id : 'fc04184452337656491a6a4b28ae26e3',
                     }
                 })
                 privilegesDoc.update({

@@ -88,6 +88,7 @@ module.exports = ( spreeUrl, spreeToken, spreeDebugUrl ) => {
                     
                 }
                 const response = await axios.get(url, { headers }).then(shipments=>{
+                    console.log("Requesting order from spree number: ", orderId)
                     resolve(shipments.data)
                 }).catch((error) => {
                     console.log(error)

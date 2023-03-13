@@ -130,15 +130,11 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
     private snackBar : MatSnackBar
     ) {
       this.trips = []
-      const permitedStockLocations = ["1", "24", "25", "27", "28", "46"]
       this.operators.forEach((operator:any)=>{
         this.trips = this.trips.concat(...operator.trips(order).map((trip:any)=>({...trip, operator: operator.name, icon: operator.icon})))
       })
       const stockLocationId = localStorage.getItem("stockLocationId")
       console.log(stockLocationId)
-      if(stockLocationId && !permitedStockLocations.includes(stockLocationId)){
-        this.trips = this.trips.slice(1,3)
-      }
   }
 
   selectOperator(productId:any = null){

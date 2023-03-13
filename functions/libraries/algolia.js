@@ -7,7 +7,14 @@ function saveRecordToAlgolia(record){
     return index.saveObject(record).wait()
 }
 
+function updateRecordToAlgolia(record){
+    record = { ...record, objectID: record.id }
+    const index = client.initIndex('name')
+    return index.partialUpdateObject(record).wait()
+}
+
 
 module.exports = {
-    saveRecordToAlgolia
+    saveRecordToAlgolia,
+    updateRecordToAlgolia
 }

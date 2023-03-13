@@ -5,7 +5,8 @@
   "scripts": {
     "postinstall": "ngcc --properties es2015 browser module main",
     "build": "nx build lomi-material",
-    "test": "jest"
+    "test": "jest",
+    "firebase-logging": "npx firebase-logging --project=lomi-35ab6 --freq=1500"
   },
   "dependencies": {
     "@agm/core": "^3.0.0-beta.0",
@@ -27,7 +28,8 @@
     "@ngrx/store-devtools": "^14.2.0",
     "@nrwl/angular": "14.5.10",
     "@sentry/angular": "7.11.1",
-    "@sentry/tracing": "7.11.1",
+    "@sentry/angular-ivy": "^7.42.0",
+    "@sentry/tracing": "^7.11.1",
     "@slack/events-api": "^3.0.1",
     "@slack/web-api": "^6.8.0",
     "agm-direction": "^0.8.10",

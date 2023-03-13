@@ -16,6 +16,32 @@ export class OrdersComponent implements OnInit {
   public tabIndex = 0;
   public records: any = {};
   public searchedRecords: any = []
+  public stateTables = [
+    {
+      name: 'Programado',
+      status: 1,
+    },
+    {
+      name: 'Pendiente',
+      status: 2,
+    },
+    {
+      name: 'On Picking',
+      status: 3,
+    },
+    {
+      name: 'Esperando al repartidor',
+      status: 4,
+    },
+    {
+      name: 'Entregando',
+      status: 5,
+    },
+    {
+      name: 'Fallido',
+      status: 7,
+    }
+  ]
 
   public unsubscribes: any = [];
 

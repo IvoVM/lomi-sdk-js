@@ -36,7 +36,8 @@ import { OrdersService } from 'packages/lomi-backoffice/providers/lomi/orders.se
 import { GoogleMapsAPIWrapper } from '@agm/core';
 import { StockModule } from 'packages/lomi-backoffice/stock/stock.module';
 import { NgAisModule } from 'angular-instantsearch';
-
+import * as Sentry from "@sentry/angular-ivy";
+import { BrowserTracing } from "@sentry/tracing";
 
 @NgModule({
   declarations: [AppComponent, MainHeaderComponent, NotificationsComponent],

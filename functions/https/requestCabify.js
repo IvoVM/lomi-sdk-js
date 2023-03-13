@@ -4,7 +4,6 @@ const cors = require('cors')({ origin: true });
 const spreeUrl = 'https://lomi.cl/';
 const token = '8b9c307dd89928cc60e8e59d2233dbafc7618f26c52fa5d3';
 const spreeDebugUrl = 'https://lomi-dev.herokuapp.com/';
-const spreeUtils = require('../utils/spree/spree')(spreeUrl, token, spreeDebugUrl);
 
 module.exports = (admin) => {
     const cabify = require('../cabify');
@@ -42,6 +41,12 @@ module.exports = (admin) => {
 
             const cabifyResponse = await cabify.createCabifyTrip(order, vehicleType);
             console.log(cabifyResponse)
+            
+            if(cabifyResponse.errors){
+                res.send(cabifyResponse)
+                return
+            }
+            
             const parcelId = vehicleType == "4W" ? order.cabifyEstimated4W.parcel_ids[0] : order.cabifyEstimated.parcel_ids[0]
             await journeysUtils.createJourney(parcelId, 3 , {
                 cabifyLogisticsTrip: cabifyResponse.data.deliveries,

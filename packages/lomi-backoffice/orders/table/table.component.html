@@ -9,7 +9,7 @@
         <th mat-header-cell *matHeaderCellDef> Acciones</th>
         <td mat-cell *matCellDef="let order"  > 
             <ng-container *ngIf="actionIcon != 'slide-toggle'">
-                <button [disabled]="!order.cabifyEstimated && !order.uberEstimated && state == 4" style="transform: scale(0.9);" mat-mini-fab *ngFor="let action of actions" (click)="actionFunction(order)" color="accent" aria-label="Example icon button with a menu icon">
+                <button [disabled]="!order.cabifyEstimated && !order.uberEstimated && (state == 4 || state == 3)" style="transform: scale(0.9);" mat-mini-fab *ngFor="let action of actions" (click)="actionFunction(order)" color="accent" aria-label="Example icon button with a menu icon">
                     <mat-icon style="transform: scale(0.9);">{{actionIcon}}</mat-icon>
                 </button> 
                 
