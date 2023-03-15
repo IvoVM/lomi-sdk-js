@@ -40,8 +40,11 @@
     <ng-container matColumnDef="completed_at">
         <th mat-header-cell *matHeaderCellDef> Hora del pedido </th>
         <td mat-cell *matCellDef="let order" > 
-            <span *ngIf="order.completed_at.seconds">{{ order.completed_at.seconds*1000 | date:'dd/MM HH:mm:ss' }} </span>
-            <span *ngIf="!order.completed_at.seconds">{{ order.completed_at | date:'dd/MM HH:mm:ss' }} </span>
+            <ng-container *ngIf="order.completed_at">
+                <span *ngIf="order.completed_at.seconds">{{ order.completed_at.seconds*1000 | date:'dd/MM HH:mm:ss' }} </span>
+                <span *ngIf="!order.completed_at.seconds">{{ order.completed_at | date:'dd/MM HH:mm:ss' }} </span>
+            </ng-container>
+            
         </td>
     </ng-container>
 
@@ -58,6 +61,14 @@
     <ng-container *ngIf="timeLeft.length > 0" matColumnDef="left_to">
         <th mat-header-cell *matHeaderCellDef> Tiempo Restante </th>
         <td mat-cell *matCellDef="let order; let i = index" >{{timeLeft[i]?.hoursLeft}} {{timeLeft[i]?.hoursLeft != 1 || timeLeft[i]?.hoursLeft != -1? 'Horas': 'Hora'}} {{timeLeft[i]?.minutesLeft}} Minutos</td>
+    </ng-container>
+
+    <ng-container matColumnDef="total">
+        <th mat-header-cell *matHeaderCellDef> Monto </th>
+        <td mat-cell *matCellDef="let order" > 
+            <span *ngIf="order.total < 100000">${{order.total}}</span>
+            <span *ngIf="order.total > 100000" style="color: red;">${{order.total}}</span>
+        </td>
     </ng-container>
 
     <ng-container matColumnDef="reason">
@@ -99,7 +110,7 @@
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-    <tr mat-row *matRowDef="let row; columns: columnsToDisplay" class="{{ (row.completed_at.seconds + secondsToAlert) * 1000  < currentTime && state != 6 && state != undefined ? (row.completed_at.seconds + secondsToWarning) * 1000 < currentTime? 'red-bg' : 'yellow-bg'  : '' }}">
+    <tr mat-row *matRowDef="let row; columns: columnsToDisplay" class="{{ (row.completed_at?.seconds + secondsToAlert) * 1000  < currentTime && state != 6 && state != undefined ? (row.completed_at.seconds + secondsToWarning) * 1000 < currentTime? 'red-bg' : 'yellow-bg'  : '' }}">
     </tr>
   </table>
   

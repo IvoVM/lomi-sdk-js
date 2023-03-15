@@ -9,7 +9,9 @@
         <div style="display:flex;flex-direction: row;align-items: flex-end;justify-content: space-between;margin: 1em 0;width:100%;max-width: 1080px;">
             <h1 style="margin:0 !important"><b>Pedidos</b></h1>
             <lomii-searcher></lomii-searcher>
-
+            <div class="actions" style="display: flex;flex-direction: row;">
+                <button (click)="drawer.toggle()" mat-raised-button color="accent">Filtros</button>
+            </div>
         </div>
 
         <div class="half-card shadow" style="padding: 0.5em 1em;overflow: scroll;">

@@ -220,7 +220,11 @@ export class TableComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     console.log(this.state, "state")
-    if (this.state != OrderStates.WAITING_AT_DRIVER_STATE) this.columnsToDisplay.pop()
+    if (this.state != OrderStates.WAITING_AT_DRIVER_STATE){
+      this.columnsToDisplay.pop()
+    } else {
+      this.columnsToDisplay = ["number","name","completed_at","state"]
+    }
     if (this.state == OrderStates.DELIVERING_ORDER_STATE) {
       this.getJourneys()
       this.columnsToDisplay.push("state")
@@ -231,7 +235,7 @@ export class TableComponent implements OnInit, AfterViewInit {
       this.columnsToDisplay.splice(3, 0, 'scheduled_at', 'left_to')
     }
     if (this.state == undefined) {
-      this.columnsToDisplay = ["number", "name", "completed_at", "state", "shipment_state", "shipment_stock_location_name"]
+      this.columnsToDisplay = ["number", "name", "completed_at", "state", "shipment_stock_location_name","total"]
     }
     if(this.records.length){
       this.columnsToDisplay = ["number", "name", "completed_at", "shipment_stock_location_name"]
@@ -250,6 +254,7 @@ export class TableComponent implements OnInit, AfterViewInit {
         })
       } else if (orders) {
         this.componentOrders = orders
+        console.log("Orders",this.state, orders)
         this.componentOrders.forEach((order: Order, index: number) => {
           if (order && !order.completed_at?.seconds) {
             this.ordersProvider.updateOrder(

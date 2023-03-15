@@ -356,9 +356,9 @@ async function createParcel4W(order){
          }
         },
         "dimensions": {
-         "height": 120,
-         "length": 80,
-         "width": 45,
+         "height": 80,
+         "length": 60,
+         "width": 60,
          "unit": "cm"
         },
         "weight": {

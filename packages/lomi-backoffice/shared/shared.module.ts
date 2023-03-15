@@ -56,10 +56,14 @@ import { AgmCoreModule, GoogleMapsAPIWrapper } from '@agm/core';
 import { AgmDirectionModule } from 'agm-direction';
 import { EditAddressComponent } from './modals/edit-address/edit-address.component';
 import { PersistentNotificationComponent } from './components/persistent-notification/persistent-notification.component';
-import {MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS} from '@angular/material/snack-bar';
+import {
+  MatSnackBarModule,
+  MAT_SNACK_BAR_DEFAULT_OPTIONS,
+} from '@angular/material/snack-bar';
 import { EditStoreComponent } from './modals/edit-store/edit-store.component';
-import {MatTooltipModule} from '@angular/material/tooltip';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgAisModule } from 'angular-instantsearch';
+import { StoreChangeComponent } from './components/store-change/store-change.component';
 
 @NgModule({
   declarations: [
@@ -76,7 +80,8 @@ import { NgAisModule } from 'angular-instantsearch';
     FirebaseTableComponent,
     EditAddressComponent,
     PersistentNotificationComponent,
-    EditStoreComponent
+    EditStoreComponent,
+    StoreChangeComponent,
   ],
   imports: [
     CommonModule,
@@ -121,8 +126,7 @@ import { NgAisModule } from 'angular-instantsearch';
     }),
     AgmDirectionModule,
     MatSnackBarModule,
-    NgAisModule.forRoot()
-
+    NgAisModule.forRoot(),
   ],
   exports: [
     MatCardModule,
@@ -168,11 +172,14 @@ import { NgAisModule } from 'angular-instantsearch';
     PersistentNotificationComponent,
     MatSnackBarModule,
     MatTooltipModule,
-    NgAisModule
-
+    NgAisModule,
+    StoreChangeComponent,
   ],
   providers: [
-    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 3000}},
-    ScreenTrackingService, UserTrackingService, GoogleMapsAPIWrapper],
+    { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 3000 } },
+    ScreenTrackingService,
+    UserTrackingService,
+    GoogleMapsAPIWrapper,
+  ],
 })
 export class SharedModule {}

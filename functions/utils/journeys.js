@@ -85,7 +85,7 @@ module.exports = (admin) => {
         const orderJourneyRef = db.collection('SPREE_ORDERS_'+order.shipment_stock_location_id).doc(order.number).collection("journeys").doc(journeyId);
         const orderRef = db.collection('SPREE_ORDERS_'+order.shipment_stock_location_id).doc(order.number)
         await orderRef.update({
-            status: 5,
+            status: 4,
             request_deliver_at: new Date()
         })
         await orderJourneyRef.set({

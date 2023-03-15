@@ -1,9 +1,5 @@
 module.exports = (() => {
     const statusDicc = {
-        0: {
-            text: 'store_pickup_pending',
-            value: "Pendiente de retiro",
-        },
         1: {
             text: 'pending_delivery_schedule',
             value: "Pedido programado para entrega",
@@ -19,6 +15,7 @@ module.exports = (() => {
         4: {
             text: 'store_rider_searching',
             value: "Esperando al repartidor",
+            uber_status: "pending,pickup"
         },
         5: {
             text: 'store_rider_picked',
@@ -34,7 +31,7 @@ module.exports = (() => {
             text: 'store_rider_canceled',
             value: "El repartidor cancelo el pedido",
             uber_status: "returned,canceled"
-        }
+        },
 
     }
 

@@ -187,7 +187,7 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
   }
 
   listenForOperator = (order:any) => {
-    this._orders.currentStep = DELIVERING_ORDER_STATE
+    this._orders.currentStep = WAITING_AT_DRIVER_STATE
     this._bottomSheetRef.dismiss(order)
     this.snackBar.open("Viaje solicitado con exito");
     if(order.status == WAITING_AT_DRIVER_STATE){

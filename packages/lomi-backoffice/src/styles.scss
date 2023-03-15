@@ -224,6 +224,7 @@ button[mat-button], button[mat-raised-button], button[mat-stroked-button]{
 }
 
 .status-chip{
+  max-height: 1.7em;
   margin-right: 16px !important;
   background-color: #00CCD9;
   color: white !important;

@@ -38,18 +38,6 @@ export class FiltersSideComponent implements OnInit {
       type: 'date',
     },
     {
-      name: 'Correo',
-      type: 'input',
-    },
-    {
-      name: 'Numero de pedido',
-      type: 'input',
-    },
-    {
-      name: 'Cliente',
-      type: 'input',
-    },
-    {
       name: 'Tienda',
       type: 'select',
       options: this.stores

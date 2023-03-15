@@ -560,7 +560,7 @@ exports.creatUberTrip = functions.https.onRequest(async (request, response) => {
         .firestore()
         .doc(collectionKey + '/' + order.number);
       ref.update({
-        status: DELIVERING_ORDER_STATE,
+        status: WAITING_AT_DRIVER_STATE,
       });
 
       
@@ -647,7 +647,7 @@ exports.creatFourWheelsUberTrip = functions.https.onRequest(async (request, resp
         order.shipment_stock_location_phone,
         order.line_items.map((item) => ({
           price: item.price,
-          size: 'medium',
+          size: 'large',
           quantity: item.quantity,
           name: item.name,
         })),
@@ -661,7 +661,7 @@ exports.creatFourWheelsUberTrip = functions.https.onRequest(async (request, resp
         .firestore()
         .doc(collectionKey + '/' + order.number);
       ref.update({
-        status: DELIVERING_ORDER_STATE,
+        status: WAITING_AT_DRIVER_STATE,
       });
 
       const snapshot = await ref.get();
@@ -880,61 +880,6 @@ function statusAdapter(status) {
   }
 }
 
-exports.listenToOrderStatusChange39 = functions.firestore
-  .document('SPREE_ORDERS_39/{docId}')
-  .onUpdate(async (change, context) => {
-    console.log(
-      context.resource.name.includes('SPREE_ORDERS'),
-      context.resource.name,
-      'context.resource.name'
-    );
-    const order = change.after.data();
-    const previousOrder = change.before.data();
-    if (order.status == previousOrder.status) {
-      return;
-    }
-    if (!order.status) {
-      console.log(order);
-      return;
-    }
-    console.log(order);
-    if (order.status == WAITING_AT_DRIVER_STATE) {
-      spreeUtils
-        .markShipmentAsReady(order.number, order.shipment_stock_location_id)
-        .catch((e) => console.log(e))
-        .then(() => {
-          console.log('Shipment marked as ready');
-        });
-    }
-
-    if (order.DEBUG || !PRODUCTION) {
-      DEBUG_EMAILS.forEach((email) => {
-        axios.post(
-          'https://us-central1-lomi-35ab6.cloudfunctions.net/appPush/notification',
-          {
-            email: email,
-            status: statusAdapter(order.status),
-            data: {
-              ruta: 'tabs/orders',
-            },
-          }
-        );
-      });
-    } else {
-      if (order.user_email) {
-        axios.post(
-          'https://us-central1-lomi-35ab6.cloudfunctions.net/appPush/notification',
-          {
-            email: '', //order.user_email,
-            status: statusAdapter(order.status),
-          }
-        );
-      }
-    }
-
-    return null;
-  });
-
 exports.showLastOrders = functions.https.onRequest(
   async (request, response) => {
     const stockLocation = request.query.stockLocation
@@ -977,12 +922,40 @@ exports.showLastOrders = functions.https.onRequest(
   }
 );
 
+function axiosHandleError(error) {
+  console.log(error);
+  return null;
+}
+
+function sendPushToOrderUserOfCurrentStatus(order){
+  if (order.email) {
+    console.log("Sending push to user: ", order.email, " with status: ", order.status, "")
+    return axios.post(
+      'https://us-central1-lomi-35ab6.cloudfunctions.net/appPush/notification',
+      {
+        email: order.DEBUG ? '' : order.email,
+        status: statusAdapter(order.status),
+      }
+    ).catch(axiosHandleError);
+  }
+}
+
 exports.watchAllOrders = functions.firestore.document('{collectionName}/{docId}').onUpdate(async (change, context) => {
   console.log("Changes in :", context.params.collectionName, context.params.docId);
   const collectionName = context.params.collectionName;
   if(collectionName.includes("SPREE_ORDERS")){
     const order = change.after.data();
     const previousOrder = change.before.data();
+    order.completed_at = new Date(order.completed_at.seconds * 1000);
     Algolia.updateRecordToAlgolia(order).then(() => console.log("Order updated in algolia")).catch((e) => console.log(e));
+  
+    if(previousOrder.status != order.status){
+      await sendPushToOrderUserOfCurrentStatus(order);
+      if(order.status == 3){
+        const evaluateUber = axios.post('https://us-central1-lomi-35ab6.cloudfunctions.net/evaluateUber', order).catch(axiosHandleError)
+        const evaluateFourWheelsUber = axios.post('https://us-central1-lomi-35ab6.cloudfunctions.net/evaluateFourWheelsUber', order).catch(axiosHandleError)
+        const evaluateCabify = axios.post('https://us-central1-lomi-35ab6.cloudfunctions.net/evaluateCabify', order).catch(axiosHandleError)
+      }
+    }
   }
 })
