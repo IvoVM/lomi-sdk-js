@@ -4,6 +4,29 @@ const states = require('../../utils/mocks/states.js')()
 
 module.exports = (admin) => {
 
+    function selectOrderStatusBasedOnState(state){
+        if(state == 'delivered' || state == 'returned' || state == 'incident' || state == 'pickupfailed' || state == 'internalcanceled' || state == 'requestercancel'){
+            return 7
+        } else if(state == 'qualifiedforpickup' || state == 'onroutetopickup' || state == 'pickingup'){
+            return 4
+        } else if(state == 'intransit' || state == 'delivering'){
+            return 5
+        } else if( state == 'delivered'){
+            return 6
+        }
+    }
+
+    function updateOrderDocumentStatus(state, journey){
+        const status = selectOrderStatusBasedOnState(state)
+        if(status){
+            return admin.firestore().doc("SPREE_ORDERS_"+ journey.stock_location_id + "/" + journey.orderNumber).update({
+                status: status
+            })
+        } else {
+            return Promise.resolve()
+        }
+    }
+
     const listenToCabifyStatusWebHook = functions.https.onRequest(async (req, res) => {
         cors(req,res,async () => {
             const statusJson = req.body;
@@ -24,29 +47,21 @@ module.exports = (admin) => {
             console.log("updating",req.body.id, journey.id, "with", req.body.state)
             const orderJourneyDoc = admin.firestore().doc("SPREE_ORDERS_"+ journey.stock_location_id + "/" + journey.orderNumber + "/journeys/" + journey.id)
             const orderDoc = admin.firestore().doc("SPREE_ORDERS_"+ journey.stock_location_id + "/" + journey.orderNumber)
-            await orderJourneyDoc.update({
-                status: req.body.state,
-                updatedAt: new Date(),
-                cabifyTrip: req.body
-            })
-            if(req.body.state == 'delivered' || req.body.state == 'returned' || req.body.state == 'incident' || req.body.state == 'pickupfailed' || req.body.state == 'internalcanceled' || req.body.state == 'requestercancel'){
-                if(req.body.state == 'returned' || req.body.state == 'incident' || req.body.state == 'pickupfailed' || req.body.state == 'internalcanceled' || req.body.state == 'requestercancel'){
-                    await orderDoc.update({
-                        status: 4
-                    })
-                } else {
-                    await orderDoc.update({
-                        status: 6
-                    })
-                }
-                await journeyDoc.delete()
-            } else{
+            
+            await updateOrderDocumentStatus(req.body.state, journey)
+            const updateJourneys = async () => {
+                await orderJourneyDoc.update({
+                    status: req.body.state,
+                    updatedAt: new Date(),
+                    cabifyTrip: req.body
+                })
                 await journeyDoc.update({
                     status: req.body.state,
                     updatedAt: new Date(),
                     cabifyTrip: req.body
                 })
             }
+            await updateJourneys()
             return res.status(200).send('Event received')
         })
 

@@ -188,6 +188,8 @@ async function estimateCabifyTripLogisticsStrategy(order){
         ...updatedParcel2W.parcels.map((parcel) => (parcel.id)),
         ...updatedParcel4W.parcels.map((parcel) => (parcel.id))
       ]
+    } else {
+      console.log("Error updating parcels", updatedParcel2W, updatedParcel4W)
     }
     return {
       estimateTrip2W: updatedParcel2W,
@@ -330,7 +332,7 @@ async function createParcel4W(order){
     {
       "parcels": [
        {
-        "external_id": order.number + "_4W",
+        "external_id": order.number + "_4W_"+new Date().getTime(),
         "pickup_info": {
          "addr": order.shipment_stock_location_name,
          "contact": {
@@ -383,7 +385,7 @@ async function createParcel2W(order){
     {
       "parcels": [
        {
-        "external_id": order.number + "_2W",
+        "external_id": order.number + "_2W_"+new Date().getTime(),
         "pickup_info": {
          "addr": order.shipment_stock_location_name,
          "contact": {

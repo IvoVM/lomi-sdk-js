@@ -36,7 +36,7 @@
               <agm-marker [latitude]="order.stops[1].loc[0]" [longitude]="order.stops[1].loc[1]"></agm-marker>
               <ng-container *ngFor="let journey of order.journeys">
                 <agm-marker  *ngIf="journey.cabifyTrip && !journey.cabifyLogisticsTrip"  [latitude]="journey.cabifyTrip.data.journey?.state?.loc[0]" [longitude]="journey.cabifyTrip.data.journey.state.loc[1]" [iconUrl]="'assets/images/location-pin-purple.png'"></agm-marker>
-                <agm-marker  *ngIf="journey?.cabifyLogisticsTrip && journey?.cabifyTrip?.driver"  [latitude]="journey.cabifyTrip.tracking.location.lat" [longitude]="journey.cabifyTrip.tracking.location.lon" [iconUrl]="'assets/images/location-pin-purple.png'"></agm-marker>
+                <agm-marker  *ngIf="journey?.cabifyLogisticsTrip && journey?.cabifyTrip?.driver && journey.cabifyTrip.tracking.location"  [latitude]="journey.cabifyTrip.tracking.location.lat" [longitude]="journey.cabifyTrip.tracking.location.lon" [iconUrl]="'assets/images/location-pin-purple.png'"></agm-marker>
               </ng-container>
               <agm-direction 
               [markerOptions]="markerOptions"
