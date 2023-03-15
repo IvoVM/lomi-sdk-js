@@ -142,9 +142,9 @@ export class OrderComponent implements OnInit {
 
         if(this.order){
           this.ordersProvider.updateOrder(this.order.number, {
-            status: WAITING_AT_DRIVER_STATE
+            status: ON_PICKING_STATE
           })
-          this.order.status = WAITING_AT_DRIVER_STATE
+          this.order.status = ON_PICKING_STATE
           const journeyIndex = this.order.journeys?.findIndex((journey:any)=>{
             return journey.uberTrip.id == tripId
           })
@@ -175,9 +175,9 @@ export class OrderComponent implements OnInit {
         
         if(this.order){
           this.ordersProvider.updateOrder(this.order.number, {
-            status: WAITING_AT_DRIVER_STATE
+            status: ON_PICKING_STATE
           })
-          this.order.status = WAITING_AT_DRIVER_STATE
+          this.order.status = ON_PICKING_STATE
           const journeyIndex = this.order.journeys?.findIndex((journey:any)=>{
             return journey.uberTrip.id == tripId
           })

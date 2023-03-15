@@ -9,7 +9,9 @@ module.exports = (admin) => {
     console.log("Updating journey", "id: " + journey.id, "status: " + journey.status)
     const spreeStatusEquivalent = statesUtils.decodeUberStatus(journey.status)
     journey.trackingUrl = "No tracking url available"
-    journeyUtils.updateJourney(spreeStatusEquivalent,journey);
+    if(spreeStatusEquivalent){
+      journeyUtils.updateJourney(spreeStatusEquivalent,journey);
+    }
   }
 
   const listenToUberStatusWebHook = functions.https.onRequest(

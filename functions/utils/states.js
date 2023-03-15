@@ -11,6 +11,7 @@ module.exports = (() => {
         3: {
             text: 'preparing',
             value: "Preparando pedido",
+            uber_status: "canceled"
         },
         4: {
             text: 'store_rider_searching',
@@ -30,7 +31,7 @@ module.exports = (() => {
         7: {
             text: 'store_rider_canceled',
             value: "El repartidor cancelo el pedido",
-            uber_status: "returned,canceled"
+            uber_status: "returned"
         },
 
     }
