@@ -43,7 +43,7 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
           eta_display: order.cabifyEstimated.eta_to_pick_up * 1000,
           duration_display: order.cabifyEstimated.eta_to_delivery * 1000,
           deliveryTime_display: ((order.cabifyEstimated.eta_to_delivery + order.cabifyEstimated.eta_to_pick_up )* 1000),
-          cost_display: order.cabifyEstimated.price_total?.amount,
+          cost_display: order.cabifyEstimated.price_total.amount,
           product_type: "Cabify moto",
           product_id: "cabify_moto"
         }]
@@ -79,7 +79,7 @@ export class DeliveryOperatorSelectorComponent implements OnInit {
           eta_display: (order.cabifyEstimated.eta_to_pick_up* 1000),
           duration_display: (order.cabifyEstimated.eta_to_delivery * 1000),
           deliveryTime_display: ((order.cabifyEstimated.eta_to_delivery + order.cabifyEstimated.eta_to_pick_up )* 1000),
-          cost_display: order.cabifyEstimated.price_total?.amount,
+          cost_display: order.cabifyEstimated.price_total.amount,
           product_type: "Cabify",
           product_id: "cabify_auto"
         }]

@@ -792,11 +792,6 @@ exports.watchAllOrders = functions.firestore.document('{collectionName}/{docId}'
         const evaluateUber = axios.post('https://us-central1-lomi-35ab6.cloudfunctions.net/evaluateUber', order).catch(axiosHandleError)
         const evaluateFourWheelsUber = axios.post('https://us-central1-lomi-35ab6.cloudfunctions.net/evaluateFourWheelsUber', order).catch(axiosHandleError)
         const evaluateCabify = axios.post('https://us-central1-lomi-35ab6.cloudfunctions.net/evaluateCabify', order).catch(axiosHandleError)
-        await Promise.all([
-          evaluateUber,
-          evaluateFourWheelsUber,
-          evaluateCabify
-        ])
       }
     }
   }
