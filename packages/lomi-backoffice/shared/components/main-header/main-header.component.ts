@@ -66,6 +66,10 @@ export class MainHeaderComponent implements OnInit {
           {
             route: "orders-history",
             name: "Historial de pedidos",
+          },
+          {
+            route: "stock",
+            name: "Stock"
           }
         ]
         if(this.user.userRol.toString() == "Admin"){
