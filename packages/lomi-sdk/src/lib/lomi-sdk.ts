@@ -1,7 +1,9 @@
 import axios from 'axios';
-//import { io } from 'socket.io-client'
+import { io } from 'socket.io-client'
 export let clientUrl:string = 'https://lomi.cl/'
-//export const socketIoClient = io('http://localhost:3000');
+export const socketIoClient = io('https://lomi-backoffice-server.herokuapp.com/', {
+  withCredentials: true,
+});
 
 export async function changeClient(newUrl:string){
   clientUrl = newUrl;
