@@ -232,7 +232,7 @@ export class OrdersService {
     return state;
   }
 
-  showItems(orderId: string) {
-    window.open('https://lomi.cl/admin/orders/' + orderId + '/invoice', "_blank")
+  showItems(orderNumber: string) {
+    window.open('https://lomi.cl/admin/orders/' + orderNumber + '/invoice', "_blank")
   }
 }
