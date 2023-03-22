@@ -5,7 +5,7 @@ const states = require('../../utils/mocks/states.js')()
 module.exports = (admin) => {
 
     function selectOrderStatusBasedOnState(state){
-        if(state == 'delivered' || state == 'returned' || state == 'incident' || state == 'pickupfailed' || state == 'internalcanceled' || state == 'requestercancel'){
+        if(state == 'returned' || state == 'incident' || state == 'pickupfailed' || state == 'internalcanceled' || state == 'requestercancel'){
             return 7
         } else if(state == 'qualifiedforpickup' || state == 'onroutetopickup' || state == 'pickingup'){
             return 4

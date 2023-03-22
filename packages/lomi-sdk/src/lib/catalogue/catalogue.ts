@@ -1,5 +1,4 @@
-//import { socketIoClient } from "../lomi-sdk";
-const socketIoClient:any = null;
+import { socketIoClient } from "../lomi-sdk";
 export const catalogue = (() => {
     
     const getStockItems = (stockLocationId:string) => {
