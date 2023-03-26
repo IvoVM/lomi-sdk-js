@@ -42,7 +42,7 @@ export class MainHeaderComponent implements OnInit {
     },
     {
       route: "stock",
-      name: "Stock"
+      name: "Productos"
     }
   ]
 
