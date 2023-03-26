@@ -64,6 +64,8 @@ import { EditStoreComponent } from './modals/edit-store/edit-store.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgAisModule } from 'angular-instantsearch';
 import { StoreChangeComponent } from './components/store-change/store-change.component';
+import {ScrollingModule} from '@angular/cdk/scrolling';
+import {MatChipsModule} from '@angular/material/chips';
 
 @NgModule({
   declarations: [
@@ -127,6 +129,8 @@ import { StoreChangeComponent } from './components/store-change/store-change.com
     AgmDirectionModule,
     MatSnackBarModule,
     NgAisModule.forRoot(),
+    ScrollingModule,
+    MatChipsModule
   ],
   exports: [
     MatCardModule,
@@ -174,6 +178,8 @@ import { StoreChangeComponent } from './components/store-change/store-change.com
     MatTooltipModule,
     NgAisModule,
     StoreChangeComponent,
+    ScrollingModule,
+    MatChipsModule
   ],
   providers: [
     { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 3000 } },

@@ -6,41 +6,70 @@
     <mat-tab-group>
         <mat-tab label="Productos">
             <mat-accordion class="example-headers-align" multi>
-                <mat-expansion-panel *ngFor="let item of items | async" class = "{{ !item.variant.is_available ? 'unavailable' : 'available' }}">
-                  <mat-expansion-panel-header>
-                    <mat-panel-title>
-                      {{item.variant.name}}
-                    </mat-panel-title>
-                    <mat-panel-description style="
-                        width: 50%;
-                        display: flex;
-                        justify-content: flex-end;
-                    ">
-                    <div style="
-                        width: 100%;
-                        display: flex;
-                        justify-content: space-between;
-                    ">
-                    <div>
-                        ${{item.variant.price}}
-                    </div>
-
-                    <div>
-
-                        {{item.variant.total_on_hand}} {{item.variant.option_values[0].option_type_presentation}}
-                    </div>
-                    
-                    </div>
-                    </mat-panel-description>
-                  </mat-expansion-panel-header>
-              
-                  <mat-slide-toggle 
-                  [checked]="!item.variant.is_available">
-                    Deshabilitar
-                </mat-slide-toggle>
-              
-              
-                </mat-expansion-panel>
+                <cdk-virtual-scroll-viewport appendOnly itemSize="5" class="example-viewport">
+                    <mat-expansion-panel *cdkVirtualFor="let item of items" class = "{{ !item.individual_sale? 'unavailable' : 'available' }}">
+                      <mat-expansion-panel-header>
+                        <mat-panel-title style="width: 20em;">
+                          {{item.name}}
+                        </mat-panel-title>
+                        <mat-panel-description style="
+                            width: 10em;
+                            display: flex;
+                            justify-content: space-between;
+                        ">
+                        <div>
+                            <mat-chip-list aria-label="Fish selection">
+                                <mat-chip style="width:10em;border:1px solid gray;" selected [color]="!totalStockOfItem(item) ? 'accent' : totalStockOfItem(item) < 10 ? 'warn' : 'primary'">
+                                    <span *ngIf="totalStockOfItem(item)">
+                                        Stock: <span [ngStyle]="{
+                                            
+                                        }">{{totalStockOfItem(item)}}</span>
+                                    </span>
+                                    <span *ngIf="!totalStockOfItem(item)">
+                                        Sin Stock
+                                    </span>
+                                </mat-chip>
+                            </mat-chip-list>
+                        </div>
+                        <div>
+                            <p style="width: 10em">
+                                <span *ngIf="item.global">
+                                    Producto de LOMI
+                                </span>
+                            </p>
+                        </div>
+                        </mat-panel-description>
+                      </mat-expansion-panel-header>
+    
+                      <mat-card style="width: 10em;"  *ngFor="let variant of item.variants">
+                            <mat-card-header>
+                                <mat-card-title style="font-size: 0.9em;">{{variant.sku}}</mat-card-title>
+                                <mat-card-subtitle style="font-size: 0.7em;">{{variant.options}}</mat-card-subtitle>
+                              </mat-card-header>
+                            <img style="width: 100%;margin: 0;" mat-card-image [src]="variant.images.length ? variant.images[0].imageUrl.split('?')[0] : item.thumbnail ? item.thumbnail.split('?')[0] : 'assets/images/unavaible.webp'">
+                            <mat-card-content>
+                                <p style="margin: 1em 0" >
+                                    <span *ngIf="variant.total_on_hand">
+                                        Stock: {{variant.total_on_hand}}
+                                    </span>
+                                    <span *ngIf="!variant.total_on_hand" style="color:red">
+                                        Sin Stock
+                                    </span>
+                                </p>
+                              </mat-card-content>
+                      </mat-card>
+                  
+                      <mat-slide-toggle 
+                      [checked]="!item.individual_sale"
+                        (change)="toggleAvaibility(item)"
+                        *ngIf="!item.global"
+                      >
+                        Deshabilitar
+                    </mat-slide-toggle>
+                  
+                  
+                    </mat-expansion-panel>
+                  </cdk-virtual-scroll-viewport>
               </mat-accordion>
         </mat-tab>
     </mat-tab-group>    

@@ -7,9 +7,17 @@
 }
 
 .available{
-    background-color: #00b169;
+    background-color: #00b169DD;
     color: white;
     .mat-expansion-panel-header-title, .mat-expansion-panel-header-description{
         color: white !important;
     }
+    border: 1px solid white;
+}
+
+.example-viewport{
+    height: 38em;
+    width: 100%;
+    overflow: auto;
+    padding: 0 16px;
 }
