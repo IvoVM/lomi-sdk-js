@@ -81,7 +81,6 @@ export class TableComponent implements OnInit, AfterViewInit {
     this.ordersProvider.updateOrder(order.number, {
       picked_at: new Date()
     })
-    this.ordersProvider.currentStep++
   }
 
   completeOrder(order: Order) {
@@ -165,6 +164,10 @@ export class TableComponent implements OnInit, AfterViewInit {
   createTrip(order: any) {
     this._bottomSheet.open(DeliveryOperatorSelectorComponent, {
       data: order
+    }).afterDismissed().subscribe((response) => {
+      if (response) {
+        this.pickOrder(order)
+      }
     })
   }
 

@@ -91,9 +91,10 @@
         <th mat-header-cell *matHeaderCellDef> Estado del pedido </th>
         <td mat-cell *matCellDef="let order" > 
             <p style="margin-top:1em" class="status-chip-{{order.status ? order.status : order.name.includes('Retiro') || order.isStorePicking ? 0 : 2}} status-chip">
-                <img *ngIf="getJourneyByOrderNumber(order.number)?.uberTrip" style="height: 1.3em;width: auto;margin: 0 1em -0.25em 0;" src="assets/images/uber.png">
-                <span *ngIf="!getJourneyByOrderNumber(order.number)">{{order.status | status}}</span>
-                <span *ngIf="getJourneyByOrderNumber(order.number)">{{getJourneyByOrderNumber(order.number)?.status | uberStatus}}</span>
+                <img *ngIf="getJourneyByOrderNumber(order.number)?.providerId == 1" style="height: 1.3em;width: auto;margin: 0 1em -0.25em 0;" src="assets/images/uber.png">
+                <img *ngIf="getJourneyByOrderNumber(order.number)?.providerId == 3" style="height: 1.3em;width: auto;margin: 0 1em -0.25em 0;" src="assets/images/cabify.png">
+                <span *ngIf="!order.journeyStatus && !getJourneyByOrderNumber(order.number)">{{order.status | status}}</span>
+                <span *ngIf="order.journeyStatus || getJourneyByOrderNumber(order.number)">{{(order.journeyStatus ? order.journeyStatus : getJourneyByOrderNumber(order.number)?.status) | uberStatus}}</span>
 
             </p>
         </td>

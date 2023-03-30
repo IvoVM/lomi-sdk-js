@@ -215,7 +215,11 @@ export class OrderComponent implements OnInit {
             }
             this.orderJourneySubscription = orderJourneysObservable.subscribe((journeys:any)=>{
               if(this.order && journeys.length){
-                this.order.journeys = journeys
+                this.order.journeys = journeys.sort((a:any,b:any)=>{
+                  const aCreatedAt = a.createdAt?.seconds || new Date(a.uberTrip?.created).getTime() / 1000 || new Date(a.uberFourWheelsTrip?.created).getTime() / 1000
+                  const bCreatedAt = b.createdAt?.seconds || new Date(b.uberTrip?.created).getTime() / 1000 || new Date(b.uberFourWheelsTrip?.created).getTime() / 1000
+                  return bCreatedAt - aCreatedAt
+                })
               }
             })
           } else {
@@ -227,7 +231,6 @@ export class OrderComponent implements OnInit {
               })
             })
           }
-          console.log(this.order)
         })
     })
   }

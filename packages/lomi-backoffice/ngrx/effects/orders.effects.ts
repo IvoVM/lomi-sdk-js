@@ -100,10 +100,6 @@ export class OrderEffects {
             limit(action.payload.per_page ? action.payload.per_page : 25),
             )
             const newObs = new Observable(observer => {
-                onSnapshot(queryDefinition,
-                  ((snapshot:QuerySnapshot) => observer.next(snapshot)),
-                  (error => observer.error(error.message))
-                );
                 onSnapshot(queryDefinitionPending,
                   ((snapshot:QuerySnapshot) => observer.next(snapshot)),
                   (error => observer.error(error.message))
