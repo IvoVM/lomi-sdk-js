@@ -7,7 +7,7 @@
         <mat-tab label="Productos">
             <mat-accordion class="example-headers-align" multi>
                 <cdk-virtual-scroll-viewport appendOnly itemSize="5" class="example-viewport">
-                    <mat-expansion-panel *cdkVirtualFor="let item of items" class = "{{ !item.individual_sale? 'unavailable' : 'available' }}">
+                    <mat-expansion-panel *cdkVirtualFor="let item of items" class = "{{ !totalStockOfItem(item)? 'unavailable' : 'available' }}">
                       <mat-expansion-panel-header>
                         <mat-panel-title style="width: 20em;">
                           {{item.name}}
@@ -56,16 +56,16 @@
                                         Sin Stock
                                     </span>
                                 </p>
+                                <mat-slide-toggle 
+                                [checked]="!variant.total_on_hand"
+                                  (change)="toggleAvaibilityOfVariant(variant, item.id)"
+                                  *ngIf="!item.global"
+                                >
+                                  Deshabilitar
+                              </mat-slide-toggle>
                               </mat-card-content>
                       </mat-card>
                   
-                      <mat-slide-toggle 
-                      [checked]="!item.individual_sale"
-                        (change)="toggleAvaibility(item)"
-                        *ngIf="!item.global"
-                      >
-                        Deshabilitar
-                    </mat-slide-toggle>
                   
                   
                     </mat-expansion-panel>

@@ -219,7 +219,6 @@ export class TableComponent implements OnInit, AfterViewInit {
 
 
   ngOnInit(): void {
-    console.log(this.state, "state")
     if (this.state != OrderStates.WAITING_AT_DRIVER_STATE){
       this.columnsToDisplay.pop()
     } else {

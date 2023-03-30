@@ -57,6 +57,27 @@ export class StockItemsComponent implements OnInit {
     }
   }
 
+  public toggleAvaibilityOfVariant(variant:any, productId:any){
+    console.log(variant)
+    const stockLocationId = localStorage.getItem("stockLocationId") || ""
+    const totalOnHand = variant.total_on_hand
+    if(totalOnHand <= 0){
+      catalogue.enableVariant(variant.id, stockLocationId, productId, (data:any)=>{
+        const item:any = this.items.find((item:any)=>item.id == productId)
+        const updatedVariant = item.variants.find((v:any)=>v.id == variant.id)
+        updatedVariant.total_on_hand = data.count_on_hand
+        console.log(data, "enableVariant")
+      })
+    } else {
+      catalogue.disableVariant(variant.id, stockLocationId, productId, (data:any)=>{
+        const item:any = this.items.find((item:any)=>item.id == productId)
+        const updatedVariant = item.variants.find((v:any)=>v.id == variant.id)
+        updatedVariant.total_on_hand = data.count_on_hand
+        console.log(data,"disableVariant")
+      })
+    }
+  }
+
   public totalStockOfItem(item:any) {
     return item.variants.reduce((acc:any, stockItem:any) => {
       return acc + stockItem.total_on_hand;

@@ -42,6 +42,23 @@ export const catalogue = (() => {
         })
     }
 
+    const disableVariant = (variantId:any, stockLocationId:any, productId:any,callback:any) => {
+        socketIoClient.emit("spree:variant:unavailable", {
+            variantId: variantId,
+            stockLocation: stockLocationId,
+            productId
+        }, callback)
+    }
+
+    const enableVariant = (variantId:any, stockLocationId:any, productId:any, callback:any) => {
+        console.log(variantId, stockLocationId, productId)
+        socketIoClient.emit("spree:variant:available", {
+            variantId: variantId,
+            stockLocation: stockLocationId,
+            productId
+        }, callback)
+    }
+
     const enableProduct = (variantId:any, stockLocationId:any) => {
         socketIoClient.emit("spree:products:available", {
             productId: variantId,
@@ -66,6 +83,8 @@ export const catalogue = (() => {
         enableProduct,
         disableProduct,
         getProducts,
+        enableVariant,
+        disableVariant,
         events
     }    
 
