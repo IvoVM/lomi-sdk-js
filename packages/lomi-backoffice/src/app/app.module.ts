@@ -38,6 +38,7 @@ import { StockModule } from 'packages/lomi-backoffice/stock/stock.module';
 import { NgAisModule } from 'angular-instantsearch';
 import * as Sentry from "@sentry/angular-ivy";
 import { BrowserTracing } from "@sentry/tracing";
+import { RipleyModule } from 'packages/lomi-backoffice/ripley/ripley.module';
 
 @NgModule({
   declarations: [AppComponent, MainHeaderComponent, NotificationsComponent],
@@ -70,7 +71,8 @@ import { BrowserTracing } from "@sentry/tracing";
     SettingsModule,
     JourneysModule,
     AngularFireMessagingModule,
-    NgAisModule.forRoot()
+    NgAisModule.forRoot(),
+    RipleyModule
   ],
   exports: [],
   providers: [JourneysService, UserService, NotificationsService, OrdersService, GoogleMapsAPIWrapper],
