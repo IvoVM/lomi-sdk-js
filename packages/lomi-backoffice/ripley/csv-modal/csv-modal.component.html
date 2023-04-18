@@ -1,0 +1,17 @@
+<table>
+    <tr>
+        <th *ngFor="let attribute of data.attributes" class="{{attribute.required ? 'required' : ''}}">
+            {{attribute.code}}
+        </th>
+    </tr>
+    <tr *ngFor="let product of products">
+        <td *ngFor="let attribute of data.attributes">
+            <span *ngIf="product[attribute.code]">
+                {{product[attribute.code]}}
+            </span>
+            <span *ngIf="!product[attribute.code]">
+                {{attribute.default_value}}
+            </span>
+        </td>
+    </tr>    
+</table>

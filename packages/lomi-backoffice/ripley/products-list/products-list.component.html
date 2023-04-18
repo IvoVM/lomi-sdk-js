@@ -1,1 +1,83 @@
-<p>products-list works!</p>
+<div>
+    <lomii-half-card>
+        <h1 style="margin-left: 0.3em;">Ripley Mirakl Api Connection</h1>
+        <img style="height: 3em;margin-left: 0.5em;margin-top:-2.5em;float: right;margin-right: 1em;" src="https://upload.wikimedia.org/wikipedia/commons/6/6b/Logo_Ripley_Chile.png">
+        <mat-tab-group>
+            <mat-tab label="Sincronizacion de productos">
+                <div class="categorias">
+                    <mat-card  *ngFor="let category of ripley.miraklRootCategories">
+                        <div style="display: flex;flex-direction: row;justify-content: space-between;">
+                            <div>
+                                <h4>{{category.label}}</h4>
+                                <h5>{{category.code}}</h5>
+                            </div>
+                            <button *ngIf="categoryExpanded != category.label" mat-icon-button (click)="categoryExpanded = category.label">
+                                <mat-icon>keyboard_arrow_down</mat-icon>
+                            </button>
+                            <button *ngIf="categoryExpanded == category.label" mat-icon-button (click)="categoryExpanded = ''">
+                                <mat-icon>keyboard_arrow_up</mat-icon>
+                            </button>
+                        </div>
+                        <div *ngIf="categoryExpanded == category.label" class="subcategorias">
+                            <mat-card  *ngFor="let subcategory of category.children">
+                                <div style="display: flex;flex-direction: row;justify-content: space-between;">
+                                    <div>
+                                        <h5>{{subcategory.label}}</h5>
+                                        <h6>{{subcategory.code}}</h6>
+                                    </div>
+                                    <button *ngIf="subcategoryExpanded != subcategory.label" mat-icon-button (click)="subcategoryExpanded = subcategory.label">
+                                        <mat-icon>keyboard_arrow_down</mat-icon>
+                                    </button>
+                                    <button *ngIf="subcategoryExpanded == subcategory.label" mat-icon-button (click)="subcategoryExpanded = ''">
+                                        <mat-icon>keyboard_arrow_up</mat-icon>
+                                    </button>
+                                </div>
+                                <div *ngIf="subcategoryExpanded == subcategory.label">
+                                    <mat-card *ngFor="let category of subcategory.children">
+                                        <div>
+                                            <h5>{{category.label}}</h5>
+                                            <h5>
+                                                <span> Spree categories </span>
+                                                <span style="display: flex;flex-direction: row;">
+                                                    <mat-chip-list>
+                                                        <mat-chip *ngFor="let spreeCategory of ripleySpreeTaxons[category.code]">
+                                                            <a href="https://lomi.cl/admin/taxonomies/7/taxons/{{spreeCategory}}/edit">
+                                                                {{spreeCategory}}
+                                                            </a>
+                                                        </mat-chip>
+                                                    </mat-chip-list>
+                                                </span>
+                                            </h5>   
+                                            <h6>{{category.code}}</h6>
+                                        </div>
+                                        <button mat-raised-button style="margin-right: 1em;">
+                                            Ver atributos
+                                        </button>
+                                        <button (click)="ripley.openCsvDialog(ripleySpreeTaxons[category.code], category.attributes)" mat-raised-button>
+                                            Imprimir Csv
+                                        </button>
+                                        <div *ngIf="thirdLevelExpanded == category.label">
+                                            <li *ngFor="let attribute of category.attributes" class="{{ attribute.required ? 'required' : '' }}">
+                                                {{attribute.code}}
+                                            </li>
+                                        </div>
+                                    </mat-card>
+                                </div>
+                            </mat-card>
+                        </div>
+                    </mat-card>
+                </div>
+            </mat-tab>
+            <mat-tab label="Sincronizacion de pedidos">
+                <mat-card *ngFor="let order of ripley.miraklOrders">
+                    <div style="display: flex;flex-direction: row;justify-content: space-between;">
+                        <h3>{{order.order_id}}</h3>
+                        <h4>{{order.created_date | date}}</h4>
+                        <h4>{{order.order_state}}</h4>
+                        <h4>${{order.price}}</h4>
+                    </div>
+                </mat-card>
+            </mat-tab>
+        </mat-tab-group>
+    </lomii-half-card>
+</div>

@@ -223,6 +223,10 @@ button[mat-button], button[mat-raised-button], button[mat-stroked-button]{
   border-radius: 50px;
 }
 
+.required{
+  color: red;
+}
+
 .status-chip{
   max-height: 1.7em;
   margin-right: 16px !important;

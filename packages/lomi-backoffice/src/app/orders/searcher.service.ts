@@ -8,6 +8,11 @@ const searchClient = algoliasearch(
   'a2c0594de862699edc3960c307f302e2'
 );
 
+const searchProductsClient = algoliasearch(
+  '11OHOV5720',
+  'a2c0594de862699edc3960c307f302e2'
+);
+
 
 @Injectable({
   providedIn: 'root'
@@ -26,8 +31,15 @@ export class SearcherService {
   public getCurrentRecords(){
     return [...this.currentRecords]
   }
+  public async searchInStock(queryString:any){
+    const config = {
+      indexName: 'products',
+      searchProductsClient
+    }
+    return this.search(queryString, 'products', config)
+  }
 
-  public search(queryString:any, indexName = 'name'){
+  public search(queryString:any, indexName = 'name', config:any = this.config){
     if(!queryString){
       this.hitsSubject.next([])
       return
@@ -47,9 +59,10 @@ export class SearcherService {
       }
     }
 
-    searchClient.search([query]).then(({results}) => {
+    return searchClient.search([query]).then(({results}) => {
       const { hits } = results[0];
       this.hitsSubject.next(hits)
+      return hits
     })
   }
 

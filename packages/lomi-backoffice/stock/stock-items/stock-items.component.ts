@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { catalogue } from '@lomi-sdk/lomi-sdk'
+import { SearcherService } from 'packages/lomi-backoffice/src/app/orders/searcher.service';
 
 @Component({
   selector: 'lomii-stock-items',
@@ -10,7 +11,9 @@ export class StockItemsComponent implements OnInit {
   public items = [];
   public search = "";
 
-  constructor() {
+  constructor(
+    private searcherService: SearcherService
+  ) {
     const stockLocationId = localStorage.getItem("stockLocationId") || ""
     catalogue.events.onProductAvailable((params:any)=>{
       console.log(params.productId)
@@ -33,17 +36,9 @@ export class StockItemsComponent implements OnInit {
 
   public searchProduct(event:any){
     console.log(event.target.value)
-    if(!event.target.value){
-      const stockLocationId = localStorage.getItem("stockLocationId") || ""
-      catalogue.getProducts(stockLocationId).then((items:any)=>{
-        this.items = items
-      })
-      return
-    }
-    const stockLocationId = localStorage.getItem("stockLocationId") || ""
-    catalogue.searchProduct(stockLocationId,event.target.value,"").then((items:any)=>{
-      console.log(items, "items")
+    this.searcherService.searchInStock(event.target.value).then((items:any)=>{
       this.items = items
+      console.log(items, "searchProduct")
     })
   }
 

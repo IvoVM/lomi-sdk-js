@@ -1,0 +1,12 @@
+td
+{
+ max-width: 200px;
+ overflow: hidden;
+ text-overflow: ellipsis;
+ white-space: nowrap;
+ background-color: rgba($color: #22FFEE, $alpha: 0.2)
+}
+
+th{
+    background-color: rgba($color: #22FF11, $alpha: 0.2)
+}
