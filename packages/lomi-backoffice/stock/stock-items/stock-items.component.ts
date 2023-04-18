@@ -36,9 +36,17 @@ export class StockItemsComponent implements OnInit {
 
   public searchProduct(event:any){
     console.log(event.target.value)
-    this.searcherService.searchInStock(event.target.value).then((items:any)=>{
+    if(!event.target.value){
+      const stockLocationId = localStorage.getItem("stockLocationId") || ""
+      catalogue.getProducts(stockLocationId).then((items:any)=>{
+        this.items = items
+      })
+      return
+    }
+    const stockLocationId = localStorage.getItem("stockLocationId") || ""
+    catalogue.searchProduct(stockLocationId,event.target.value,"").then((items:any)=>{
+      console.log(items, "items")
       this.items = items
-      console.log(items, "searchProduct")
     })
   }
 
