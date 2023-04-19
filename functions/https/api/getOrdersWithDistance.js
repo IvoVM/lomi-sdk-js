@@ -26,6 +26,17 @@ module.exports = (admin) => {
             picking_time: timestampToDate(order.picked_at) || null
         }
     };
+
+    const getOrderJourneys = async (order) => {
+        const orderJourneys = await firebaseUtils(admin).getFirebaseCollection("SPREE_ORDERS"+order.shipment_stock_location_id+"/"+order.number+"/journeys"+order.number, 10000);
+        return orderJourneys.map(journey => {
+            return {
+                ...journey,
+                created_at: timestampToDate(journey.created_at) || null,
+                updated_at: timestampToDate(journey.updated_at) || null
+            }
+        });
+    };
     
     const getStoreOrdersDeliveryTimes = async (stockLocationId, limit = 0) => {
         let stockLocationOrdersCollection
@@ -34,6 +45,9 @@ module.exports = (admin) => {
         } else {
             stockLocationOrdersCollection = await firebaseUtils(admin).getFirebaseCollection("SPREE_ORDERS_"+stockLocationId, 10000);
         }
+        stockLocationOrdersCollection.forEach(order => {
+
+        });
         return stockLocationOrdersCollection.map(convertOrderToDeliveryTime);
     };
     

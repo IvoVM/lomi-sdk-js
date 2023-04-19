@@ -10,7 +10,7 @@ const searchClient = algoliasearch(
 
 const searchProductsClient = algoliasearch(
   '11OHOV5720',
-  'a2c0594de862699edc3960c307f302e2'
+  '2f84fbe67662bc650c7326412d888f4a'
 );
 
 
@@ -36,6 +36,7 @@ export class SearcherService {
       indexName: 'products',
       searchProductsClient
     }
+    
     return this.search(queryString, 'products', config)
   }
 
@@ -62,12 +63,12 @@ export class SearcherService {
       params: {
         hitsPerPage: 20,
         filters: userRol === '1' ? '' : 
-        config.indexName == 'products' ? `store_ids=${storeId}` :
+        config.indexName == 'products' ? `store_ids:${storeId}` :
          `shipment_stock_location_id:${currentStockLocation}`
       }
     }
 
-    return searchClient.search([query]).then(({results}) => {
+    return (config.indexName == 'products' ? searchProductsClient : searchClient).search([query]).then(({results}) => {
       const { hits } = results[0];
       this.hitsSubject.next(hits)
       if(config.indexName == 'products'){

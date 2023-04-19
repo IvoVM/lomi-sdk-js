@@ -103,6 +103,9 @@ exports.listenToSlackEvents = listenToSlackEvents
 const getDeliveryTimes = require('./https/api/getDeliveryTimes')(admin);
 exports.getDeliveryTimes = getDeliveryTimes.apiGetOrdersDeliveryTimes;
 
+const getOrdersDistance = require('./https/api/getOrdersWithDistance')(admin);
+exports.getOrdersDistance = getOrdersDistance.apiGetOrdersDistance;
+
 const reverseGeocoding = require('./https/api/reverseGeocoding')(admin);
 exports.reverseGeocoding = reverseGeocoding.reverseGeocoding;
 //End Imported API functions
