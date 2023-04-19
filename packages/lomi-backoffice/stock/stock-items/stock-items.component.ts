@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { catalogue } from '@lomi-sdk/lomi-sdk'
 import { SearcherService } from 'packages/lomi-backoffice/src/app/orders/searcher.service';
@@ -10,9 +11,24 @@ import { SearcherService } from 'packages/lomi-backoffice/src/app/orders/searche
 export class StockItemsComponent implements OnInit {
   public items = [];
   public search = "";
+  public stockLocations = []
+
+  private storeIdToStockLocation(storeId:string){
+    return this.stockLocations.find((stockLocation:any)=>{
+      return stockLocation.attributes.stores[0].id == storeId
+    })
+  }
+
+  private stockLocationToStoreId(stockLocationId:string){
+    console.log(stockLocationId, "stockLocationId")
+    return this.stockLocations.find((stockLocation:any)=>{
+      return stockLocation.id == stockLocationId
+    })
+  }
 
   constructor(
-    private searcherService: SearcherService
+    private searcherService: SearcherService,
+    private http: HttpClient
   ) {
     const stockLocationId = localStorage.getItem("stockLocationId") || ""
     catalogue.events.onProductAvailable((params:any)=>{
@@ -36,17 +52,11 @@ export class StockItemsComponent implements OnInit {
 
   public searchProduct(event:any){
     console.log(event.target.value)
-    if(!event.target.value){
+    this.searcherService.searchInStock(event.target.value).then((items:any)=>{
       const stockLocationId = localStorage.getItem("stockLocationId") || ""
-      catalogue.getProducts(stockLocationId).then((items:any)=>{
-        this.items = items
-      })
-      return
-    }
-    const stockLocationId = localStorage.getItem("stockLocationId") || ""
-    catalogue.searchProduct(stockLocationId,event.target.value,"").then((items:any)=>{
-      console.log(items, "items")
+      console.log(stockLocationId, "stockLocationId", this.stockLocationToStoreId(stockLocationId))
       this.items = items
+      console.log(items, "searchProduct")
     })
   }
 

@@ -16,6 +16,16 @@ export const catalogue = (() => {
             });
         })
     }
+
+    const getStockLocations = () => {
+        return new Promise((resolve, reject)=>{
+            socketIoClient.emit("spree:stock_location:list", {
+                "limit": 50
+            },(data:any)=>{
+                resolve(data)
+            });
+        })
+    }
     
     const getStockItems = (stockLocationId:string) => {
         return new Promise((resolve, reject)=>{

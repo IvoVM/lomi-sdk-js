@@ -17,11 +17,13 @@ import { defer } from 'rxjs';
 import { Route, Router } from '@angular/router';
 import { collectionData, doc, Firestore, startAt, setDoc } from '@angular/fire/firestore';
 import { docSnapshots } from '@angular/fire/firestore';
+import { HttpClient } from '@angular/common/http';
 type Action = userActions.All;
 
 
 @Injectable()
 export class UserEffects {
+
 
   // ************************************************
   // Observable Queries available for consumption by views
@@ -68,6 +70,7 @@ getUser$: Observable<Action> = createEffect(() => this.actions$.pipe(
                        const user = userDocSnapshot.data() as IUser;
                        if( user.stockLocationId && user.stockLocationId > 0){
                            localStorage.setItem('stockLocationId', user.stockLocationId.toString())
+                 
                        }
                        if(!user.userRol){
                             this.router.navigateByUrl("user-without-rol")
@@ -128,6 +131,17 @@ getUser$: Observable<Action> = createEffect(() => this.actions$.pipe(
   // ************************************************
   // Internal Code
   // ************************************************
+  stockLocations = []
+  private getStockLocations() {
+    return new Promise((resolve, reject) => {
+      this.http.get('https://lomi.cl/api/v2/storefront/stock_locations').subscribe((data:any)=>{
+        this.stockLocations = data.data
+        localStorage.setItem('stockLocations', JSON.stringify(data.data))
+        console.log(data.data, "data.data")
+        resolve(data.data)
+      })
+    })
+  }
 
   constructor(
       private actions$: Actions,
@@ -135,7 +149,12 @@ getUser$: Observable<Action> = createEffect(() => this.actions$.pipe(
       private afAuth: AngularFireAuth,
       private router: Router,
       private afs: Firestore,
-  ) { }
+      private http: HttpClient
+  ) {
+    this.getStockLocations().then((data:any)=>{
+        console.log(this.stockLocations)
+    })
+  }
 
   /**
    *

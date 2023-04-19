@@ -40,28 +40,45 @@ export class SearcherService {
   }
 
   public search(queryString:any, indexName = 'name', config:any = this.config){
-    if(!queryString){
+    /**if(!queryString){
       this.hitsSubject.next([])
       return
-    }
+    }**/
 
     const currentStockLocation = localStorage.getItem('stockLocationId')
     const userRol = localStorage.getItem('userRol')
     
     console.log("currentStockLocation", currentStockLocation, "userRol", userRol)
-    
+    const stockLocations = JSON.parse(localStorage.getItem('stockLocations') || "")
+    const currentStockLocationObject = stockLocations.find((stockLocation:any)=>{
+      return stockLocation.id == currentStockLocation
+    })
+    const storeId = currentStockLocationObject.attributes.stores[0][0].id
+    console.log("currentStock", currentStockLocationObject, "storeId", storeId)
+
     const query = {
       indexName,
       query: queryString,
       params: {
         hitsPerPage: 20,
-        filters: userRol === '1' ? '' : `shipment_stock_location_id:${currentStockLocation}`
+        filters: userRol === '1' ? '' : 
+        config.indexName == 'products' ? `store_ids=${storeId}` :
+         `shipment_stock_location_id:${currentStockLocation}`
       }
     }
 
     return searchClient.search([query]).then(({results}) => {
       const { hits } = results[0];
       this.hitsSubject.next(hits)
+      if(config.indexName == 'products'){
+        const filteredHits = hits.filter((hit:any)=>{
+          return hit.store_ids.find((storeId:any)=>{
+            return storeId == storeId
+          })
+        })
+        console.log(filteredHits)
+        return filteredHits
+      }
       return hits
     })
   }
