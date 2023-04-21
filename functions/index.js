@@ -804,3 +804,13 @@ exports.watchAllOrders = functions.firestore.document('{collectionName}/{docId}'
     }
   }
 })
+
+exports.sendOrderToStockItems = functions.firestore.document(`/SPREE_ORDERS_46/{docId}`).onCreate(async (snap, _) => {
+  console.log(snap.data())
+  await axios.post(
+    'https://us-central1-lomi-apps.cloudfunctions.net/listenLomiOrder',
+    {
+      ...snap.data()
+    }
+    )
+})
