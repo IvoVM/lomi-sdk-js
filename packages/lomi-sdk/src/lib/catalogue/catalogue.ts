@@ -60,11 +60,11 @@ export const catalogue = (() => {
         }, callback)
     }
 
-    const enableVariant = (variantId:any, storeId:any, productId:any, callback:any) => {
-        console.log(variantId, storeId, productId)
+    const enableVariant = (variantId:any, stockLocationId:any, productId:any, callback:any) => {
+        console.log(variantId, stockLocationId, productId)
         socketIoClient.emit("spree:variant:available", {
             variantId: variantId,
-            storeId,
+            stockLocation: stockLocationId,
             productId
         }, callback)
     }

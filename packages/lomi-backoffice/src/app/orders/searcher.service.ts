@@ -62,7 +62,7 @@ export class SearcherService {
       query: queryString,
       params: {
         hitsPerPage: 20,
-        filters: userRol === '1' ? '' : 
+        filters:
         config.indexName == 'products' ? `store_ids:${storeId}` :
          `shipment_stock_location_id:${currentStockLocation}`
       }
