@@ -1,10 +1,22 @@
 module.exports = (admin) => {
+
+    const getFirebaseCollectionOrderedBy = async (collectionName, orderBy, limit = 100) => {
+        let collectionRef = admin.firestore().collection(collectionName);
+        console.log("Getting collection with limit setted to ", limit)
+        const collection = await collectionRef
+        .orderBy(orderBy,'desc')
+        .limit(limit)
+        .get();
+        console.log("Getting collection with name: ", collectionName, "and size:", collection.size)
+        return collection.docs.map(doc => doc.data());
+    };
+
     const getFirebaseCollection = async (collectionName, limit = 100) => {
         let collectionRef = admin.firestore().collection(collectionName);
         console.log("Getting collection with limit setted to ", limit)
         const collection = await collectionRef
-        .orderBy('completed_at','desc')
         .limit(limit)
+        .where('providerId', '==', 3)
         .get();
         console.log("Getting collection with name: ", collectionName, "and size:", collection.size)
         return collection.docs.map(doc => doc.data());
@@ -18,6 +30,7 @@ module.exports = (admin) => {
 
     return {
         getFirebaseCollection,
-        getFirebaseDocument
+        getFirebaseDocument,
+        getFirebaseCollectionOrderedBy
     }
 };
