@@ -16,7 +16,6 @@ module.exports = (admin) => {
         console.log("Getting collection with limit setted to ", limit)
         const collection = await collectionRef
         .limit(limit)
-        .where('providerId', '==', 3)
         .get();
         console.log("Getting collection with name: ", collectionName, "and size:", collection.size)
         return collection.docs.map(doc => doc.data());

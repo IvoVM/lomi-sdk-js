@@ -15,6 +15,18 @@ module.exports = (admin) => {
 
     }
 
+    function detectVehicleType(journey){
+        if(journey.cabifyLogisticsTrip){
+            return journey.cabifyLogisticsTrip[0].product?.asset_kind
+        } else if(journey.uberFourWheelsTrip){
+            return "car"
+        } else if(journey.uberTrip){
+            return journey.uberTrip.courier?.vehicle_type || "2wheels"
+        } else{
+            return "notFound"
+        }
+    }
+
     function getDistanceFromLatLonInMeters(lat1, lon1, lat2, lon2) {
         const earthRadius = 6371000; // Radio de la Tierra en metros
         const dLat = deg2rad(lat2 - lat1);
@@ -138,6 +150,13 @@ module.exports = (admin) => {
                         
                         resolve({
                             id: order.id,
+                            number: order.number,
+                            fromCoords: null,
+                            fromAddress: null,
+                            toCoords: null,
+                            toAddress: null,
+                            journeys: [],
+                            distance: null,
                             stockLocationId: order.shipment_stock_location_id,
                             stockLocationName: order.shipment_stock_location_name,
                         })
@@ -146,6 +165,7 @@ module.exports = (admin) => {
                     const distance = getDistanceFromLatLonInMeters(order.stops[0].loc[0], order.stops[0].loc[1], order.stops[1].loc[0], order.stops[1].loc[1]) * 1.15
                     resolve({
                         id: order.id,
+                        number: order.number,
                         fromCoords: order.stops[0].loc,
                         fromAddress: order.stops[0].addr,
                         toCoords: order.stops[1].loc,
@@ -153,54 +173,9 @@ module.exports = (admin) => {
                         distance,
                         stockLocationId: order.shipment_stock_location_id,
                         journeys: journeys.map(journey => {
-                            if(!metrics[journey.stock_location_id]){
-                                metrics[journey.stock_location_id] = {
-                                    stockLocationName: order.shipment_stock_location_name,
-                                    cars: {
-                                        "0KM": {
-                                            "delivered": 0,
-                                            "returned": 0,
-                                            "canceled": 0,
-                                            "other": 0,
-                                        },
-                                        "3KM": {
-                                            "delivered": 0,
-                                            "returned": 0,
-                                            "canceled": 0,
-                                            "other": 0,
-                                        },
-                                        "6KM": {
-                                            "delivered": 0,
-                                            "returned": 0,
-                                            "canceled": 0,
-                                            "other": 0,
-                                        },
-                                    },
-                                    bikes: {
-                                        "0KM": {
-                                            "delivered": 0,
-                                            "returned": 0,
-                                            "canceled": 0,
-                                            "other": 0,
-                                        },
-                                        "2KM": {
-                                            "delivered": 0,
-                                            "returned": 0,
-                                            "canceled": 0,
-                                            "other": 0,
-                                        },
-                                        "4KM": {
-                                            "delivered": 0,
-                                            "returned": 0,
-                                            "canceled": 0,
-                                            "other": 0,
-                                        },
-                                    }
-                                }
-                            }
-                            countMetrics(journey, distance)
                             return {
                                 providerId: journey.providerId,
+                                vehicleType: detectVehicleType(journey),
                                 status: journey.status,
                             }
                         })
@@ -226,7 +201,7 @@ module.exports = (admin) => {
         cors(req, res, async () => {
             const limit = req.query.limit ? parseInt(req.query.limit) : undefined
             const ordersDeliveryTimes = await getAllOrdersDeliveryTimes(limit);
-            res.send({metrics, orders: ordersDeliveryTimes});
+            res.send(ordersDeliveryTimes);
         });
     });
 
