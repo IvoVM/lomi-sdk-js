@@ -11,7 +11,7 @@ export class JourneyEffects {
         query$: Observable<Action> = createEffect(() => 
         this.actions.pipe(
             ofType(JOURNEY_QUERY),
-            switchMap((action: JourneyQuery) => {
+            mergeMap((action: JourneyQuery) => {
                 const orderJourneysObserver = this.journeysService.selectJourneysFromFirebaseByOrderId(action.payload.orderId)
                 return orderJourneysObserver
             }),

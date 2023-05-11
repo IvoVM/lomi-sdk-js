@@ -19,6 +19,8 @@ export function reducer(
     switch (action.type) {
         case '[Journey] Updated':
             return { ...journeysAdapter.addMany(action.payload, state), loading:false }
+        case '[App] Change Stock Location':
+            return { ...initialState, loading:true }
         default:
             return state
     }

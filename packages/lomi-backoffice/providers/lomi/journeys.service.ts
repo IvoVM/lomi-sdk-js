@@ -8,17 +8,15 @@ export class JourneysService {
 
     public selectJourneysFromFirebaseByOrderId(orderId:string){
         const journeysCollection = collection(this.afs,`deliveringJourneys/`)
-        const journeys = collectionData(journeysCollection)
         const journeysQuery = query(journeysCollection,
-            where("orderNumber", "==" , orderId)
+            where("orderNumber", "==" , orderId),
             )
-        return journeys
+        return collectionData(journeysQuery)
     }
 
-    public selectJourneysFromFirebase(id:number){
+    public selectJourneysFromFirebase(){
         const journeysCollection = collection(this.afs,"deliveringJourneys/")
         const journeys = collectionData(journeysCollection)
-        const journeysQuery = query(journeysCollection)
         return journeys
     }
 
