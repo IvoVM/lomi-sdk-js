@@ -53,7 +53,7 @@
                                 SIN PRODUCTOR
                             </span>
                         </p>
-                        <img *ngIf="!item.producer.profile_image || !item.producer_id" src="https://lomi.cl/cdn-cgi/image/width=90,height=90,quality=75,f=auto,fit=pad/assets/homepage/default_producer-a1a72c5a3c14ab5c09e71d6aefbb5aa0f2093f0c4da8254095cbe9df22b22b0f.png" style="max-height: 2.5em;max-width: 2.5em;border-radius: 50%;">
+                        <img *ngIf="item.producer && (!item.producer.profile_image || !item.producer_id)" src="https://lomi.cl/cdn-cgi/image/width=90,height=90,quality=75,f=auto,fit=pad/assets/homepage/default_producer-a1a72c5a3c14ab5c09e71d6aefbb5aa0f2093f0c4da8254095cbe9df22b22b0f.png" style="max-height: 2.5em;max-width: 2.5em;border-radius: 50%;">
                     </mat-panel-description>
                       </mat-expansion-panel-header>
     
