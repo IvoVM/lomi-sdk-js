@@ -10,7 +10,7 @@ module.exports = (() => {
 
     const sendOrderDetails = (order) => {
         app.client.chat.postMessage({
-            channel: "C04DHBTUEGM",
+            channel: "C05ARVDDA9F",
             "type": "interactive_message",
             "text": "Nuevo pedido!",
             "attachments": [
@@ -26,6 +26,7 @@ module.exports = (() => {
                     "callback_id": "wopr_game",
                     "color": "#3AA3E3",
                     "attachment_type": "default",
+                    /**
                     "actions": [
                         {
                             "name": "accept",
@@ -40,7 +41,7 @@ module.exports = (() => {
                             }
                         }
                         
-                    ]
+                    ]*/
                 }
             ]
         }).then((res)=>{

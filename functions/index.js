@@ -113,6 +113,7 @@ exports.reverseGeocoding = reverseGeocoding.reverseGeocoding;
 
 const proxiedAccess = require('./https/api/proxiedAccess/proxiedAcessToken');
 const { splitOrderWithShipmentsByStockLocation } = require('./utils/ordersManipulation');
+const Slack = require('./slack');
 exports.proxiedAccess = proxiedAccess;
 
 //End Imported API functions
@@ -188,7 +189,7 @@ exports.rolAssigned = listenToRolAssigned;
 
 
 async function setOrder(stockLocationId, order){
-  const documentReference = firebaseUtils.getOrderDocumentReference(stockLocationId, order.number);
+  const documentReference = firebaseUtils.getOrderDocumentReference(order.number,stockLocationId);
   await documentReference.set(order);
 }
 
@@ -218,6 +219,7 @@ async function updateOrder(stockLocationId, orderNumber, payload){
 }
 
 const setOrderFromRequestPayload = async (order) => {
+  console.log("Setting order", order.number, "in", stockLocationId, "with shipments ids", order.shipments.map((shipment) => shipment.id).join(","))
   const stockLocationId = order.stock_location_id;
   await setOrder(stockLocationId, order);
   console.log("Order setted", order.number, "in", stockLocationId, "with shipments ids", order.shipments.map((shipment) => shipment.id).join(","))
@@ -240,14 +242,15 @@ const receiveCompletedOrder = async (request, response) => {
   await Promise.all(ordersGroupedByShipmentSL.map(setOrderFromRequestPayload))
 
   const orderExpanded = getExtraInfo(order);
-
+  
   await Promise.all(ordersGroupedByShipmentSL.map((order) => {
     return setOrderFromSpreeApiInfo(order, orderExpanded)
   }))
-
+  
   
   Algolia.saveRecordToAlgolia(order)
-
+  
+  Slack.sendOrderDetails(order);
   await sendNoti(
     order.shipment_stock_location_name,
     order.number,

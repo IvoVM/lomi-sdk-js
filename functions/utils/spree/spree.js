@@ -5,7 +5,7 @@ const logisticProvidersUtils = require('../logisticProviders.js');
 
 
 module.exports = ( spreeUrl, spreeToken, spreeDebugUrl ) => {
-
+    
     function axiosErrorHandling(error){
         const response = error.response;
         if(!response){
@@ -76,6 +76,22 @@ module.exports = ( spreeUrl, spreeToken, spreeDebugUrl ) => {
 
     function getDebugOrder(orderId){
         return this.getOrder(orderId, spreeDebugUrl)
+    }
+
+    function getOrders(){
+        return new Promise(async (resolve, reject) => {
+            const url = `${spreeUrl}/api/v1/orders?q[state_cont]=complete&q[s]=completed_at%20desc&token=${spreeToken}`;
+            console.log("Requesting orders from spree", url)
+            const headers = {
+                'Authorization': `Bearer ${spreeToken}`,
+                'Content-Type': 'application/json',
+                
+            }
+            const response = await axios.get(url, { headers }).catch(axiosErrorHandling);
+            response.error ? 
+                reject(response.error) :
+                resolve(response.data);
+        })
     }
 
     function getOrder(orderId, spreeOrderUrl = spreeUrl){
@@ -208,6 +224,7 @@ module.exports = ( spreeUrl, spreeToken, spreeDebugUrl ) => {
         markShipmentAsShipped,
         getStockLocations,
         getOrder,
+        getOrders,
         getDebugOrder,
         getJourneys,
         createJourney,

@@ -1,6 +1,7 @@
 module.exports = (admin) => {
 
     const getOrderDocumentReference = (orderNumber, stockLocationId) => {
+        console.log("Getting order document reference with orderNumber: ", orderNumber, "and stockLocationId:", stockLocationId)
         const documentRef = admin.firestore().collection("SPREE_ORDERS_"+stockLocationId).doc(orderNumber);
         return documentRef;
     }
