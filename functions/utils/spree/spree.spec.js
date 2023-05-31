@@ -3,11 +3,17 @@ const spreeDebugUrl = "https://lomi-dev.herokuapp.com/";
 const token = "8b9c307dd89928cc60e8e59d2233dbafc7618f26c52fa5d3";
 const orderNumber = "R097683121";
 const JourneyId = "225254"
+const { splitOrderWithShipmentsByStockLocation } = require('../ordersManipulation');
+const orderMock = require('../mocks/order');
 
 const admin = require('firebase-admin');
 admin.initializeApp()
 
 const spree = require('./spree')(spreeUrl, token, spreeDebugUrl);
+
+test("split Order into order with shipments", async () => {
+    console.log(splitOrderWithShipmentsByStockLocation(orderMock))
+})
 
 test("get Order", async () => {
     let order = await spree.getOrder(orderNumber).then(res => res, err => {

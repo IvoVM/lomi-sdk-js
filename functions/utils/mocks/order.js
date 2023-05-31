@@ -78,6 +78,109 @@ module.exports = {
     ],
     total: "23960.0",
 
+    shipments: [
+        {
+          id: 1,
+          number: "123",
+          stock_location_id: 1,
+          stock_location_name: "Stock Location 1",
+          line_items: [
+            {
+              id: 1,
+              name: "Product 1",
+              options_text: "Option 1",
+              producer_name: "Producer 1",
+              sku: "SKU001",
+              price: 10.99,
+              quantity: 5,
+              final_amount: 54.95,
+              img_url: "https://example.com/image1.jpg"
+            },
+            // más line_items si existen...
+          ]
+        },
+        {
+          id: 2,
+          number: "456",
+          stock_location_id: 2,
+          stock_location_name: "Stock Location 2",
+          line_items: [
+            {
+              id: 2,
+              name: "Product 2",
+              options_text: "Option 2",
+              producer_name: "Producer 2",
+              sku: "SKU002",
+              price: 15.99,
+              quantity: 3,
+              final_amount: 47.97,
+              img_url: "https://example.com/image2.jpg"
+            },
+            // más line_items si existen...
+          ]
+        },
+        {
+          id: 3,
+          number: "789",
+          stock_location_id: 1,
+          stock_location_name: "Stock Location 1",
+          line_items: [
+            {
+              id: 3,
+              name: "Product 3",
+              options_text: "Option 3",
+              producer_name: "Producer 3",
+              sku: "SKU003",
+              price: 12.99,
+              quantity: 2,
+              final_amount: 25.98,
+              img_url: "https://example.com/image3.jpg"
+            },
+            // más line_items si existen...
+          ]
+        },
+        {
+          id: 4,
+          number: "012",
+          stock_location_id: 3,
+          stock_location_name: "Stock Location 3",
+          line_items: [
+            {
+              id: 4,
+              name: "Product 4",
+              options_text: "Option 4",
+              producer_name: null,
+              sku: "SKU004",
+              price: 9.99,
+              quantity: 1,
+              final_amount: 9.99,
+              img_url: "https://example.com/image4.jpg"
+            },
+            // más line_items si existen...
+          ]
+        },
+        {
+          id: 5,
+          number: "345",
+          stock_location_id: 2,
+          stock_location_name: "Stock Location 2",
+          line_items: [
+            {
+              id: 5,
+              name: "Product 5",
+              options_text: "Option 5",
+              producer_name: "Producer 5",
+              sku: "SKU005",
+              price: 19.99,
+              quantity: 4,
+              final_amount: 79.96,
+              img_url: "https://example.com/image5.jpg"
+            },
+            // más line_items si existen...
+          ]
+        }
+      ],
+
     //Added in request
     shipment_stock_location_name: "Balmoral 309",
     shipment_stock_location_phone: "+56942143971",

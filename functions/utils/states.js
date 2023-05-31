@@ -16,7 +16,7 @@ module.exports = (() => {
         4: {
             text: 'store_rider_searching',
             value: "Esperando al repartidor",
-            uber_status: "pending,pickup"
+            uber_status: "pending"
         },
         5: {
             text: 'store_rider_picked',

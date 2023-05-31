@@ -1,3 +1,4 @@
+
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 
@@ -36,6 +37,7 @@ const Algolia  = require('./libraries/algolia')
 
 admin.initializeApp();
 const firebaseLomiUtils = require('./utils/firebase/resources')(admin);
+const firebaseUtils = require('./utils/firebase/firebase')(admin);
 const PRODUCTION = env.PRODUCTION === 'true';
 const DEBUG = true;
 const DEBUG_EMAILS = ['marco@lomi.cl', 'orlando@lomi.cl'];
@@ -108,6 +110,11 @@ exports.getOrdersDistance = getOrdersDistance.apiGetOrdersDistance;
 
 const reverseGeocoding = require('./https/api/reverseGeocoding')(admin);
 exports.reverseGeocoding = reverseGeocoding.reverseGeocoding;
+
+const proxiedAccess = require('./https/api/proxiedAccess/proxiedAcessToken');
+const { splitOrderWithShipmentsByStockLocation } = require('./utils/ordersManipulation');
+exports.proxiedAccess = proxiedAccess;
+
 //End Imported API functions
 
 //Imported Handlers
@@ -179,53 +186,80 @@ exports.rolAssigned = listenToRolAssigned;
 
 // // Create and Deploy Your First Cloud Functions
 
-exports.addCompletedOrder = functions.https.onRequest(
-  async (request, response) => {
-    const order = request.body;
-    collectionKey = 'SPREE_ORDERS_' + order.shipment_stock_location_id;
-    order.completed_at = new Date(order.completed_at);
-    order.status = 2;
-    const credentialsRef = admin
-      .firestore()
-      .collection(collectionKey)
-      .doc(order.number);
-    await credentialsRef.set(order);
-    let orderExpanded = await spreeUtils
-      .getOrder(order.number)
-      .catch((e) => console.log(e));
-    if (orderExpanded == '  broken') {
-      orderExpanded = await spreeUtils.getDebugOrder(order.number);
-      orderExpanded.debug = true;
-    } else {
-      orderExpanded.debug = false;
-    }
-    if (orderExpanded != 'broken') {
-      const isRetiroEnTienda =
-        orderExpanded.ship_address.firstname.includes('Retiro') ||
-        orderExpanded.ship_address.company == 'LOMI';
-      credentialsRef.update({
-        isStorePicking: isRetiroEnTienda,
-        status: isRetiroEnTienda ? 0 : 2,
-        line_items_expanded : orderExpanded.line_items,
-        DEBUG: orderExpanded.debug,
-        token: orderExpanded.token,
-        shipment_id: orderExpanded.shipments[0].id,
-        shipment_state: orderExpanded.shipments[0].state,
-        shipment_number: orderExpanded.shipments[0].tracking,
-      });
-    }
 
-    Algolia.saveRecordToAlgolia(order)
+async function setOrder(stockLocationId, order){
+  const documentReference = firebaseUtils.getOrderDocumentReference(stockLocationId, order.number);
+  await documentReference.set(order);
+}
 
-    await sendNoti(
-      order.shipment_stock_location_name,
-      order.number,
-      order.shipment_stock_location_id
-    );
-
-
-    return response.send('ok');
+async function getExtraInfo(order){
+  const orderExpanded = await spreeUtils.getOrder(order.number);
+  if (orderExpanded == '  broken') {
+    orderExpanded = await spreeUtils.getDebugOrder(order.number);
+    orderExpanded.debug = true;
+  } else {
+    orderExpanded.isRetiroEnTienda =
+      orderExpanded.ship_address.firstname.includes('Retiro') ||
+      orderExpanded.ship_address.company == 'LOMI';
+    orderExpanded.debug = false;
   }
+
+  return {
+    isStorePicking: orderExpanded.isRetiroEnTienda,
+    status: isRetiroEnTienda ? 0 : 2,
+    DEBUG: orderExpanded.debug,
+    token: orderExpanded.token,
+  };
+}
+
+async function updateOrder(stockLocationId, orderNumber, payload){
+  const documentReference = firebaseUtils.getOrderDocumentReference(stockLocationId, orderNumber);
+  await documentReference.update(payload);
+}
+
+const setOrderFromRequestPayload = async (order) => {
+  const stockLocationId = order.stock_location_id;
+  await setOrder(stockLocationId, order);
+  console.log("Order setted", order.number, "in", stockLocationId, "with shipments ids", order.shipments.map((shipment) => shipment.id).join(","))
+}
+
+const setOrderFromSpreeApiInfo = async (order, OrderSpreeApiData) => {
+  OrderSpreeApiData.line_items_expanded = orderExpanded.line_items.filter((item) => {
+    return item.stock_location_id == stockLocationId;
+  })
+  await updateOrder(stockLocationId, order.number, OrderSpreeApiData);
+  console.log("Order updated", order.number, "in", stockLocationId, "with shipments ids", order.shipments.map((shipment) => shipment.id).join(","))
+}
+
+const receiveCompletedOrder = async (request, response) => {
+  const order = request.body;
+  order.completed_at = new Date(order.completed_at);
+  order.status = 2;
+  
+  const ordersGroupedByShipmentSL = splitOrderWithShipmentsByStockLocation(order);
+  await Promise.all(ordersGroupedByShipmentSL.map(setOrderFromRequestPayload))
+
+  const orderExpanded = getExtraInfo(order);
+
+  await Promise.all(ordersGroupedByShipmentSL.map((order) => {
+    return setOrderFromSpreeApiInfo(order, orderExpanded)
+  }))
+
+  
+  Algolia.saveRecordToAlgolia(order)
+
+  await sendNoti(
+    order.shipment_stock_location_name,
+    order.number,
+    order.shipment_stock_location_id
+  );
+
+
+  return response.send('ok');
+};
+
+exports.addCompletedOrder = functions.https.onRequest(
+  receiveCompletedOrder
 );
 
 exports.geocodeOrder = functions.https.onRequest(

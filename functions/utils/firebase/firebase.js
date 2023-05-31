@@ -1,5 +1,10 @@
 module.exports = (admin) => {
 
+    const getOrderDocumentReference = (orderNumber, stockLocationId) => {
+        const documentRef = admin.firestore().collection("SPREE_ORDERS_"+stockLocationId).doc(orderNumber);
+        return documentRef;
+    }
+
     const getFirebaseCollectionOrderedBy = async (collectionName, orderBy, limit = 100) => {
         let collectionRef = admin.firestore().collection(collectionName);
         console.log("Getting collection with limit setted to ", limit)
@@ -30,6 +35,7 @@ module.exports = (admin) => {
     return {
         getFirebaseCollection,
         getFirebaseDocument,
-        getFirebaseCollectionOrderedBy
+        getFirebaseCollectionOrderedBy,
+        getOrderDocumentReference,
     }
 };
