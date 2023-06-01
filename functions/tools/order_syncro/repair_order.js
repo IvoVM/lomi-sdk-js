@@ -8,12 +8,12 @@ SpreeApi = require('../../utils/spree/spree.js')(spreeUrl, token, spreeDebugUrl)
 
 const repairOrder = (orderNumber) => {
     SpreeApi.getOrder(orderNumber).then((spreeOrder)=>{
-       
+        console.log(spreeOrder.shipments)        
         console.log(mapOrder(spreeOrder, 46))
-        axios.post('https://us-central1-lomi-35ab6.cloudfunctions.net/addCompletedOrder', mapOrder(spreeOrder)).then((res)=>{
+        axios.post('https://us-central1-lomi-35ab6.cloudfunctions.net/addCompletedOrder', mapOrder(spreeOrder, 46)).then((res)=>{
             console.log(res.data)
         })
     })
 }
 
-repairOrder("R750528359")
+repairOrder("R127310723")

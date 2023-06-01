@@ -1,3 +1,12 @@
+function getStockLocationIdByName(stockLocationName) {
+    switch (stockLocationName) {
+        case 'Piano Market':
+            return 46;
+        case 'Santa Margarita (Huechuraba)':
+            return 47;
+    }
+}
+
 function mapOrder(order, stockLocationId) {
     const mappedOrder = {
       id: order.id,
@@ -34,6 +43,20 @@ function mapOrder(order, stockLocationId) {
         final_amount: line_item.total,
         img_url: null, // No está presente en el objeto order
       })),
+      shipments: order.shipments.map((shipment) => ({
+        id: shipment.id,
+        number: shipment.number,
+        stock_location_id: getStockLocationIdByName(shipment.stock_location_name),
+        stock_location_name: shipment.stock_location_name,
+        line_items: shipment.manifest.map((manifest) => ({
+            id: manifest.id,
+            name: manifest.name,
+            sku: manifest.sku,
+            quantity: manifest.quantity,
+            price: manifest.price,
+            final_amount: manifest.amount,
+        }))
+    }))
     };
   
     return mappedOrder;

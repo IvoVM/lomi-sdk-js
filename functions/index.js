@@ -207,28 +207,27 @@ async function getExtraInfo(order){
 
   return {
     isStorePicking: orderExpanded.isRetiroEnTienda,
-    status: isRetiroEnTienda ? 0 : 2,
+    status: orderExpanded.isRetiroEnTienda ? 0 : 2,
     DEBUG: orderExpanded.debug,
     token: orderExpanded.token,
   };
 }
 
 async function updateOrder(stockLocationId, orderNumber, payload){
-  const documentReference = firebaseUtils.getOrderDocumentReference(stockLocationId, orderNumber);
+  console.log("Updating order", orderNumber, "in", stockLocationId, "with payload", payload)
+  const documentReference = firebaseUtils.getOrderDocumentReference(orderNumber, stockLocationId);
   await documentReference.update(payload);
 }
 
 const setOrderFromRequestPayload = async (order) => {
-  console.log("Setting order", order.number, "in", stockLocationId, "with shipments ids", order.shipments.map((shipment) => shipment.id).join(","))
   const stockLocationId = order.stock_location_id;
+  console.log("Setting order", order.number, "in", stockLocationId, "with shipments ids", order.shipments.map((shipment) => shipment.id).join(","))
   await setOrder(stockLocationId, order);
   console.log("Order setted", order.number, "in", stockLocationId, "with shipments ids", order.shipments.map((shipment) => shipment.id).join(","))
 }
 
 const setOrderFromSpreeApiInfo = async (order, OrderSpreeApiData) => {
-  OrderSpreeApiData.line_items_expanded = orderExpanded.line_items.filter((item) => {
-    return item.stock_location_id == stockLocationId;
-  })
+  const stockLocationId = order.stock_location_id;
   await updateOrder(stockLocationId, order.number, OrderSpreeApiData);
   console.log("Order updated", order.number, "in", stockLocationId, "with shipments ids", order.shipments.map((shipment) => shipment.id).join(","))
 }
@@ -241,7 +240,7 @@ const receiveCompletedOrder = async (request, response) => {
   const ordersGroupedByShipmentSL = splitOrderWithShipmentsByStockLocation(order);
   await Promise.all(ordersGroupedByShipmentSL.map(setOrderFromRequestPayload))
 
-  const orderExpanded = getExtraInfo(order);
+  const orderExpanded = await getExtraInfo(order);
   
   await Promise.all(ordersGroupedByShipmentSL.map((order) => {
     return setOrderFromSpreeApiInfo(order, orderExpanded)
@@ -250,7 +249,7 @@ const receiveCompletedOrder = async (request, response) => {
   
   Algolia.saveRecordToAlgolia(order)
   
-  Slack.sendOrderDetails(order);
+  const message = Slack.sendOrderDetails(order);
   await sendNoti(
     order.shipment_stock_location_name,
     order.number,

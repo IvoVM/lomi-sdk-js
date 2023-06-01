@@ -6,7 +6,7 @@ const splitOrderWithShipmentsByStockLocation = (order) => {
     })
   
     return order.shipments.reduce((acc, shipment) => {
-      const shipmentOrder = { ...order, stock_location_id: shipment.stock_location_id };
+      const shipmentOrder = { ...order, stock_location_id: shipment.stock_location_id, shipment_stock_location_id: shipment.stock_location_id, shipment_stock_location_name: shipment.stock_location_name };
       if(acc.length && acc[acc.length - 1].stock_location_id != shipment.stock_location_id){
         acc.push({...shipmentOrder, ...{ shipments: [shipment] }});
         return acc;

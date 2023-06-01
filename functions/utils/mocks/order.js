@@ -101,7 +101,7 @@ module.exports = {
         },
         {
           id: 2,
-          number: "456",
+          number: "H623214",
           stock_location_id: 2,
           stock_location_name: "Stock Location 2",
           line_items: [
@@ -121,7 +121,7 @@ module.exports = {
         },
         {
           id: 3,
-          number: "789",
+          number: "H4215215",
           stock_location_id: 1,
           stock_location_name: "Stock Location 1",
           line_items: [

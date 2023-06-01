@@ -7,7 +7,7 @@
         <div class="body" style="width:80%">
             <h2 style="margin-bottom:0">{{lineItem.variant ? lineItem.variant.name : lineItem.name}}</h2>
             <h5 *ngIf="lineItem.sku" style="margin-top:0;opacity: 0.6;">SKU: <b>{{lineItem.sku}}</b></h5>
-            <h5 style="margin:0">ID: <b>{{lineItem.variant.id}}</b></h5>
+            <h5 *ngIf="lineItem.variant" style="margin:0">ID: <b>{{lineItem.variant.id}}</b></h5>
             <h5 style="margin:0">Productor : <b>{{lineItem.producer_name}}</b></h5>
         </div>
         <div class="img-container">
