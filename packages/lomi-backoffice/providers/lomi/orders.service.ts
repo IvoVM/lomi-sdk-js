@@ -233,6 +233,8 @@ export class OrdersService {
   }
 
   showItems(orderNumber: string) {
-    window.open('https://lomi.cl/admin/orders/' + orderNumber + '/invoice', "_blank")
+    window.open('https://lomi.cl/admin/shipments/' + orderNumber + '/invoice', "_blank")
   }
 }
+
+

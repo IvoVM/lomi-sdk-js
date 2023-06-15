@@ -37,6 +37,7 @@ export type placedOrder = {
 	line_items_expanded: any[]
 	reintegratedItems: LineItem[]
 	journeys?: Journey[]
+	shipments: any[],
 
 	cabifyEstimated: any,
 	uberFourWheelsEstimated: any,

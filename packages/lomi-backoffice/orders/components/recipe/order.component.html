@@ -4,17 +4,20 @@
     
     <div class="half-card" style="padding:2em">
       <lomii-incident [order]="order" [type]="'extended-info'"></lomii-incident>
-      <h3>Enviado desde: <b>{{order.shipment_stock_location_name}}</b></h3>
+      <h3 style="margin-bottom: 0.1em;">Enviado desde: <b>{{order.shipment_stock_location_name}}</b></h3>
+      <h4 style="opacity: 0.7;margin-top:0 !important;">{{order.shipment_number}}</h4>
       <mat-tab-group style="width: 100%;">
         <mat-tab label="Productos">
           <div class="display-info-card">
             <div class="title">
               <h1>Productos</h1>
-              <button (click)="ordersProvider.showItems(order.number)" style="margin:1em 8px;" mat-raised-button color="accent">Imprimir comanda<mat-icon style="margin-left:0.4em;transform: scale(0.9);">print</mat-icon></button>
+              <button (click)="ordersProvider.showItems(order.shipment_number)" style="margin:1em 8px;" mat-raised-button color="accent">Imprimir comanda<mat-icon style="margin-left:0.4em;transform: scale(0.9);">print</mat-icon></button>
 
             </div>
             <div class="section-body">
-              <lomii-line-item *ngFor="let lineItem of order.line_items" [lineItem]="getLineItem(lineItem.id)"></lomii-line-item>
+              <ng-container *ngFor="let shipment of order.shipments">
+                <lomii-line-item *ngFor="let lineItem of shipment.line_items" [lineItem]="getLineItem(lineItem.id)"></lomii-line-item>
+              </ng-container>
             </div>
           </div>
         </mat-tab>

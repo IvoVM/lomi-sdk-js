@@ -10,8 +10,8 @@ const getAccessTokenProxiedApi = functions.https.onRequest((req, res, next) => {
             res.status(401).send({ message: 'Unauthorized by auth: ' + accessTokenHeader });
             return
         }
-        const { email, password } = req.body;
-        const accessToken = await getAccessTokenProxied(email, password);
+        const { email, password, scope } = req.body;
+        const accessToken = await getAccessTokenProxied(email, password, scope);
         res.send({ accessToken });
     })
 });

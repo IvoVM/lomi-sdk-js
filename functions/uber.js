@@ -9,7 +9,7 @@ function encode(data) {
     let str = "";
     str += data.street_address[0]+" "+data.street_address[1];
     str+= ", " + data.city 
-    str+= ", " + data.state 
+    str+= ", " + data.state.name ? data.state.name : data.state 
     str+= ", " + data.country
     return str
 }
@@ -126,8 +126,8 @@ class UberDispatcher{
             },
             pickup_address: encode({
                 street_address: [stockLocations.find(loc=>loc.id==order.shipment_stock_location_id).address1, ""],
-                city: order.ship_address_city,
-                state: order.ship_address_state,
+                city: order.shipment_stock_location_city,
+                state: order.shipment_stock_location_state,
                 zip_code: "",
                 country: order.ship_address_country,
             }),   

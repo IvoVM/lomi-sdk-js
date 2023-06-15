@@ -204,7 +204,7 @@ export class OrderComponent implements OnInit {
         this.storeUnsubscribe = this.store.select("orders").subscribe((state)=>{
           const order = Object.values(state.entities).find((order:any)=>order.number == orderNumber)
           this.order = order ? order : this.order
-
+          console.log(this.order)
 
 
           if(this.order){

@@ -43,7 +43,7 @@ async function getOrderStops(order, forceRecalculate = false){
   ]
   try{
     stops[0].addr = order.shipment_stock_location_name
-    stops[0].city = order.ship_address_city
+    stops[0].city = order.shipment_stock_location_city
     stops[0].loc = [startAddressGeocode[0].latitude, startAddressGeocode[0].longitude]
     stops[0].contact.name = "Tienda Lomi - "+ order.shipment_stock_location_name + order.shipment_stock_location_notes
     stops[0].contact.mobileCc = "+56"

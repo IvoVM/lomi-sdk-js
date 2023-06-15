@@ -68,7 +68,7 @@ export class TableComponent implements OnInit, AfterViewInit {
     if(stockLocationId && ["1", "24", "25", "27", "28"].includes(stockLocationId)) {
       window.open('https://lomi.cl/admin/orders/' + orderId + '/invoice', "_blank")
     } else {
-      window.open(window.location.host+"/orders/" + orderId, "_blank")
+      window.open(window.location.host+"/shipments/" + orderId, "_blank")
     }
     this.ordersProvider.updateOrder(orderId, {
       status: PENDING_STATE
