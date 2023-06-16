@@ -70,7 +70,9 @@ getUser$: Observable<Action> = createEffect(() => this.actions$.pipe(
                        const user = userDocSnapshot.data() as IUser;
                        if( user.stockLocationId && user.stockLocationId > 0){
                            localStorage.setItem('stockLocationId', user.stockLocationId.toString())
-                 
+                            this.getStockLocation(user.stockLocationId).then((stockLocation:any) => {
+                                localStorage.setItem('storeId', stockLocation.attributes.stores[0][0].id)
+                            })
                        }
                        if(!user.userRol){
                             this.router.navigateByUrl("user-without-rol")
@@ -143,6 +145,14 @@ getUser$: Observable<Action> = createEffect(() => this.actions$.pipe(
     })
   }
 
+  private getStockLocation(id:number) {
+    return new Promise((resolve, reject) => {
+      this.http.get(`https://lomi.cl/api/v2/storefront/stock_locations/${id}`).subscribe((data:any)=>{
+        resolve(data.data)
+      })
+    })
+  }
+
   constructor(
       private actions$: Actions,
       private store: Store<BackofficeState>,
@@ -151,9 +161,6 @@ getUser$: Observable<Action> = createEffect(() => this.actions$.pipe(
       private afs: Firestore,
       private http: HttpClient
   ) {
-    this.getStockLocations().then((data:any)=>{
-        console.log(this.stockLocations)
-    })
   }
 
   /**

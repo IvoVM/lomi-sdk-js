@@ -45,18 +45,8 @@ export class SearcherService {
       this.hitsSubject.next([])
       return
     }**/
-
     const currentStockLocation = localStorage.getItem('stockLocationId')
-    const userRol = localStorage.getItem('userRol')
-    
-    console.log("currentStockLocation", currentStockLocation, "userRol", userRol)
-    const stockLocations = JSON.parse(localStorage.getItem('stockLocations') || "")
-    const currentStockLocationObject = stockLocations.find((stockLocation:any)=>{
-      return stockLocation.id == currentStockLocation
-    })
-    const storeId = currentStockLocationObject.attributes.stores[0][0].id
-    console.log("currentStock", currentStockLocationObject, "storeId", storeId)
-
+    const storeId = parseInt(localStorage.getItem('storeId') || "")
     const query = {
       indexName,
       query: queryString,
