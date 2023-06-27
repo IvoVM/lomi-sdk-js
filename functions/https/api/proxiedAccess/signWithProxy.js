@@ -1,10 +1,10 @@
 const path = require('path');
 
-function getAccessTokenProxied(email, password){
+function getAccessTokenProxied(email, password, scope){
   return new Promise((resolve, reject) => {
     const exec = require('child_process').exec;
     const fileFolder = __filename.split('/').slice(0, -1).join('/')
-    const proccess = exec('sh '+fileFolder+'/signWithProxy.sh', (err, stdout, stderr) => {
+    const proccess = exec('sh '+fileFolder+(scope ? '/signWithProxyAdmin.sh' : '/signWithProxy.sh'), (err, stdout, stderr) => {
         if (err) {
             console.log(err);
             reject(err);

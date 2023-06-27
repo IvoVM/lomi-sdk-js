@@ -71,8 +71,8 @@ export function debug(reducer: ActionReducer<any>): ActionReducer<any> {
           }
           return false
         } 
-        else if(order?.scheduled_at && (!order?.status || order?.status <= 2)) {
-          const scheduledTime = new Date(order.scheduled_at).getTime()
+        else if(order?.shipments[0].scheduled_at && (!order?.status || order?.status <= 2)) {
+          const scheduledTime = new Date(order.shipments[0].scheduled_at).getTime()
           const currentTime = new Date().getTime()
           if(scheduledTime > currentTime){
             return statusId == SCHEDULED_STATE

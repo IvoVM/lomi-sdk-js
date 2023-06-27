@@ -686,7 +686,7 @@ exports.creatFourWheelsUberTrip = functions.https.onRequest(async (request, resp
         order.shipment_stock_location_phone,
         order.line_items.map((item) => ({
           price: item.price,
-          size: 'large',
+          size: 'medium',
           quantity: item.quantity,
           name: item.name,
         })),
