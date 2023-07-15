@@ -10,6 +10,7 @@ import { OrdersService } from '../../providers/lomi/orders.service';
 
 import { combineLatestWith, lastValueFrom, take } from 'rxjs';
 import { App } from 'packages/lomi-backoffice/types/app';
+import { collection } from '@angular/fire/firestore';
 
 @Component({
   selector: 'lomii-root',

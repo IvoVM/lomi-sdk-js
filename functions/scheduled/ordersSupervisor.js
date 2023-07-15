@@ -37,7 +37,18 @@ module.exports = (spreeUrl, token, admin, spreeDebugUrl) => {
 
   const syncroSingleOrder = async (order) => {
     console.log("Syncronizing order to spree", "number: "+order.number, "state: "+order.state, "info: "+order.id)
-    const shipments = await spree.getShipments(order.number)
+    console.log(order.number, "Order status is", order.status, "where complete at is", order.completed_at)
+    if(new Date(order.completed_at).getTime() < new Date().getTime() - 1000 * 60 * 60 * 24 * 3){
+      console.log("Order is too old to be syncronized", order.number)
+      await admin.firestore().doc(docName).update({
+        state: 'Out of time'
+      });
+      return
+    }
+    const shipments = order.shipments ? {
+      shipments: order.shipments,
+      xSpreeOrderToken: order.token
+    } : await spree.getShipments(order.number)
     if(shipments == 'broken'){
       console.log("Error getting shipments for order", order.number)
       return
