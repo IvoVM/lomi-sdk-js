@@ -267,7 +267,7 @@ export class TableComponent implements OnInit, AfterViewInit {
               order.shipment_stock_location_id)
           }
 
-          if (order.scheduled_at) this.hourToDelivery[index] = new Date(order.scheduled_at).getTime()
+          if (order.scheduled_at) this.hourToDelivery[index] = new Date(order.shipments[0].scheduled_at).getTime()
           if (order.completed_at) this.completedAt[index] = order.completed_at.seconds
         })
         this.recordsFetched.emit(orders.length)
