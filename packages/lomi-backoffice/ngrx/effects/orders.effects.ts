@@ -120,6 +120,7 @@ export class OrderEffects {
             this.store.dispatch(new JourneyQuery({
               orderId: action.payload.number,
             }))
+            console.log(action.payload)
             return { type: `[Orders] Order ${action.type}`, payload: action.payload }
         })
     ))

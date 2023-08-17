@@ -77,7 +77,7 @@ export function debug(reducer: ActionReducer<any>): ActionReducer<any> {
           if(scheduledTime > currentTime){
             return statusId == SCHEDULED_STATE
           } else {
-            if(order?.name?.includes("Retiro")){
+            if(order.shipments && order.shipments[0].is_pickup){
               return statusId == STORE_PICKING_STATE
             } else {
               return statusId == PENDING_STATE

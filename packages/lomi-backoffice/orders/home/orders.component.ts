@@ -18,6 +18,10 @@ export class OrdersComponent implements OnInit {
   public searchedRecords: any = []
   public stateTables = [
     {
+      name: 'Retiro en tienda',
+      status: 0,
+    },
+    {
       name: 'Programado',
       status: 1,
     },
