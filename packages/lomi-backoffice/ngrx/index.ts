@@ -67,7 +67,7 @@ export function debug(reducer: ActionReducer<any>): ActionReducer<any> {
             return statusId == FAILED
           }
           if(statusId == STORE_PICKING_STATE || !statusId){
-            return order.name.includes("Retiro") || order.isStorePicking
+            return order.name.includes("Retiro") || order.shipments[0].is_pickup
           }
           return false
         } 
