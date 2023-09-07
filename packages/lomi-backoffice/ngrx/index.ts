@@ -66,7 +66,7 @@ export function debug(reducer: ActionReducer<any>): ActionReducer<any> {
           if(order?.status == FAILED){
             return statusId == FAILED
           }
-          if(statusId == STORE_PICKING_STATE || !statusId){
+          if(statusId < 6 || !statusId){
             return order.name.includes("Retiro") || order.shipments[0].is_pickup
           }
           return false
