@@ -53,6 +53,9 @@ export function debug(reducer: ActionReducer<any>): ActionReducer<any> {
     select(selectOrders),
     map((orders) => {
       return Object.values(orders).filter((order: Order | undefined) => {
+        if(statusId == STORE_PICKING_STATE){
+          return order?.shipments[0].is_pickup
+        }
         if(statusId == undefined && !(order?.name?.includes('Retiro'))){
           return true
         }
@@ -62,11 +65,11 @@ export function debug(reducer: ActionReducer<any>): ActionReducer<any> {
           }
           return false
         }
-        else if((order?.shipments && order?.shipments[0].is_pickup) || order?.isStorePicking){
+        else if(order?.name?.includes('Retiro') || order?.isStorePicking){
           if(order?.status == FAILED){
             return statusId == FAILED
           }
-          if(statusId < 6 || !statusId){
+          if(statusId == STORE_PICKING_STATE || !statusId){
             return order.name.includes("Retiro") || order.shipments[0].is_pickup
           }
           return false
