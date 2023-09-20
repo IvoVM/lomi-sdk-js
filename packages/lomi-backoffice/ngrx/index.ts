@@ -65,7 +65,7 @@ export function debug(reducer: ActionReducer<any>): ActionReducer<any> {
           }
           return false
         }
-        else if(order?.name?.includes('Retiro') || order?.isStorePicking){
+        else if((order?.shipments && order?.shipments[0].is_pickup) || order?.isStorePicking){
           if(order?.status == FAILED){
             return statusId == FAILED
           }
