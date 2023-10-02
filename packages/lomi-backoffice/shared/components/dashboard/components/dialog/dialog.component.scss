@@ -1,0 +1,26 @@
+h2 {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  mat-icon {
+    margin: 0 7px;
+  }
+}
+
+.mat-typography {
+  padding-bottom: 0;
+
+  .form-btn {
+    background-color: whitesmoke;
+  }
+
+  .no-arrow-input::-webkit-inner-spin-button,
+  .no-arrow-input::-webkit-outer-spin-button {
+    appearance: none;
+    margin: 0;
+  }
+
+  .no-arrow-input[type='number'] {
+    -moz-appearance: textfield; /* Firefox */
+  }
+}

@@ -1,0 +1,88 @@
+// .reset-button {
+//   /* Anula todos los estilos por defecto */
+//   background: none;
+//   border: none;
+//   margin: 0;
+//   padding: 0;
+//   font: inherit;
+//   color: inherit;
+//   cursor: pointer;
+//   outline: inherit;
+//   /* Agrega estilos personalizados aquí si es necesario */
+// }
+
+// .btn-close {
+//   box-sizing: content-box;
+//   border: 0;
+//   border-radius: 0.25rem;
+//   opacity: 0.5;
+//   padding: 5px;
+//   line-height: 1;
+//   font-size: 24px;
+//   background-image: none;
+//   color: #000;
+
+//   &:focus {
+//     box-shadow: none;
+//   }
+// }
+
+// .details-panel {
+//   width: 40rem !important;
+// }
+
+// .offcanvas-body {
+//   padding: 10px 0 0 20px;
+// }
+
+// .h-7 {
+//   height: 3rem !important;
+// }
+
+// .card-title {
+//   font-size: 20px;
+//   margin: 0;
+// }
+
+// .card-body {
+//   padding: 0;
+//   th {
+//     font-size: 500;
+//     color: #242e4c;
+//     text-transform: uppercase;
+//     font-size: 0.875rem;
+//     text-align: center;
+//   }
+//   td {
+//     text-align: center;
+//     vertical-align: middle;
+//     &:first-child {
+//       text-align: start;
+//     }
+//     img {
+//       width: 40px;
+//     }
+//     span {
+//       margin-left: 10px;
+//     }
+//     .badge {
+//       display: inline-block;
+//       padding: 0.95em 0.6em;
+//       font-weight: 500;
+//       line-height: 0;
+//       text-align: center;
+//       white-space: nowrap;
+//       vertical-align: baseline;
+//       border-radius: 3px;
+//       font-size: 70% !important;
+//       text-decoration: none;
+//       cursor: pointer;
+//       margin: 0;
+//     }
+//     .bg-primary {
+//       background: #525ce5;
+//       color: #fff;
+//     }
+//   }
+// }
+

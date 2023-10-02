@@ -1,0 +1,101 @@
+.row {
+  --bs-gutter-x: 0;
+  color: #242e4c;
+  .card {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    border: 1px solid rgba(227, 231, 241, 0.8);
+    background-clip: border-box;
+    border-radius: 5px;
+    box-shadow: -8px 12px 18px 0 rgba(14, 17, 28, 0.01);
+
+    .card-body {
+      -ms-flex: 1 1 auto;
+      flex: 1 1 auto;
+      padding: 1.5rem;
+
+      .mb-1 {
+        margin-bottom: 0.25rem !important;
+      }
+
+      .number-font {
+        font-weight: 500 !important;
+      }
+
+      .dash-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        margin: 0 auto;
+        line-height: 43px;
+        position: relative;
+        background: #e3e6f9;
+        z-index: 1;
+        text-align: center;
+
+        &:after {
+          position: absolute;
+          content: '';
+          width: 65px;
+          height: 65px;
+          border-radius: 50%;
+          bottom: 0;
+          top: -10px;
+          right: 0;
+          left: -10px;
+          background: rgba(235, 237, 252, 0.4);
+          z-index: -1;
+        }
+
+        i {
+          text-align: center;
+          vertical-align: middle;
+        }
+
+        .bi-currency-dollar {
+          color: #24e4ac;
+        }
+      }
+
+      .text-orange {
+        color: #f86300 !important;
+      }
+
+      .dash-icon.text-orange {
+        background: rgba(236, 84, 68, 0.2);
+        &:after {
+          background: rgba(236, 84, 68, 0.1);
+        }
+      }
+
+      .text-secondary1 {
+        background: rgba(36, 228, 172, 0.2);
+
+        &:after {
+          background: rgba(36, 228, 172, 0.1);
+        }
+      }
+
+      .text-warning {
+        background: rgba(255, 212, 85, 0.2);
+        &:after {
+          background: rgba(247, 202, 68, 0.1);
+        }
+      }
+
+      .text-blue {
+        color: #5171A5;
+        background: rgba(98, 136, 196, 0.2);
+        &:after {
+          background: rgba(98, 136, 196, 0.1);
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,7 @@
+.scrollable-container {
+  height: 100vh;
+  overflow-y: auto !important;
+  .row {
+    --bs-gutter-x: 0 !important;
+  }
+}

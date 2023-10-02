@@ -1,0 +1,17 @@
+<div class="scrollable-container">
+  <lomii-loading-screen></lomii-loading-screen>
+  <div class="mt-4">
+    <lomii-settings></lomii-settings>
+  </div>
+  <lomii-header
+    [selected_daterange]="this.headerDate"
+    [stockLocation]="this.headerLocation"
+  ></lomii-header>
+  
+  <div class="mt-4 mx-3">
+    <lomii-top-products></lomii-top-products>
+  </div>
+  <div class="mt-4 mb-5 pb-5 mx-2">
+    <lomii-recent-orders></lomii-recent-orders>
+  </div>
+</div>

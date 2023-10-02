@@ -1,0 +1,54 @@
+<h2 mat-dialog-title><mat-icon>settings</mat-icon> Ajustes</h2>
+<mat-dialog-content class="mat-typography">
+  <form [formGroup]="settings" (ngSubmit)="onSubmit()">
+    <div>
+      <h3>Seleccioná tu Stock Location</h3>
+      <div>
+        <mat-form-field>
+          <mat-label>Stock Location</mat-label>
+          <mat-select formControlName="stockLocationId">
+            <mat-option
+              *ngFor="let location of stockLocation"
+              [value]="location.value"
+            >
+              {{ location.viewValue }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div>
+      <h3>Opcional: Selecciona un rango de féchas específico.</h3>
+      <app-range-date-picker
+        (dateRangeSelected)="handleDateRangeSelected($event)"
+      ></app-range-date-picker>
+    </div>
+    <!-- <div>
+      <h3>Opcional: Total de órdenes a comparar.</h3>
+      <mat-form-field class="example-full-width">
+        <mat-label>Número de órdenes</mat-label>
+        <input
+          matInput
+          type="number"
+          value="5"
+          maxlength="3"
+          oninput="this.value = this.value.slice(0, 3)"
+          class="no-arrow-input"
+          formControlName="ordersLimit"
+        />
+      </mat-form-field>
+    </div> -->
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close class="form-btn">Cancelar</button>
+  <button
+    mat-button
+    [mat-dialog-close]="true"
+    cdkFocusInitial
+    (click)="this.onSubmit()"
+    class="form-btn"
+  >
+    Aceptar
+  </button>
+</mat-dialog-actions>

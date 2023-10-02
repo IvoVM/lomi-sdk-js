@@ -1,0 +1,16 @@
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title">Productos más vendidos (%)</h3>
+  </div>
+  <div class="card-body d-flex justify-content-center">
+    <apx-chart
+      class="course-progress"
+      [series]="donutData.pieseries"
+      [colors]="donutData.colors"
+      [chart]="donutData.chart"
+      [responsive]="donutData.responsive"
+      [legend]="donutData.legend"
+      [labels]="donutData.labels"
+    ></apx-chart>
+  </div>
+</div>

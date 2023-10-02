@@ -1,0 +1,48 @@
+<div>
+  <div>
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Los más vendidos</h3>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover text-nowrap mb-0">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Id</th>
+                <th>Precio</th>
+                <th>Unidades vendidas</th>
+                <th>Total generado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let order of Table">
+                <td>
+                  <img src="{{ order.img_url ? order.img_url : lomi_logo }}" />
+                  <span
+                    class="d-inline-block align-middle mb-0 product-name text-dark font-weight-semibold"
+                    >{{ order.name }}</span
+                  >
+                </td>
+                <td>#{{ order.id }}</td>
+                <td class="font-weight-semibold">${{ order.price }}</td>
+                <td>{{ order.count }}</td>
+                <td>
+                  <span
+                    class="badge"
+                    style="
+                      background-color: #5ed94c;
+                      font-size: 13px !important;
+                    "
+                    >${{ order.count * order.price }}</span
+                  >
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
