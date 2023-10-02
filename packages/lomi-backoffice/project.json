@@ -25,10 +25,14 @@
           "packages/lomi-backoffice/src/styles.scss",
           "./node_modules/quill/dist/quill.bubble.css",
           "./node_modules/quill/dist/quill.snow.css",
-          "./node_modules/quill/dist/quill.core.css"
+          "./node_modules/quill/dist/quill.core.css",
+          "node_modules/bootstrap/dist/css/bootstrap.min.css",
+          "node_modules/ngx-spinner/animations/ball-climbing-dot.css"
         ],
         "scripts": [
-          "./node_modules/quill/dist/quill.js"
+          "./node_modules/quill/dist/quill.js",
+          "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
+          "node_modules/apexcharts/dist/apexcharts.min.js"
         ]
       },
       "configurations": {
