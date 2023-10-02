@@ -9,7 +9,7 @@
         <div *ngIf="false">
             <lomii-store-change></lomii-store-change>
         </div>
-        <span *ngIf="user.userRol == 1" ><mat-slide-toggle color="primary" class="primary-color">Debug mode </mat-slide-toggle><mat-icon style="margin-right:1em">bug_report</mat-icon></span>
+        <span *ngIf="user.userRol === 1" ><mat-slide-toggle color="primary" class="primary-color">Debug mode </mat-slide-toggle><mat-icon style="margin-right:1em">bug_report</mat-icon></span>
         <div style="display: flex;align-items: center;justify-content: center;">
             <button [matMenuTriggerFor]="menu" mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
                 <mat-icon class="material-symbols-outlined">account_circle_outline</mat-icon>
@@ -20,16 +20,16 @@
               </mat-menu>
               <div>
                   <h5 style="margin: 0 2.2em 0 0;">{{ user.email }}</h5>
-                  <h6 style="font-size: 0.8rem;margin: 0 12em 1em 0;line-height: 0;;">{{ user.userRol != 1 ? user['userRol']: 'Admin' }}</h6>
+                  <h6 style="font-size: 0.8rem;margin: 0 12em 1em 0;line-height: 0;;">{{ user.userRol !== 1 ? user['userRol']: 'Admin' }}</h6>
               </div>            
         </div>
     </mat-toolbar>
-        <div>
+        <div *ngIf="isDashboardRoute()">
             <ng-container *ngFor="let order of deliveringOrders">
                 <lomii-persistent-notification *ngIf="order.status === 2" [order]="order" [title]="'Pedido '"></lomii-persistent-notification>
             </ng-container>
             <ng-container *ngFor="let journey of journeys">
-                <lomii-persistent-notification [journey]="journey" *ngIf="journey.cabifyTrip && journey.status == 'pickingup'"></lomii-persistent-notification>
+                <lomii-persistent-notification [journey]="journey" *ngIf="journey.cabifyTrip && journey.status === 'pickingup'"></lomii-persistent-notification>
             </ng-container>
         </div>
 </div>  
