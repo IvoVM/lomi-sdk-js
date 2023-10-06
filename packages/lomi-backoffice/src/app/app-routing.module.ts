@@ -13,32 +13,33 @@ import { JourneyComponent } from 'packages/lomi-backoffice/journeys/journey/jour
 import { UserRolComponent } from 'packages/lomi-backoffice/settings/user-rol/user-rol.component';
 import { StockItemsComponent } from 'packages/lomi-backoffice/stock/stock-items/stock-items.component';
 import { ProductsListComponent } from 'packages/lomi-backoffice/ripley/products-list/products-list.component';
+import { DashboardComponent } from 'packages/lomi-backoffice/shared/components/dashboard/dashboard.component';
 
 const routes: Routes = [
-  {path: 'auth', component: AuthComponent},
-  {path: 'user-without-rol', component: UserWithoutRolComponent},
+  { path: 'auth', component: AuthComponent },
+  { path: 'user-without-rol', component: UserWithoutRolComponent },
   {
     path: '',
     canActivate: [AuthGuard],
     children: [
-      {path: 'dashboard', component: OrdersComponent},
-      { path: 'orders-history', component: OrdersHistoryComponent},
-      {path: 'orders', component: OrdersComponent},
-      {path: 'orders/:number', component: OrderComponent},
-      {path: 'users', component: UsersIndexComponent},
-      {path: 'settings', component: SettingsComponent},
-      {path: 'journeys', component: JourneysComponent},
-      {path: 'journeys/:id', component: JourneyComponent},
-      {path:'userRol/:rol', component: UserRolComponent},
-      {path: 'stock', component: StockItemsComponent},
-      {path: 'ripley', component: ProductsListComponent},
-      {path : '', redirectTo: '/orders', pathMatch: "full" },
-    ]
-  }
+      { path: 'dashboard', component: DashboardComponent },
+      { path: 'orders-history', component: OrdersHistoryComponent },
+      { path: 'orders', component: OrdersComponent },
+      { path: 'orders/:number', component: OrderComponent },
+      { path: 'users', component: UsersIndexComponent },
+      { path: 'settings', component: SettingsComponent },
+      { path: 'journeys', component: JourneysComponent },
+      { path: 'journeys/:id', component: JourneyComponent },
+      { path: 'userRol/:rol', component: UserRolComponent },
+      { path: 'stock', component: StockItemsComponent },
+      { path: 'ripley', component: ProductsListComponent },
+      { path: '', redirectTo: '/orders', pathMatch: 'full' },
+    ],
+  },
 ];
-  
+
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class RoutingModule { }
+export class RoutingModule {}

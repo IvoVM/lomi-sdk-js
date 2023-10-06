@@ -13,93 +13,108 @@ import { IUser } from 'packages/lomi-backoffice/types/user';
   styleUrls: ['./main-header.component.scss'],
 })
 export class MainHeaderComponent implements OnInit {
-
-  public journeys:any = []
-  public journeysUnsubscribable:any;
-  public ordersSubscription:any;
+  public journeys: any = [];
+  public journeysUnsubscribable: any;
+  public ordersSubscription: any;
   public cabifyNear = false;
   public deliveringOrders: any[] = [];
 
-  public user:IUser = {
-    uid: "",
-    email:'',
+  public user: IUser = {
+    uid: '',
+    email: '',
     userRol: 0,
-
   };
 
   public routes = [
     {
-      route: "orders",
-      name: "Pedidos",
+      route: 'orders',
+      name: 'Pedidos',
     },
     {
-      route: "orders-history",
-      name: "Historial de pedidos",
+      route: 'orders-history',
+      name: 'Historial de pedidos',
     },
     {
-      route: "users",
-      name: "Usuarios",
+      route: 'users',
+      name: 'Usuarios',
     },
     {
-      route: "stock",
-      name: "Productos"
-    }
-  ]
+      route: 'stock',
+      name: 'Productos',
+    },
+    {
+      route: 'dashboard',
+      name: 'Dashboard',
+    },
+  ];
 
   constructor(
-    private store:Store<BackofficeState>,
-    public orders:OrdersService,
-    public router: Router,
+    private store: Store<BackofficeState>,
+    public orders: OrdersService,
+    public router: Router
   ) {
-    this.store.select(
-      currentUserSelector
-    ).subscribe((user:any)=>{
-      this.user = user
-      if(!this.user.userRol){
-        this.routes = []
+    this.store.select(currentUserSelector).subscribe((user: any) => {
+      this.user = user;
+      if (!this.user.userRol) {
+        this.routes = [];
       } else {
         this.routes = [
           {
-            route: "orders",
-            name: "Pedidos",
+            route: 'orders',
+            name: 'Pedidos',
           },
           {
-            route: "orders-history",
-            name: "Historial de pedidos",
+            route: 'orders-history',
+            name: 'Historial de pedidos',
           },
           {
-            route: "stock",
-            name: "Stock"
-          }
-        ]
-        if(this.user.userRol.toString() == "Admin"){
+            route: 'stock',
+            name: 'Stock',
+          },
+          {
+            route: 'dashboard',
+            name: 'Dashboard',
+          },
+        ];
+        if (this.user.userRol.toString() == 'Admin') {
           this.routes.push({
-            route: "users",
-            name: "Usuarios",
-          })
+            route: 'users',
+            name: 'Usuarios',
+          });
         }
       }
-    })
+    });
   }
 
-  ngOnDestroy(){
-    this.journeysUnsubscribable.unsubscribe()
-    this.ordersSubscription.unsubscribe()
+  ngOnDestroy() {
+    this.journeysUnsubscribable.unsubscribe();
+    this.ordersSubscription.unsubscribe();
   }
 
-  public logout(){
-    this.store.dispatch(new Logout())
+  public logout() {
+    this.store.dispatch(new Logout());
   }
 
   ngOnInit(): void {
-    setTimeout(()=>{
-      this.cabifyNear = true
-    }, 5000)
-    this.ordersSubscription = this.store.select("orders").subscribe((orders:any)=>{
-      this.deliveringOrders = Object.values(orders.entities).filter((order:any)=>order.status == 2 && !(order.scheduled_at && new Date(order.scheduled_at) > new Date()));
-    })
-    this.journeysUnsubscribable = this.store.select("journeys").subscribe((journeys)=>{
-      this.journeys = Object.values(journeys.entities)
-    })
+    setTimeout(() => {
+      this.cabifyNear = true;
+    }, 5000);
+    this.ordersSubscription = this.store
+      .select('orders')
+      .subscribe((orders: any) => {
+        this.deliveringOrders = Object.values(orders.entities).filter(
+          (order: any) =>
+            order.status == 2 &&
+            !(order.scheduled_at && new Date(order.scheduled_at) > new Date())
+        );
+      });
+    this.journeysUnsubscribable = this.store
+      .select('journeys')
+      .subscribe((journeys) => {
+        this.journeys = Object.values(journeys.entities);
+      });
+  }
+  isDashboardRoute(): boolean {
+    return this.router.url === '/dashboard';
   }
 }

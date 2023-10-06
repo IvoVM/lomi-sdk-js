@@ -24,7 +24,7 @@
               </div>            
         </div>
     </mat-toolbar>
-        <div *ngIf="isDashboardRoute()">
+        <div *ngIf="!isDashboardRoute()">
             <ng-container *ngFor="let order of deliveringOrders">
                 <lomii-persistent-notification *ngIf="order.status === 2" [order]="order" [title]="'Pedido '"></lomii-persistent-notification>
             </ng-container>

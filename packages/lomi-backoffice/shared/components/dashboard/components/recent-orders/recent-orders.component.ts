@@ -2,17 +2,16 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ordersDataService } from '../../services/orders-data.service';
 import { NgxPaginationModule } from 'ngx-pagination';
-// import { OffCanvasComponent } from '../off-canvas/off-canvas.component';
 import { Order } from '../../types/order.types';
 import { OrderInterface } from '../../types/recent-orders-types';
-// import { OffCanvasComponent } from '../off-canvas/off-canvas.component';
+import { OffCanvasComponent } from '../off-canvas/off-canvas.component';
 
 @Component({
   selector: 'lomii-recent-orders',
   templateUrl: './recent-orders.component.html',
   styleUrls: ['./recent-orders.component.scss'],
   standalone: true,
-  imports: [CommonModule, NgxPaginationModule],
+  imports: [CommonModule, NgxPaginationModule, OffCanvasComponent],
 })
 export class RecentOrdersComponent implements OnInit {
   recentOrders!: OrderInterface[];
